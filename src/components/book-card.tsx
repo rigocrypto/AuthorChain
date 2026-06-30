@@ -1,0 +1,32 @@
+import Link from "next/link";
+import type { Book } from "@/lib/mock-data";
+import { BookStatusBadge } from "@/components/ui/status-badge";
+
+/** Compact book preview card used in My Books and the marketplace later. */
+export function BookCard({ book }: { book: Book }) {
+  return (
+    <Link
+      href={`/book/${book.slug}`}
+      className="group block overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-primary/60"
+    >
+      <div
+        className={`flex aspect-[16/10] items-end bg-gradient-to-br ${book.coverColor} p-4`}
+      >
+        <span className="text-lg font-semibold text-white drop-shadow">{book.title}</span>
+      </div>
+      <div className="p-4">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-muted">{book.category}</span>
+          <BookStatusBadge status={book.status} />
+        </div>
+        <p className="mt-2 line-clamp-2 text-sm text-muted">{book.description}</p>
+        <div className="mt-3 flex items-center justify-between text-sm">
+          <span className="font-semibold">${book.price.toFixed(2)}</span>
+          <span className="text-muted">
+            {book.unitsSold} sold · {book.earningsUsdc} USDC
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}

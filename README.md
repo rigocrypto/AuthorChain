@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AuthorChain
 
-## Getting Started
+AI-powered Web3 publishing for independent authors. Upload books, generate AI
+marketing assets, publish a public sales page, sell via Stripe & USDC, and
+register proof of authorship on-chain.
 
-First, run the development server:
+> Positioning: not an Amazon replacement — a **creator-first** platform giving
+> authors AI tools, instant payments, transparent royalties, and digital ownership.
+
+## Stack
+
+- **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS v4**
+- API routes for the backend; **PostgreSQL** via Prisma (Phase 2)
+- AI agents (Copy / Launch / Community) with mock fallback when no API key
+- Payments: Stripe (cards) + USDC on Base
+- Solidity registry contract on Base Sepolia
+- Pluggable off-chain storage (local now; IPFS / Arweave / S3 later)
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # all keys optional in Phase 1
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+src/
+  app/
+    (marketing)/         # public site (own header/footer)
+      page.tsx           # landing — "Publish. Own. Earn. Grow."
+      book/[slug]/       # public book sales page
+    dashboard/           # author app (own sidebar + header)
+      page.tsx           # overview (stats, recent sales, top book, agent activity)
+      upload/  books/  agents/  sales/
+  components/
+    ui/                  # Button, Card, StatusBadge
+    dashboard/           # sidebar, header, page shell
+    book-card.tsx  agent-card.tsx  logo.tsx  site-header.tsx  site-footer.tsx
+  lib/
+    mock-data.ts         # Phase-1 mock author/books/sales/stats
+    ai/agents/           # copy / launch / community (+ pricing/opportunity previews)
+    storage/             # StorageDriver interface + local driver
+    payments/            # stripe + usdc boundaries
+    blockchain/          # on-chain registry client
+    db.ts                # Prisma client (Phase 2)
+prisma/                  # schema (Phase 2)
+contracts/               # Hardhat + Solidity registry (Phase 7)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Roadmap
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Foundation** ✅ — Next.js + TS + Tailwind, layout, pages, lib scaffolding.
+2. **Data layer** — Prisma schema (Author, Book, Sale, Royalty) + Postgres.
+3. **Auth + upload** — author auth, book metadata, local storage driver wired.
+4. **Pages live** — dashboard, my books, public book, sales backed by data.
+5. **AI agents** — live Claude generation behind the existing mock boundary.
+6. **Payments** — Stripe checkout + USDC on Base, status tracking, earnings.
+7. **Blockchain** — Solidity registry, Base Sepolia deploy, register on publish.

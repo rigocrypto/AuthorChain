@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
+/*
+ * AuthorChain design tokens.
+ * Dark-first Web3/AI aesthetic: deep ink background, violet→cyan accents.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #07070b;
+  --surface: #0e0e16;
+  --surface-2: #15151f;
+  --border: #232333;
+  --foreground: #f4f4f7;
+  --muted: #9b9bb0;
+  --primary: #7c5cff;
+  --primary-foreground: #ffffff;
+  --accent: #22d3ee;
+  --success: #34d399;
+  --warning: #fbbf24;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Utility helpers shared across pages */
+.ac-gradient-text {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ac-glow {
+  box-shadow: 0 0 0 1px var(--border), 0 20px 60px -20px rgba(124, 92, 255, 0.45);
+}
+
+.ac-hero-radial {
+  background: radial-gradient(
+    60% 50% at 50% 0%,
+    rgba(124, 92, 255, 0.25),
+    transparent 70%
+  );
 }
