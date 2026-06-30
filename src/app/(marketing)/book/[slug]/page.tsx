@@ -5,6 +5,8 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getPublicBookBySlug } from "@/lib/data/books";
+import { isStripeConfigured } from "@/lib/payments/stripe";
+import { startCheckoutAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +28,8 @@ export default async function PublicBookPage({
   const { slug } = await params;
   const book = await getPublicBookBySlug(slug);
   if (!book) notFound();
+
+  const stripeReady = isStripeConfigured();
 
   return (
     <PageShell>
@@ -57,10 +61,24 @@ export default async function PublicBookPage({
               ${book.price.toFixed(2)} {book.currency}
             </div>
             <div className="mt-4 space-y-2">
-              {/* TODO Phase 6: wire to Stripe checkout + USDC on Base. */}
-              <Button className="w-full" disabled>
-                Buy with Card (Stripe)
-              </Button>
+              {stripeReady ? (
+                <form action={startCheckoutAction}>
+                  <input type="hidden" name="slug" value={book.slug} />
+                  <Button type="submit" className="w-full">
+                    Buy with Card (Stripe)
+                  </Button>
+                </form>
+              ) : (
+                <>
+                  <Button className="w-full" disabled>
+                    Buy with Card (Stripe)
+                  </Button>
+                  <p className="text-xs text-warning">
+                    Card payments are not available yet. Check back soon.
+                  </p>
+                </>
+              )}
+              {/* USDC on Base lands in a later phase. */}
               <Button className="w-full" variant="secondary" disabled>
                 Pay with USDC (Base)
               </Button>

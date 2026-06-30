@@ -105,15 +105,17 @@ model BookFile {
 }
 
 model Sale {
-  id              String          @id @default(cuid())
-  bookId          String
-  authorId        String
-  buyerEmail      String?
-  amount          Decimal         @db.Decimal(12, 2)
-  currency        String          @default("USDC")
-  paymentProvider PaymentProvider @default(MOCK)
-  paymentStatus   PaymentStatus   @default(PAID)
-  createdAt       DateTime        @default(now())
+  id                    String          @id @default(cuid())
+  bookId                String
+  authorId              String
+  buyerEmail            String?
+  amount                Decimal         @db.Decimal(12, 2)
+  currency              String          @default("USDC")
+  paymentProvider       PaymentProvider @default(MOCK)
+  paymentStatus         PaymentStatus   @default(PAID)
+  stripeSessionId       String?         @unique
+  stripePaymentIntentId String?
+  createdAt             DateTime        @default(now())
 
   book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
   author    Author    @relation(fields: [authorId], references: [id], onDelete: Cascade)

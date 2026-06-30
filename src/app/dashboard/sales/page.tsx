@@ -11,6 +11,12 @@ export const dynamic = "force-dynamic";
 const usd = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
+const statusTone = (status: string) => {
+  if (status === "PAID") return "success" as const;
+  if (status === "PENDING") return "warning" as const;
+  return "muted" as const;
+};
+
 export default async function SalesPage() {
   const author = await getCurrentAuthor();
   const [summary, sales] = await Promise.all([
@@ -19,9 +25,9 @@ export default async function SalesPage() {
   ]);
 
   const cards = [
-    { label: "Gross sales", value: usd(summary.grossSales) },
-    { label: "Royalties earned", value: `${summary.royaltiesEarned.toFixed(2)} USDC` },
-    { label: "Pending payouts", value: `${summary.pendingPayouts.toFixed(2)} USDC` },
+    { label: "Total revenue", value: usd(summary.grossSales) },
+    { label: "Paid royalties", value: usd(summary.royaltiesEarned) },
+    { label: "Pending payouts", value: usd(summary.pendingPayouts) },
   ];
 
   return (
@@ -51,6 +57,7 @@ export default async function SalesPage() {
                   <th className="pb-2">Book</th>
                   <th className="pb-2">Buyer</th>
                   <th className="pb-2">Amount</th>
+                  <th className="pb-2">Provider</th>
                   <th className="pb-2">Status</th>
                   <th className="pb-2">Date</th>
                 </tr>
@@ -59,12 +66,17 @@ export default async function SalesPage() {
                 {sales.map((s) => (
                   <tr key={s.id} className="border-t border-border">
                     <td className="py-2 pr-4">{s.bookTitle}</td>
-                    <td className="py-2 pr-4 font-mono text-xs text-muted">{s.buyer}</td>
+                    <td className="py-2 pr-4 font-mono text-xs text-muted">
+                      {s.email ?? s.buyer}
+                    </td>
                     <td className="py-2 pr-4">
                       {s.amount.toFixed(2)} {s.currency}
                     </td>
                     <td className="py-2 pr-4">
-                      <StatusBadge tone="success">{s.status}</StatusBadge>
+                      <StatusBadge tone="muted">{s.provider}</StatusBadge>
+                    </td>
+                    <td className="py-2 pr-4">
+                      <StatusBadge tone={statusTone(s.status)}>{s.status}</StatusBadge>
                     </td>
                     <td className="py-2 text-muted">{s.date}</td>
                   </tr>

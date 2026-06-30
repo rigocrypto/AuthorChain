@@ -9,6 +9,7 @@ import { coverGradient } from "@/lib/cover";
  */
 export type BookDTO = {
   id: string;
+  authorId: string;
   slug: string;
   title: string;
   subtitle: string | null;
@@ -30,6 +31,7 @@ type BookRow = Prisma.BookGetPayload<object>;
 function toDTO(book: BookRow, unitsSold = 0, earningsUsdc = 0): BookDTO {
   return {
     id: book.id,
+    authorId: book.authorId,
     slug: book.slug,
     title: book.title,
     subtitle: book.subtitle,

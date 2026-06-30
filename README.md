@@ -58,6 +58,45 @@ Supabase in Phase 3 — callers don't change. The UI reads through a thin
 data-access layer ([src/lib/data/](src/lib/data/)) that returns plain DTOs, so
 it never depends on Prisma directly.
 
+## Payments (Stripe)
+
+Card checkout uses **Stripe Checkout**. A purchase flows:
+public book page → `startCheckoutAction` → Stripe hosted checkout →
+`checkout.session.completed` webhook → `Sale` + `Royalty` created (idempotent).
+
+Prices are always read server-side from the database — never trusted from the
+client. If `STRIPE_SECRET_KEY` is unset, the buy button shows a
+"payments unavailable" state and the webhook returns `503` instead of crashing.
+
+### Local testing
+
+1. Add your test keys to `.env` (see [.env.example](.env.example)):
+
+   ```bash
+   NEXT_PUBLIC_APP_URL="http://localhost:3000"
+   STRIPE_SECRET_KEY="sk_test_..."
+   STRIPE_WEBHOOK_SECRET="whsec_..."   # from `stripe listen`, step 3
+   ```
+
+2. Run the app: `npm run dev`
+
+3. In a second terminal, forward webhooks to the local route (this prints the
+   `whsec_...` value for `STRIPE_WEBHOOK_SECRET`):
+
+   ```bash
+   stripe listen --forward-to localhost:3000/api/webhooks/stripe
+   ```
+
+4. Open a published book, click **Buy with Card**, and pay with the Stripe test
+   card:
+
+   ```text
+   4242 4242 4242 4242   ·   any future expiry   ·   any CVC   ·   any ZIP
+   ```
+
+5. The webhook records the sale; confirm it under
+   **Dashboard → Sales & royalties**.
+
 ## Project structure
 
 ```text
@@ -76,7 +115,7 @@ src/
   lib/
     db.ts                # Prisma client singleton
     auth/session.ts      # placeholder auth (returns demo author)
-    data/                # data-access layer → DTOs (books, stats)
+    data/                # data-access layer → DTOs (books, stats, sales)
     cover.ts             # deterministic placeholder cover gradients
     ai/agents/           # copy / launch / community (+ pricing/opportunity previews)
     storage/             # StorageDriver interface + local driver

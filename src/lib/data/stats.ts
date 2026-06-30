@@ -49,8 +49,10 @@ export type SaleDTO = {
   id: string;
   bookTitle: string;
   buyer: string;
+  email: string | null;
   amount: number;
   currency: string;
+  provider: string;
   status: string;
   date: string;
 };
@@ -69,8 +71,12 @@ export async function getRecentSales(
     id: s.id,
     bookTitle: s.book.title,
     buyer: shortBuyer(s.buyerEmail),
+    // Surface the real email when it is one (Stripe buyers); seed/wallet rows
+    // keep the shortened form.
+    email: s.buyerEmail?.includes("@") ? s.buyerEmail : null,
     amount: Number(s.amount),
     currency: s.currency,
+    provider: s.paymentProvider,
     status: s.paymentStatus,
     date: s.createdAt.toISOString().slice(0, 10),
   }));
