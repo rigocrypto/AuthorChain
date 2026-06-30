@@ -13,7 +13,14 @@ import type { HardhatUserConfig } from "hardhat/config";
  */
 const BASE_SEPOLIA_RPC_URL =
   process.env.BASE_SEPOLIA_RPC_URL ?? "https://sepolia.base.org";
-const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY;
+
+// Hardhat requires a 0x-prefixed key; normalize so a bare-hex .env value works.
+const rawKey = process.env.DEPLOYER_PRIVATE_KEY?.trim();
+const DEPLOYER_PRIVATE_KEY = rawKey
+  ? rawKey.startsWith("0x")
+    ? rawKey
+    : `0x${rawKey}`
+  : undefined;
 
 const config: HardhatUserConfig = {
   solidity: {
