@@ -1,0 +1,171 @@
+// AuthorChain data model (Phase 2).
+// Money is stored as Decimal(12,2); the data-access layer converts to plain
+// numbers/ISO strings before returning DTOs to the UI.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BookStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PaymentProvider {
+  MOCK
+  STRIPE
+  USDC
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum RoyaltyStatus {
+  PENDING
+  PAID
+}
+
+enum AgentType {
+  COPY
+  LAUNCH
+  COMMUNITY
+}
+
+enum RegistrationStatus {
+  PENDING
+  REGISTERED
+  FAILED
+}
+
+model Author {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  walletAddress String?
+  avatarUrl     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  books                   Book[]
+  sales                   Sale[]
+  royalties               Royalty[]
+  agentOutputs            AgentOutput[]
+  blockchainRegistrations BlockchainRegistration[]
+}
+
+model Book {
+  id          String     @id @default(cuid())
+  authorId    String
+  title       String
+  slug        String     @unique
+  subtitle    String?
+  description String
+  category    String
+  language    String     @default("English")
+  price       Decimal    @db.Decimal(12, 2)
+  currency    String     @default("USD")
+  coverUrl    String?
+  status      BookStatus @default(DRAFT)
+  fileHash    String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  author                  Author                   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  files                   BookFile[]
+  sales                   Sale[]
+  agentOutputs            AgentOutput[]
+  blockchainRegistrations BlockchainRegistration[]
+
+  @@index([authorId])
+}
+
+model BookFile {
+  id        String   @id @default(cuid())
+  bookId    String
+  fileName  String
+  fileType  String
+  fileUrl   String
+  fileSize  Int
+  hash      String?
+  createdAt DateTime @default(now())
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
+}
+
+model Sale {
+  id              String          @id @default(cuid())
+  bookId          String
+  authorId        String
+  buyerEmail      String?
+  amount          Decimal         @db.Decimal(12, 2)
+  currency        String          @default("USDC")
+  paymentProvider PaymentProvider @default(MOCK)
+  paymentStatus   PaymentStatus   @default(PAID)
+  createdAt       DateTime        @default(now())
+
+  book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author    Author    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  royalties Royalty[]
+
+  @@index([bookId])
+  @@index([authorId])
+}
+
+model Royalty {
+  id        String        @id @default(cuid())
+  saleId    String
+  authorId  String
+  amount    Decimal       @db.Decimal(12, 2)
+  currency  String        @default("USDC")
+  status    RoyaltyStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+
+  sale   Sale   @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+}
+
+model AgentOutput {
+  id        String    @id @default(cuid())
+  bookId    String
+  authorId  String
+  agentType AgentType
+  input     String
+  output    String
+  createdAt DateTime  @default(now())
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
+}
+
+model BlockchainRegistration {
+  id              String             @id @default(cuid())
+  bookId          String
+  authorId        String
+  chain           String
+  contractAddress String?
+  transactionHash String?
+  bookHash        String
+  status          RegistrationStatus @default(PENDING)
+  createdAt       DateTime           @default(now())
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
+}

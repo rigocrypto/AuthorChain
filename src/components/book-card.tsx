@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { Book } from "@/lib/mock-data";
+import type { BookDTO } from "@/lib/data/books";
 import { BookStatusBadge } from "@/components/ui/status-badge";
 
 /** Compact book preview card used in My Books and the marketplace later. */
-export function BookCard({ book }: { book: Book }) {
+export function BookCard({ book }: { book: BookDTO }) {
   return (
     <Link
       href={`/book/${book.slug}`}

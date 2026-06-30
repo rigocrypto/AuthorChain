@@ -4,11 +4,9 @@ import { PageShell } from "@/components/page-header";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { getBookBySlug, mockAuthor, mockBooks } from "@/lib/mock-data";
+import { getPublicBookBySlug } from "@/lib/data/books";
 
-export function generateStaticParams() {
-  return mockBooks.map((b) => ({ slug: b.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -16,7 +14,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const book = getBookBySlug(slug);
+  const book = await getPublicBookBySlug(slug);
   return { title: book ? book.title : "Book not found" };
 }
 
@@ -26,7 +24,7 @@ export default async function PublicBookPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const book = getBookBySlug(slug);
+  const book = await getPublicBookBySlug(slug);
   if (!book) notFound();
 
   return (
@@ -49,13 +47,7 @@ export default async function PublicBookPage({
           {book.subtitle ? (
             <p className="mt-1 text-lg text-muted">{book.subtitle}</p>
           ) : null}
-          <p className="mt-1 text-sm text-muted">by {mockAuthor.name}</p>
-          {book.ratingCount > 0 ? (
-            <p className="mt-2 text-sm text-warning">
-              ★ {book.rating.toFixed(1)}{" "}
-              <span className="text-muted">({book.ratingCount})</span>
-            </p>
-          ) : null}
+          <p className="mt-1 text-sm text-muted">by {book.authorName}</p>
 
           <p className="mt-6 max-w-prose text-muted">{book.description}</p>
 

@@ -4,6 +4,7 @@ import { AgentCard } from "@/components/agent-card";
 import { agentRegistry } from "@/lib/ai/agents";
 
 export const metadata: Metadata = { title: "AI agents" };
+export const dynamic = "force-dynamic";
 
 export default function AgentsPage() {
   return (

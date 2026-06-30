@@ -1,7 +1,11 @@
-import { mockAuthor } from "@/lib/mock-data";
-
-export function DashboardHeader({ title }: { title: string }) {
-  const initials = mockAuthor.name
+export function DashboardHeader({
+  title,
+  authorName,
+}: {
+  title: string;
+  authorName: string;
+}) {
+  const initials = authorName
     .split(" ")
     .map((p) => p[0])
     .join("");
@@ -19,8 +23,8 @@ export function DashboardHeader({ title }: { title: string }) {
             {initials}
           </span>
           <div className="hidden leading-tight sm:block">
-            <div className="text-sm font-medium">{mockAuthor.name}</div>
-            <div className="text-xs text-muted">{mockAuthor.role}</div>
+            <div className="text-sm font-medium">{authorName}</div>
+            <div className="text-xs text-muted">Author</div>
           </div>
         </div>
       </div>

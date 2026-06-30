@@ -1,0 +1,26 @@
+# Local PostgreSQL for AuthorChain development.
+# Usage:
+#   docker compose up -d      # start Postgres in the background
+#   docker compose down       # stop (data persists in the named volume)
+#   docker compose down -v    # stop and wipe the database
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: authorchain-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: authorchain
+      POSTGRES_PASSWORD: authorchain
+      POSTGRES_DB: authorchain
+    ports:
+      - "5432:5432"
+    volumes:
+      - authorchain_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authorchain -d authorchain"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  authorchain_pgdata:
