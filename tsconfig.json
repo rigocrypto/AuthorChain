@@ -22,6 +22,14 @@
       "@/*": ["./src/*"]
     }
   },
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "types": ["node", "mocha", "chai"]
+    }
+  },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -30,5 +38,14 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "contracts",
+    "test",
+    "scripts",
+    "hardhat.config.ts",
+    "artifacts",
+    "cache",
+    "typechain-types"
+  ]
 }

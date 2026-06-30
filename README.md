@@ -97,6 +97,52 @@ client. If `STRIPE_SECRET_KEY` is unset, the buy button shows a
 5. The webhook records the sale; confirm it under
    **Dashboard → Sales & royalties**.
 
+## Proof of authorship (blockchain)
+
+Authors can register a book on **Base Sepolia** as tamper-evident proof of
+authorship + timestamp. The contract is
+[`contracts/AuthorChainRegistry.sol`](contracts/AuthorChainRegistry.sol).
+
+**Stored on-chain:** a `bookHash` (a hash of the book, not the content), the
+author's wallet address, a `metadataHash`, a royalty rate (bps), and a timestamp.
+
+**Never on-chain:** book text, manuscripts, private file URLs, or buyer data.
+
+MVP signing uses a **server signer** (`DEPLOYER_PRIVATE_KEY`, testnet only) — the
+dashboard "Register Proof of Authorship" button submits the tx for the author. A
+later phase can switch to author-signed transactions (browser wallet). The book
+hash is currently derived from stable identity fields
+([`src/lib/blockchain/book-hash.ts`](src/lib/blockchain/book-hash.ts), marked
+MVP) and is designed to be swapped for a real uploaded-file SHA-256 / IPFS CID.
+
+If the registry env vars are missing, the dashboard shows a clear
+"not configured" state and never crashes.
+
+### Contract scripts
+
+| Script | What it does |
+| --- | --- |
+| `npm run hh:compile` | compile the Solidity contract |
+| `npm run hh:test` | run the contract test suite (in-process EVM) |
+| `npm run hh:deploy` | deploy to Base Sepolia (needs RPC + deployer key) |
+
+### Deploy to Base Sepolia
+
+1. Fund a **testnet** wallet with Base Sepolia ETH (e.g. a faucet).
+2. Set in `.env`: `BASE_SEPOLIA_RPC_URL`, `DEPLOYER_PRIVATE_KEY` (testnet key only).
+3. `npm run hh:deploy` → copy the printed address into
+   `NEXT_PUBLIC_REGISTRY_ADDRESS` in `.env`, then restart the app.
+
+### Required environment variables
+
+```bash
+NEXT_PUBLIC_CHAIN_NETWORK="base-sepolia"
+NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID="84532"
+NEXT_PUBLIC_REGISTRY_ADDRESS=""   # set after deploy
+BASE_SEPOLIA_RPC_URL="https://sepolia.base.org"
+DEPLOYER_PRIVATE_KEY=""           # testnet only, never a funded mainnet key
+```
+
 ## Project structure
 
 ```text
@@ -120,12 +166,15 @@ src/
     ai/agents/           # copy / launch / community (+ pricing/opportunity previews)
     storage/             # StorageDriver interface + local driver
     payments/            # stripe + usdc boundaries
-    blockchain/          # on-chain registry client
+    blockchain/          # registry client (viem) + book-hash util
 prisma/
   schema.prisma          # 7 models
   seed.ts                # demo data
 docker-compose.yml       # local PostgreSQL
-contracts/               # Hardhat + Solidity registry (Phase 7)
+contracts/               # AuthorChainRegistry.sol (proof of authorship)
+test/                    # Hardhat contract tests
+scripts/deploy.ts        # Base Sepolia deploy script
+hardhat.config.ts        # Hardhat (Solidity 0.8.24)
 ```
 
 ## Roadmap
@@ -136,4 +185,5 @@ contracts/               # Hardhat + Solidity registry (Phase 7)
 4. **Pages live** — dashboard, my books, public book, sales backed by data.
 5. **AI agents** — live Claude generation behind the existing mock boundary.
 6. **Payments** — Stripe checkout + USDC on Base, status tracking, earnings.
-7. **Blockchain** — Solidity registry, Base Sepolia deploy, register on publish.
+7. **Blockchain** ✅ — `AuthorChainRegistry` proof of authorship on Base Sepolia
+   (server-signer MVP). Next: author-signed (browser wallet) + real file hashes.

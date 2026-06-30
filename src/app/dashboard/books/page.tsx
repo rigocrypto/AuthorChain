@@ -44,14 +44,13 @@ export default async function MyBooksPage() {
                     Publish
                   </Button>
                 </form>
-              ) : (
-                <Link
-                  href={`/book/${book.slug}`}
-                  className="block text-center text-sm text-accent hover:underline"
-                >
-                  View public page →
-                </Link>
-              )}
+              ) : null}
+              <Link
+                href={`/dashboard/books/${book.id}`}
+                className="block text-center text-sm text-accent hover:underline"
+              >
+                Manage &amp; register proof →
+              </Link>
             </div>
           ))}
         </div>

@@ -89,6 +89,17 @@ export async function getTopBook(authorId: string): Promise<BookDTO | null> {
   return published.sort((a, b) => b.unitsSold - a.unitsSold)[0];
 }
 
+/** Single book scoped to its author (dashboard detail view). */
+export async function getAuthorBookById(
+  bookId: string,
+  authorId: string,
+): Promise<BookDTO | null> {
+  const book = await prisma.book.findFirst({
+    where: { id: bookId, authorId },
+  });
+  return book ? toDTO(book) : null;
+}
+
 export type PublicBookDTO = BookDTO & { authorName: string };
 
 export async function getPublicBookBySlug(

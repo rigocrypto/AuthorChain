@@ -38,6 +38,9 @@ yarn-error.log*
 /.storage
 
 # hardhat / contracts
+/artifacts
+/cache
+/typechain-types
 /contracts/artifacts
 /contracts/cache
 /contracts/typechain-types
