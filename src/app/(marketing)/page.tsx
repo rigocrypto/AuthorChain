@@ -1,6 +1,11 @@
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
-import { agentRegistry } from "@/lib/ai/agents";
+import { agents, previewAgents } from "@/lib/agents";
+
+const agentCards = [
+  ...agents.map((a) => ({ id: a.id, name: a.name, description: a.description })),
+  ...previewAgents.map((a) => ({ id: a.id, name: a.name, description: a.description })),
+];
 
 const solution = [
   { t: "AI Agents", d: "Smart assistants to write, promote, and grow your book." },
@@ -87,7 +92,7 @@ export default function Home() {
         <h2 className="text-2xl font-semibold">AI agents for authors</h2>
         <p className="mt-1 text-muted">Smart assistants that write, plan, and grow your book.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {agentRegistry.map((a) => (
+          {agentCards.map((a) => (
             <Card key={a.id}>
               <CardTitle>{a.name}</CardTitle>
               <CardDescription>{a.description}</CardDescription>
