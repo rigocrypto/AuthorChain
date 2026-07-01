@@ -14,6 +14,12 @@ Validated MVP loop: **Publish → Prove → Sell → Earn → Deliver**
 > Positioning: not an Amazon replacement — a **creator-first** platform giving
 > authors AI tools, instant payments, transparent royalties, and digital ownership.
 
+## Dashboard Preview
+
+![AuthorChain author dashboard — overview with total books, sales, earnings, pending royalties, on-chain proofs, an earnings-over-time chart, top book, and a recent-sales table with on-chain tx links](docs/assets/dashboard.webp)
+
+*Author dashboard (UI preview with sample data).*
+
 ## Project Links
 
 - **Project site:** <https://rigocrypto.github.io/AuthorChain/>
@@ -58,7 +64,9 @@ uploaded manuscript's hash **byte for byte** — independently verifiable by any
 | **Manuscript SHA-256** | `d84e60d24e33ae791998552e57a429772d8d2524e19dfd95bbafbeb14bdcdbc1` |
 | **Verified transaction** | [`0x68f58137…954975e8`](https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8) |
 
-## Architecture
+## Architecture & Development Map
+
+![AuthorChain architecture and development map — user surfaces, the core product flow (Publish → Prove → Sell → Earn → Deliver), the backend and data layer, the AI author-tools layer, publishing assets, current MVP boundaries, and the production roadmap](docs/assets/architecture-dev-map.webp)
 
 ```text
 Author Dashboard
