@@ -4,8 +4,8 @@
   --surface: #16161f;
   --surface2: #1d1d2a;
   --border: #2a2a3a;
-  --text: #e7e7ee;
-  --muted: #9a9ab0;
+  --text: #f3f5ff;
+  --muted: rgba(230, 235, 255, 0.82);
   --primary: #7c5cff;
   --accent: #22d3ee;
   --success: #34d399;
@@ -36,7 +36,30 @@ body {
   body { background-attachment: scroll; }
 }
 
-.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+/* Soft dark scrim behind the content column — fades at the edges so the image
+   still shows in the margins, but text stays readable over bright areas. */
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 22px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(8, 8, 14, 0.42) 7%,
+    rgba(8, 8, 14, 0.42) 93%,
+    transparent 100%
+  );
+}
+
+/* Brighter, shadowed small text so it pops over the neon background image. */
+.muted,
+.section-title,
+.subtitle,
+.lead,
+.check,
+.note {
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.78), 0 0 3px rgba(0, 0, 0, 0.5);
+}
 
 /* Hero */
 .hero { padding: 88px 0 56px; text-align: center; }
