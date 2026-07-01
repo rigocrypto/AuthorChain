@@ -3,16 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AuthorChain — Publish. Own. Earn. Grow.</title>
-  <meta name="description" content="AI-powered Web3 publishing for independent authors. A validated MVP loop: publish, prove authorship on-chain, sell, track royalties, and deliver protected reader access." />
+  <title>AuthorChain — AI Web3 Publishing Platform for Independent Authors</title>
+  <meta name="description" content="AuthorChain is a validated MVP for AI-powered Web3 publishing: private manuscript storage, SHA-256 proof of authorship on Base Sepolia, Stripe royalties, ISBN/barcode tools, and protected reader access." />
+  <link rel="canonical" href="https://rigocrypto.github.io/AuthorChain/" />
+  <meta name="author" content="Rigo Vivas" />
+  <meta name="keywords" content="Web3 publishing, blockchain proof of authorship, on-chain book publishing, independent author royalties, AI publishing platform, creator economy, protected ebook delivery, ISBN barcode, Base Sepolia" />
 
   <!-- Open Graph -->
-  <meta property="og:title" content="AuthorChain — Publish. Own. Earn. Grow." />
-  <meta property="og:description" content="A validated MVP loop for publishing, proving authorship on-chain (Base Sepolia), selling books, tracking royalties, and delivering protected reader access." />
+  <meta property="og:title" content="AuthorChain — AI Web3 Publishing Platform for Independent Authors" />
+  <meta property="og:description" content="A validated MVP: private manuscript storage, SHA-256 proof of authorship on Base Sepolia, Stripe royalties, ISBN/barcode tools, and protected reader access." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://rigocrypto.github.io/AuthorChain/" />
   <meta property="og:image" content="https://rigocrypto.github.io/AuthorChain/assets/authorchain-og.svg" />
+  <meta property="og:site_name" content="AuthorChain" />
+
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AuthorChain — AI Web3 Publishing for Independent Authors" />
+  <meta name="twitter:description" content="Validated MVP: prove authorship of the real manuscript file on-chain (Base Sepolia), sell via Stripe, and deliver protected reader access." />
+  <meta name="twitter:image" content="https://rigocrypto.github.io/AuthorChain/assets/authorchain-og.svg" />
+
+  <!-- Structured data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "AuthorChain",
+        "url": "https://rigocrypto.github.io/AuthorChain/",
+        "description": "AI-powered Web3 publishing infrastructure for independent authors."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "AuthorChain",
+        "applicationCategory": "PublishingApplication",
+        "operatingSystem": "Web",
+        "url": "https://rigocrypto.github.io/AuthorChain/",
+        "codeRepository": "https://github.com/rigocrypto/AuthorChain",
+        "description": "A validated MVP for AI-powered Web3 publishing: private manuscript storage, SHA-256 proof of authorship on Base Sepolia, Stripe royalties, ISBN/barcode tools, and protected reader access.",
+        "creator": { "@type": "Person", "name": "Rigo Vivas" },
+        "keywords": "Web3 publishing, blockchain authorship proof, independent authors, AI publishing platform, creator economy, Stripe royalties, protected ebook delivery, Base Sepolia"
+      }
+    ]
+  }
+  </script>
 
   <link rel="icon" href="./assets/authorchain-og.svg" />
   <link rel="stylesheet" href="./assets/styles.css" />
@@ -90,6 +125,20 @@
           <dt>On-chain bookHash</dt><dd>0xd84e60d24e33ae791998552e57a429772d8d2524e19dfd95bbafbeb14bdcdbc1</dd>
         </dl>
       </div>
+    </section>
+
+    <!-- SEO content: proof of authorship -->
+    <section>
+      <p class="section-title">For authors</p>
+      <h2>Blockchain proof of authorship for independent authors</h2>
+      <p class="muted">AuthorChain helps authors prove that a specific manuscript file existed at a specific time. The private file is hashed (SHA-256), and only that hash is registered on Base Sepolia — the manuscript itself never goes on-chain and is never exposed publicly. The result is a tamper-evident, independently verifiable ownership record an author can point to at any time.</p>
+    </section>
+
+    <!-- SEO content: platform -->
+    <section>
+      <p class="section-title">The platform</p>
+      <h2>AI + Web3 publishing infrastructure</h2>
+      <p class="muted">Beyond proof of authorship, AuthorChain brings the publishing stack together: AI-assisted author tools, Stripe payments with automatic royalty tracking, ISBN-13 validation and EAN-13 barcode generation, and protected buyer access so that only paying readers can download a book. Authors keep private manuscripts private while selling and delivering securely.</p>
     </section>
 
     <!-- 6. MVP boundary note -->
