@@ -23,7 +23,10 @@
     "seed": "tsx prisma/seed.ts"
   },
   "overrides": {
-    "postcss": "^8.5.10"
+    "postcss": "^8.5.10",
+    "viem": {
+      "ws": "^8.21.0"
+    }
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
