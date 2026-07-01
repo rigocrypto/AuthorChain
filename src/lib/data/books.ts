@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import type { BookFormat } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { coverGradient } from "@/lib/cover";
 
@@ -23,6 +24,13 @@ export type BookDTO = {
   coverUrl: string | null;
   /** sha-256 of the uploaded manuscript, if any (drives the real proof hash). */
   fileHash: string | null;
+  // Publishing metadata (never includes storage keys/paths).
+  isbn13: string | null;
+  isbn10: string | null;
+  bookFormat: "EBOOK" | "PAPERBACK" | "HARDCOVER" | "AUDIOBOOK" | null;
+  publisherName: string | null;
+  publicationDate: string | null;
+  edition: string | null;
   unitsSold: number;
   earningsUsdc: number;
   createdAt: string;
@@ -46,6 +54,14 @@ function toDTO(book: BookRow, unitsSold = 0, earningsUsdc = 0): BookDTO {
     coverColor: coverGradient(book.id),
     coverUrl: book.coverUrl,
     fileHash: book.fileHash,
+    isbn13: book.isbn13,
+    isbn10: book.isbn10,
+    bookFormat: book.bookFormat,
+    publisherName: book.publisherName,
+    publicationDate: book.publicationDate
+      ? book.publicationDate.toISOString()
+      : null,
+    edition: book.edition,
     unitsSold,
     earningsUsdc,
     createdAt: book.createdAt.toISOString(),
@@ -103,17 +119,31 @@ export async function getAuthorBookById(
   return book ? toDTO(book) : null;
 }
 
-export type PublicBookDTO = BookDTO & { authorName: string };
+export type PublicBookDTO = BookDTO & {
+  authorName: string;
+  hasCover: boolean;
+};
 
 export async function getPublicBookBySlug(
   slug: string,
 ): Promise<PublicBookDTO | null> {
   const book = await prisma.book.findFirst({
     where: { slug, status: "PUBLISHED" },
-    include: { author: true },
+    include: {
+      author: true,
+      assets: {
+        where: { assetType: "COVER", isPrimary: true },
+        select: { id: true },
+        take: 1,
+      },
+    },
   });
   if (!book) return null;
-  return { ...toDTO(book), authorName: book.author.name };
+  return {
+    ...toDTO(book),
+    authorName: book.author.name,
+    hasCover: book.assets.length > 0,
+  };
 }
 
 /** Generate a URL-safe, unique slug from a title. */
@@ -160,6 +190,27 @@ export async function createBook(input: CreateBookInput): Promise<BookDTO> {
     },
   });
   return toDTO(book);
+}
+
+export type PublishingMetadataInput = {
+  isbn13: string | null;
+  isbn10: string | null;
+  publisherName: string | null;
+  publicationDate: Date | null;
+  edition: string | null;
+  bookFormat: BookFormat | null;
+};
+
+/** Update publishing identity fields (scoped to the author's own book). */
+export async function updatePublishingMetadata(
+  bookId: string,
+  authorId: string,
+  data: PublishingMetadataInput,
+): Promise<void> {
+  await prisma.book.updateMany({
+    where: { id: bookId, authorId },
+    data,
+  });
 }
 
 export async function publishBook(

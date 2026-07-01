@@ -22,6 +22,15 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
     redirect(`/book/${slug}?error=payments_unavailable`);
   }
 
+  // Stripe fetches the product image from a public URL — only send the cover's
+  // controlled route when the app URL is publicly reachable (not localhost).
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const isLocal = /localhost|127\.0\.0\.1/.test(appUrl);
+  const coverUrl =
+    book.hasCover && !isLocal
+      ? `${appUrl}/api/assets/books/${book.id}/cover`
+      : null;
+
   const { url } = await createCheckoutSession({
     bookId: book.id,
     authorId: book.authorId,
@@ -30,7 +39,7 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
     description: book.description,
     amount: book.price,
     currency: book.currency,
-    coverUrl: book.coverUrl,
+    coverUrl,
   });
 
   redirect(url);

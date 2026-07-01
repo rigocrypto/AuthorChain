@@ -9,6 +9,8 @@ import { getCurrentAuthor } from "@/lib/auth/session";
 import { getAuthorBookById } from "@/lib/data/books";
 import { getRegistrationForBook } from "@/lib/data/registrations";
 import { getPrimaryBookFile } from "@/lib/data/book-files";
+import { getPrimaryAsset } from "@/lib/data/book-assets";
+import { isValidIsbn13 } from "@/lib/publishing/isbn";
 import { bookRegistrationHash } from "@/lib/blockchain/book-hash";
 import {
   isRegistryConfigured,
@@ -18,6 +20,11 @@ import {
 } from "@/lib/blockchain/registry";
 import { registerProofAction } from "./actions";
 import { ManuscriptUploadForm } from "./manuscript-upload-form";
+import {
+  CoverUploadForm,
+  PublishingMetadataForm,
+  GenerateBarcodeForm,
+} from "./publishing-forms";
 
 export const metadata: Metadata = { title: "Book details" };
 export const dynamic = "force-dynamic";
@@ -48,9 +55,11 @@ export default async function BookDetailPage({
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 
-  const [registration, manuscript] = await Promise.all([
+  const [registration, manuscript, cover, barcode] = await Promise.all([
     getRegistrationForBook(id),
     getPrimaryBookFile(id),
+    getPrimaryAsset(id, "COVER"),
+    getPrimaryAsset(id, "BARCODE"),
   ]);
   const proofHash = bookRegistrationHash(book);
   const usesRealFileHash = Boolean(book.fileHash);
@@ -58,6 +67,12 @@ export default async function BookDetailPage({
   const hasWallet = Boolean(author.walletAddress);
   const cfg = getChainConfig();
   const isRegistered = registration?.status === "REGISTERED";
+  const hasValidIsbn = Boolean(book.isbn13 && isValidIsbn13(book.isbn13));
+  // Cache-bust asset previews when the underlying file changes (hash in query).
+  const coverSrc = cover ? `/api/assets/books/${id}/cover?v=${cover.hash ?? ""}` : null;
+  const barcodeSrc = barcode
+    ? `/api/assets/books/${id}/barcode?v=${barcode.hash ?? ""}`
+    : null;
 
   return (
     <DashboardPage
@@ -159,6 +174,101 @@ export default async function BookDetailPage({
             Files are stored privately (never in <code>public/</code>) and are not
             downloadable yet. Protected reader access coming in Phase 2.
           </p>
+        </Card>
+
+        {/* Cover */}
+        <Card>
+          <CardTitle>Cover</CardTitle>
+          {coverSrc ? (
+            <div className="mt-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={coverSrc}
+                alt={`${book.title} cover`}
+                className="max-h-64 w-auto rounded-lg border border-border"
+              />
+              <div className="mt-3 space-y-1 text-xs text-muted">
+                <div>
+                  {cover!.fileName} · {cover!.mimeType} · {formatBytes(cover!.fileSize)}
+                </div>
+                <div className="break-all font-mono">SHA-256 {cover!.hash}</div>
+              </div>
+            </div>
+          ) : (
+            <div
+              className={`mt-4 flex aspect-[2/3] w-40 items-center justify-center rounded-lg bg-gradient-to-br ${book.coverColor} text-xs text-white/80`}
+            >
+              No cover
+            </div>
+          )}
+          <CoverUploadForm bookId={book.id} hasCover={Boolean(cover)} />
+          <p className="mt-3 text-xs text-muted">
+            Covers are public assets served through a controlled route — separate
+            from the protected manuscript.
+          </p>
+        </Card>
+
+        {/* Publishing metadata */}
+        <Card>
+          <CardTitle>Publishing metadata</CardTitle>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-muted">ISBN-13:</span>
+            {book.isbn13 ? (
+              hasValidIsbn ? (
+                <StatusBadge tone="success">valid</StatusBadge>
+              ) : (
+                <StatusBadge tone="warning">invalid</StatusBadge>
+              )
+            ) : (
+              <StatusBadge tone="muted">none</StatusBadge>
+            )}
+            {book.isbn13 ? (
+              <span className="font-mono text-xs">{book.isbn13}</span>
+            ) : null}
+          </div>
+          <PublishingMetadataForm
+            bookId={book.id}
+            defaults={{
+              isbn13: book.isbn13,
+              isbn10: book.isbn10,
+              bookFormat: book.bookFormat,
+              publisherName: book.publisherName,
+              publicationDate: book.publicationDate,
+              edition: book.edition,
+            }}
+          />
+          <p className="mt-3 text-xs text-muted">
+            On-chain proof protects the manuscript hash. Cover and ISBN metadata are
+            publishing assets and may be updated separately.
+          </p>
+        </Card>
+
+        {/* ISBN barcode */}
+        <Card>
+          <CardTitle>ISBN barcode</CardTitle>
+          <p className="mt-1 text-xs text-muted">
+            ISBN barcode preview/export asset (EAN-13). Not print-certified.
+          </p>
+          {barcodeSrc ? (
+            <div className="mt-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={barcodeSrc}
+                alt="ISBN barcode"
+                className="h-24 w-auto rounded bg-white p-2"
+              />
+              <a
+                href={barcodeSrc}
+                download={`isbn-${book.isbn13 ?? "barcode"}.svg`}
+                className="mt-2 inline-block text-sm text-accent hover:underline"
+              >
+                Download barcode →
+              </a>
+            </div>
+          ) : (
+            <p className="mt-4 text-sm text-muted">No barcode generated yet.</p>
+          )}
+          <GenerateBarcodeForm bookId={book.id} disabled={!hasValidIsbn} />
         </Card>
 
         {/* Proof of authorship */}

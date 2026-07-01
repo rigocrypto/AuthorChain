@@ -10,11 +10,15 @@ import type { StorageDriver, StoredFile } from "./types";
  * S3/R2/IPFS/Arweave by implementing the same StorageDriver.
  */
 const ROOT = path.join(process.cwd(), ".storage");
-const BOOKS_DIR = "books";
 
 /** Keep only safe filename characters for the on-disk name. */
 function safeName(fileName: string): string {
   return path.basename(fileName).replace(/[^a-zA-Z0-9._-]/g, "_");
+}
+
+/** Only allow known logical folders, so a key can't escape .storage. */
+function safePrefix(prefix: string): string {
+  return /^[a-z0-9-]+$/.test(prefix) ? prefix : "books";
 }
 
 export class LocalStorageDriver implements StorageDriver {
@@ -22,11 +26,12 @@ export class LocalStorageDriver implements StorageDriver {
     fileName: string,
     data: Buffer | Uint8Array,
     contentType?: string,
+    prefix = "books",
   ): Promise<StoredFile> {
     const buf = Buffer.from(data);
     const sha256 = sha256Hex(buf);
-    // Content-addressed key under books/ so identical bytes dedupe by name.
-    const key = `${BOOKS_DIR}/${sha256}-${safeName(fileName)}`;
+    // Content-addressed key under the folder so identical bytes dedupe by name.
+    const key = `${safePrefix(prefix)}/${sha256}-${safeName(fileName)}`;
     const full = path.join(ROOT, key);
     await mkdir(path.dirname(full), { recursive: true });
     await writeFile(full, buf);

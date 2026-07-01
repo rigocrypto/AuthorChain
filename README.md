@@ -177,6 +177,51 @@ Versioned re-registration (`BookVersion`) is a future release.
 in the schema so S3, Cloudflare R2, IPFS, or Arweave can be added as drop-in
 drivers selected by the `STORAGE_DRIVER` env var — no call-site changes.
 
+## Cover, ISBN & barcode (publishing identity)
+
+Beyond the protected manuscript, a book has a **public** publishing identity:
+a cover image, ISBN metadata, and an ISBN barcode.
+
+**Covers** — authors upload JPG/PNG/WEBP. Like manuscripts, covers are stored
+under `.storage/` (`.storage/covers/`), **not** in `public/`, and are hashed
+(SHA-256). Unlike manuscripts they are *meant to be shown*, so they're served
+through a **controlled route** — never by exposing a storage key:
+
+```text
+GET /api/assets/books/[bookId]/cover     # public cover image
+GET /api/assets/books/[bookId]/barcode   # ISBN barcode SVG
+```
+
+That route only serves `COVER` / `BARCODE` assets — manuscripts are unreachable
+through it. Cover/ISBN are publishing metadata and **do not** change the
+registered manuscript proof hash (the dashboard states this explicitly).
+
+**ISBN vs barcode** — the **ISBN** is the *number* (the identifier); the
+**barcode** is a scannable *rendering* of it. AuthorChain **does not issue
+ISBNs** — authors enter their own assigned ISBN (from Bowker/MyIdentifiers in the
+US, or their national agency). We only **validate** it
+([`src/lib/publishing/isbn.ts`](src/lib/publishing/isbn.ts): strip separators,
+13 digits, check-digit) and reject invalid input.
+
+**Barcode generation** — an ISBN-13 *is* an EAN-13, so we render the standard
+Bookland EAN-13 as **SVG** via `bwip-js`
+([`src/lib/publishing/barcode.ts`](src/lib/publishing/barcode.ts)) and store it as
+a `BARCODE` asset. It's labelled an *"ISBN barcode preview/export asset"* — not a
+print-certified artifact.
+
+**Metadata** — `Book` also carries optional `isbn10`, `publisherName`,
+`publicationDate`, `edition`, and `bookFormat` (EBOOK/PAPERBACK/HARDCOVER/
+AUDIOBOOK), shown on the public book page and used (cover image) in Stripe
+Checkout when a public `NEXT_PUBLIC_APP_URL` is configured.
+
+**Storage model** — assets live in a `BookAsset` table
+(`assetType`, `storageProvider`, `storageKey`, `mimeType`, `hash`, `isPrimary`),
+mirroring `BookFile`, so future S3/R2/IPFS/Arweave drivers are drop-in.
+
+**Future:** print-ready back-cover export (barcode + price add-on at exact print
+dimensions) — deliberately out of scope for now; this phase gets the data and
+assets right first.
+
 ## Project structure
 
 ```text

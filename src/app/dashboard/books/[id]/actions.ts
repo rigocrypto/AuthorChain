@@ -1,9 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import type { BookFormat } from "@prisma/client";
 import { getCurrentAuthor } from "@/lib/auth/session";
-import { getAuthorBookById } from "@/lib/data/books";
+import { getAuthorBookById, updatePublishingMetadata } from "@/lib/data/books";
 import { storeManuscriptForBook, resolveManuscriptType } from "@/lib/data/book-files";
+import { saveCover, saveBarcode } from "@/lib/data/book-assets";
+import { checkIsbn13, normalizeIsbn, isValidIsbn10 } from "@/lib/publishing/isbn";
+import { generateIsbnBarcodeSvg } from "@/lib/publishing/barcode";
 import { AUTHOR_ROYALTY_RATE } from "@/lib/data/sales";
 import { bookRegistrationHash, bookMetadataHash } from "@/lib/blockchain/book-hash";
 import {
@@ -24,6 +28,128 @@ import {
  * cases. On-chain failures mark the registration FAILED rather than throwing,
  * so the dashboard reflects the real status on reload.
  */
+const VALID_FORMATS: BookFormat[] = [
+  "EBOOK",
+  "PAPERBACK",
+  "HARDCOVER",
+  "AUDIOBOOK",
+];
+
+export type PublishingState = { error?: string; ok?: boolean };
+
+/**
+ * Upload/replace the cover image. Allowed even for REGISTERED books — the cover
+ * is a publishing asset and does not affect the registered manuscript proof.
+ */
+export async function uploadCoverAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Choose an image file (JPG, PNG, or WEBP)." };
+  }
+
+  const res = await saveCover(bookId, file);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  return { ok: true };
+}
+
+/**
+ * Save ISBN + publishing metadata. Allowed for REGISTERED books — metadata is
+ * separate from the on-chain manuscript proof.
+ */
+export async function savePublishingMetadataAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const isbn13raw = String(formData.get("isbn13") ?? "").trim();
+  let isbn13: string | null = null;
+  if (isbn13raw) {
+    const chk = checkIsbn13(isbn13raw);
+    if (!chk.ok) return { error: chk.error };
+    isbn13 = chk.isbn13;
+  }
+
+  const isbn10raw = String(formData.get("isbn10") ?? "").trim();
+  let isbn10: string | null = null;
+  if (isbn10raw) {
+    if (!isValidIsbn10(isbn10raw)) return { error: "Invalid ISBN-10." };
+    isbn10 = normalizeIsbn(isbn10raw);
+  }
+
+  const publisherName = String(formData.get("publisherName") ?? "").trim() || null;
+  const edition = String(formData.get("edition") ?? "").trim() || null;
+
+  const pubDateRaw = String(formData.get("publicationDate") ?? "").trim();
+  let publicationDate: Date | null = null;
+  if (pubDateRaw) {
+    const d = new Date(pubDateRaw);
+    if (Number.isNaN(d.getTime())) return { error: "Invalid publication date." };
+    publicationDate = d;
+  }
+
+  const formatRaw = String(formData.get("bookFormat") ?? "").trim();
+  const bookFormat = VALID_FORMATS.includes(formatRaw as BookFormat)
+    ? (formatRaw as BookFormat)
+    : null;
+
+  await updatePublishingMetadata(bookId, author.id, {
+    isbn13,
+    isbn10,
+    publisherName,
+    publicationDate,
+    edition,
+    bookFormat,
+  });
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  return { ok: true };
+}
+
+/** Generate + store an ISBN barcode SVG from the book's saved, valid ISBN-13. */
+export async function generateBarcodeAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+  if (!book.isbn13) return { error: "Add and save a valid ISBN-13 first." };
+
+  const chk = checkIsbn13(book.isbn13);
+  if (!chk.ok) return { error: "The saved ISBN-13 is invalid." };
+
+  try {
+    const svg = generateIsbnBarcodeSvg(chk.isbn13);
+    await saveBarcode(bookId, chk.isbn13, svg);
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Barcode generation failed." };
+  }
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  return { ok: true };
+}
+
 export type UploadManuscriptState = { error?: string; ok?: boolean };
 
 /**

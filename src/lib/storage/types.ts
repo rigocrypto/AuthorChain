@@ -13,11 +13,15 @@ export type StoredFile = {
 };
 
 export interface StorageDriver {
-  /** Persist bytes and return a locator + content hash. */
+  /**
+   * Persist bytes and return a locator + content hash. `prefix` selects the
+   * logical folder/namespace (e.g. "books" | "covers" | "barcodes").
+   */
   put(
     fileName: string,
     data: Buffer | Uint8Array,
     contentType?: string,
+    prefix?: string,
   ): Promise<StoredFile>;
   /** Read bytes back by key. */
   get(key: string): Promise<Buffer>;

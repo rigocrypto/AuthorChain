@@ -35,11 +35,20 @@ export default async function PublicBookPage({
     <PageShell>
       <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
         {/* Cover */}
-        <div
-          className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${book.coverColor} p-5`}
-        >
-          <span className="text-2xl font-bold text-white drop-shadow">{book.title}</span>
-        </div>
+        {book.hasCover ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={`/api/assets/books/${book.id}/cover`}
+            alt={`${book.title} cover`}
+            className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
+          />
+        ) : (
+          <div
+            className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${book.coverColor} p-5`}
+          >
+            <span className="text-2xl font-bold text-white drop-shadow">{book.title}</span>
+          </div>
+        )}
 
         {/* Details */}
         <div>
@@ -58,6 +67,35 @@ export default async function PublicBookPage({
           <p className="mt-4 text-xs text-muted">
             🔒 Protected reader access coming in Phase 2.
           </p>
+
+          {book.isbn13 || book.bookFormat || book.publisherName || book.publicationDate ? (
+            <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:max-w-md">
+              {book.isbn13 ? (
+                <>
+                  <dt className="text-muted">ISBN-13</dt>
+                  <dd className="font-mono text-xs">{book.isbn13}</dd>
+                </>
+              ) : null}
+              {book.bookFormat ? (
+                <>
+                  <dt className="text-muted">Format</dt>
+                  <dd>{book.bookFormat.charAt(0) + book.bookFormat.slice(1).toLowerCase()}</dd>
+                </>
+              ) : null}
+              {book.publisherName ? (
+                <>
+                  <dt className="text-muted">Publisher</dt>
+                  <dd>{book.publisherName}</dd>
+                </>
+              ) : null}
+              {book.publicationDate ? (
+                <>
+                  <dt className="text-muted">Published</dt>
+                  <dd>{book.publicationDate.slice(0, 10)}</dd>
+                </>
+              ) : null}
+            </dl>
+          ) : null}
 
           <Card className="mt-8 max-w-sm">
             <CardTitle>Buy this book</CardTitle>

@@ -52,6 +52,19 @@ enum StorageProvider {
   S3
   IPFS
   ARWEAVE
+  R2
+}
+
+enum AssetType {
+  COVER
+  BARCODE
+}
+
+enum BookFormat {
+  EBOOK
+  PAPERBACK
+  HARDCOVER
+  AUDIOBOOK
 }
 
 model Author {
@@ -84,16 +97,45 @@ model Book {
   coverUrl    String?
   status      BookStatus @default(DRAFT)
   fileHash    String?
+
+  // Publishing identity (authors provide their own ISBN — we never issue one).
+  isbn13          String?
+  isbn10          String?
+  publisherName   String?
+  publicationDate DateTime?
+  edition         String?
+  bookFormat      BookFormat?
+
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   author                  Author                   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   files                   BookFile[]
+  assets                  BookAsset[]
   sales                   Sale[]
   agentOutputs            AgentOutput[]
   blockchainRegistrations BlockchainRegistration[]
 
   @@index([authorId])
+}
+
+model BookAsset {
+  id              String          @id @default(cuid())
+  bookId          String
+  assetType       AssetType
+  storageProvider StorageProvider @default(LOCAL)
+  storageKey      String
+  fileName        String
+  mimeType        String
+  fileSize        Int
+  hash            String?
+  isPrimary       Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([bookId, assetType])
 }
 
 model BookFile {
