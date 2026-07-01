@@ -54,6 +54,7 @@ export type SaleDTO = {
   currency: string;
   provider: string;
   status: string;
+  readerAccess: string | null;
   date: string;
 };
 
@@ -65,7 +66,10 @@ export async function getRecentSales(
     where: { authorId },
     orderBy: { createdAt: "desc" },
     take: limit,
-    include: { book: { select: { title: true } } },
+    include: {
+      book: { select: { title: true } },
+      library: { select: { accessStatus: true } },
+    },
   });
   return sales.map((s) => ({
     id: s.id,
@@ -78,6 +82,7 @@ export async function getRecentSales(
     currency: s.currency,
     provider: s.paymentProvider,
     status: s.paymentStatus,
+    readerAccess: s.library?.accessStatus ?? null,
     date: s.createdAt.toISOString().slice(0, 10),
   }));
 }

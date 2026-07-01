@@ -90,6 +90,28 @@ export async function recordStripeSale(
         },
       });
 
+      // Grant reader access when we know who bought it. Requires a buyer email —
+      // access is keyed to reader identity. Upsert by (reader, book) so a
+      // re-purchase re-grants access instead of colliding on the unique index.
+      if (input.buyerEmail) {
+        const reader = await tx.reader.upsert({
+          where: { email: input.buyerEmail },
+          update: {},
+          create: { email: input.buyerEmail },
+        });
+        await tx.readerLibrary.upsert({
+          where: {
+            readerId_bookId: { readerId: reader.id, bookId: input.bookId },
+          },
+          update: { saleId: sale.id, accessStatus: "ACTIVE" },
+          create: {
+            readerId: reader.id,
+            bookId: input.bookId,
+            saleId: sale.id,
+          },
+        });
+      }
+
       return { created: true };
     });
   } catch (err) {

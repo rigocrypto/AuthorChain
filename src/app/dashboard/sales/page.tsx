@@ -59,6 +59,7 @@ export default async function SalesPage() {
                   <th className="pb-2">Amount</th>
                   <th className="pb-2">Provider</th>
                   <th className="pb-2">Status</th>
+                  <th className="pb-2">Access</th>
                   <th className="pb-2">Date</th>
                 </tr>
               </thead>
@@ -77,6 +78,15 @@ export default async function SalesPage() {
                     </td>
                     <td className="py-2 pr-4">
                       <StatusBadge tone={statusTone(s.status)}>{s.status}</StatusBadge>
+                    </td>
+                    <td className="py-2 pr-4">
+                      {s.readerAccess ? (
+                        <StatusBadge tone={s.readerAccess === "ACTIVE" ? "success" : "muted"}>
+                          {s.readerAccess}
+                        </StatusBadge>
+                      ) : (
+                        <span className="text-muted">—</span>
+                      )}
                     </td>
                     <td className="py-2 text-muted">{s.date}</td>
                   </tr>

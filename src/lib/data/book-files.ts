@@ -132,3 +132,16 @@ export async function getPrimaryBookFile(
   });
   return f ? toDTO(f) : null;
 }
+
+/** Server-only: locator + filename for streaming a manuscript to an entitled reader. */
+export async function getManuscriptForServing(
+  bookId: string,
+): Promise<{ storageKey: string; fileName: string; fileType: string } | null> {
+  const f = await prisma.bookFile.findFirst({
+    where: { bookId, isPrimary: true },
+    orderBy: { createdAt: "desc" },
+    select: { storageKey: true, fileName: true, fileType: true },
+  });
+  if (!f || !f.storageKey) return null;
+  return { storageKey: f.storageKey, fileName: f.fileName, fileType: f.fileType };
+}

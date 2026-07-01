@@ -26,10 +26,10 @@ export default async function CheckoutSuccessPage({
         </p>
 
         <Card className="mt-8 text-left">
-          <CardTitle>What happens next</CardTitle>
+          <CardTitle>Access granted</CardTitle>
           <CardDescription>
-            Reader library access — where you’ll download and read your books —
-            arrives in Phase 2. We’ll email you as soon as it’s ready.
+            Your book has been added to your reader library. Click below to open
+            it — you can download it any time from your library.
           </CardDescription>
           {session_id ? (
             <p className="mt-4 break-all font-mono text-xs text-muted">
@@ -38,8 +38,15 @@ export default async function CheckoutSuccessPage({
           ) : null}
         </Card>
 
-        <div className="mt-8 flex justify-center gap-3">
-          <ButtonLink href="/">Back to marketplace</ButtonLink>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {session_id ? (
+            <ButtonLink href={`/api/reader/claim?session_id=${encodeURIComponent(session_id)}`}>
+              Access your library →
+            </ButtonLink>
+          ) : (
+            <ButtonLink href="/reader/library">Go to your library →</ButtonLink>
+          )}
+          <ButtonLink href="/" variant="secondary">Back to marketplace</ButtonLink>
         </div>
       </div>
     </PageShell>

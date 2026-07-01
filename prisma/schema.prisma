@@ -67,6 +67,16 @@ enum BookFormat {
   AUDIOBOOK
 }
 
+enum AccessStatus {
+  ACTIVE
+  REFUNDED
+  REVOKED
+}
+
+enum LicenseType {
+  STANDARD
+}
+
 model Author {
   id            String   @id @default(cuid())
   name          String
@@ -113,6 +123,7 @@ model Book {
   files                   BookFile[]
   assets                  BookAsset[]
   sales                   Sale[]
+  library                 ReaderLibrary[]
   agentOutputs            AgentOutput[]
   blockchainRegistrations BlockchainRegistration[]
 
@@ -172,12 +183,43 @@ model Sale {
   stripePaymentIntentId String?
   createdAt             DateTime        @default(now())
 
-  book      Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  author    Author    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  book      Book           @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author    Author         @relation(fields: [authorId], references: [id], onDelete: Cascade)
   royalties Royalty[]
+  library   ReaderLibrary?
 
   @@index([bookId])
   @@index([authorId])
+}
+
+model Reader {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  walletAddress String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  entitlements ReaderLibrary[]
+}
+
+model ReaderLibrary {
+  id           String       @id @default(cuid())
+  readerId     String
+  bookId       String
+  saleId       String       @unique
+  accessStatus AccessStatus @default(ACTIVE)
+  licenseType  LicenseType  @default(STANDARD)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  reader Reader @relation(fields: [readerId], references: [id], onDelete: Cascade)
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  sale   Sale   @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  @@unique([readerId, bookId])
+  @@index([readerId])
+  @@index([bookId])
 }
 
 model Royalty {

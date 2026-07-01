@@ -222,6 +222,46 @@ mirroring `BookFile`, so future S3/R2/IPFS/Arweave drivers are drop-in.
 dimensions) — deliberately out of scope for now; this phase gets the data and
 assets right first.
 
+## Reader library & protected access
+
+When a reader buys a book, the Stripe webhook (in the same transaction that
+records the `Sale` + `Royalty`) upserts a **`Reader`** by email and creates a
+**`ReaderLibrary`** entitlement (`ACTIVE`) linked to that sale. This is idempotent
+— `saleId` is unique and a re-purchase upserts by `(reader, book)`, so webhook
+retries never duplicate access.
+
+**Getting access** — after checkout, the success page links to
+`GET /api/reader/claim?session_id=…`, which looks up the sale server-side,
+resolves the buyer's `Reader`, and sets a **signed, httpOnly cookie**
+(`reader_session`), then redirects to `/reader/library`. The reader session is an
+MVP placeholder ([`src/lib/auth/reader-session.ts`](src/lib/auth/reader-session.ts),
+HMAC-signed with `AUTH_SECRET`) — swap it for NextAuth/Clerk/Supabase later
+without touching callers, exactly like the author placeholder.
+
+**Reading** — `/reader/library` lists purchased books; `/reader/books/[id]` shows
+one, with proof-of-authorship links. The manuscript is delivered **only** through
+a gated route:
+
+```text
+GET /api/reader/books/[bookId]/download
+```
+
+It requires a signed-in reader with an **ACTIVE** entitlement — otherwise `403`.
+The manuscript is streamed from private storage with a safe filename; the storage
+key is never exposed, and this file is **never** reachable through the public
+`/api/assets/...` route.
+
+**Public vs private, recap:**
+
+| Asset | Visibility | Route |
+| --- | --- | --- |
+| Cover, barcode | Public | `/api/assets/books/[id]/cover` · `/barcode` |
+| Manuscript | Private (ACTIVE entitlement only) | `/api/reader/books/[id]/download` |
+
+**Refunds/revocation** — `ReaderLibrary.accessStatus` supports `REFUNDED` /
+`REVOKED`; the download route only serves `ACTIVE`. Automated handling (a future
+Stripe `charge.refunded` webhook that flips status) is out of scope for now.
+
 ## Project structure
 
 ```text
