@@ -1,79 +1,140 @@
 # AuthorChain
 
-AI-powered Web3 publishing for independent authors. Upload books, generate AI
-marketing assets, publish a public sales page, sell via Stripe & USDC, and
-register proof of authorship on-chain.
+**Publish. Own. Earn. Grow.**
+
+AI-powered Web3 publishing infrastructure for independent authors.
+
+Validated MVP loop: **Publish → Prove → Sell → Earn → Deliver**
+
+[![Live project site](https://img.shields.io/badge/live-project%20site-22d3ee)](https://rigocrypto.github.io/AuthorChain/)
+[![Base Sepolia proof](https://img.shields.io/badge/proof-Base%20Sepolia-7c5cff)](https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8)
+![Status](https://img.shields.io/badge/status-validated%20MVP-34d399)
+![Production audit](https://img.shields.io/badge/prod%20audit-0%20vulnerabilities-34d399)
 
 > Positioning: not an Amazon replacement — a **creator-first** platform giving
 > authors AI tools, instant payments, transparent royalties, and digital ownership.
 
-## Status: a validated MVP loop ✅
+## Project Links
 
-AuthorChain is **not just a concept** — the full loop is implemented and validated
-end-to-end against a real database, Stripe (test mode), and the **Base Sepolia**
-testnet:
+- **Project site:** <https://rigocrypto.github.io/AuthorChain/>
+- **GitHub repo:** <https://github.com/rigocrypto/AuthorChain>
+- **Demo brief:** [./DEMO.md](DEMO.md)
+- **Investor memo:** [./docs/INVESTOR_MEMO.md](docs/INVESTOR_MEMO.md)
+- **Proof-of-authorship article:** [./docs/ARTICLE_PROOF_OF_AUTHORSHIP.md](docs/ARTICLE_PROOF_OF_AUTHORSHIP.md)
+- **Security notes:** [./SECURITY.md](SECURITY.md)
+- **Base Sepolia contract:** <https://sepolia.basescan.org/address/0x804447c70af049dA4999AdDd4E344b19a17330E1>
+- **Verified proof transaction:** <https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8>
+- **Hosted interactive demo:** coming next. The current demo is validated locally
+  and documented in [DEMO.md](DEMO.md).
 
-**Publish → Prove → Sell → Earn → Deliver**
+## What Works Today
 
-### What works today
+- Author dashboard
+- Book upload
+- Private manuscript storage
+- Real SHA-256 manuscript hashing
+- Base Sepolia proof-of-authorship registry
+- Cover upload
+- ISBN-13 validation
+- EAN-13 barcode SVG generation
+- Stripe checkout
+- Webhook-based sale and royalty tracking
+- Reader entitlement creation
+- Protected reader library
+- Secure manuscript download for buyers
+- 403 access blocking for non-buyers
+- SEO-ready GitHub Pages project site
 
-- Author dashboard + book upload with **private** manuscript storage
-- Real **SHA-256** file hashing → **on-chain proof of authorship** (Base Sepolia)
-- Cover upload + **ISBN-13** validation + **EAN-13 barcode** (SVG)
-- **Stripe** checkout → idempotent **Sale + Royalty** webhook
-- Reader **entitlements** + protected **library** + gated manuscript download
-- Non-buyers blocked (**403**); manuscripts never exposed publicly
+## Verified On-Chain Proof
 
-### Verified on-chain proof
+AuthorChain does **not** store the manuscript on-chain. It stores a **SHA-256 hash
+of the actual private manuscript file**. The on-chain `bookHash` matches the
+uploaded manuscript's hash **byte for byte** — independently verifiable by anyone.
 
-The hash registered on-chain equals the SHA-256 of the exact file a buyer
-downloads — independently verifiable:
+| | |
+| --- | --- |
+| **Contract** | `0x804447c70af049dA4999AdDd4E344b19a17330E1` |
+| **Book** | The Ultimate AI Prompts PlayBook |
+| **Manuscript SHA-256** | `d84e60d24e33ae791998552e57a429772d8d2524e19dfd95bbafbeb14bdcdbc1` |
+| **Verified transaction** | [`0x68f58137…954975e8`](https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8) |
 
-- **Registry (Base Sepolia):** `0x804447c70af049dA4999AdDd4E344b19a17330E1`
-- **Transaction:** [`0x68f58137…954975e8`](https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8)
+## Architecture
 
-📄 More detail: [Demo brief](DEMO.md) · [Investor memo](docs/INVESTOR_MEMO.md)
+```text
+Author Dashboard
+  → Manuscript Upload
+  → SHA-256 Hashing
+  → Private Storage
+  → Base Sepolia Registry
+  → Stripe Checkout
+  → Webhook Fulfillment
+  → Sale + Royalty Records
+  → Reader Entitlement
+  → Protected Reader Library
+  → Secure Download
+```
 
-> **MVP boundaries (intentional):** testnet, Stripe test mode, local storage,
-> placeholder auth — each behind an upgrade seam. See [DEMO.md](DEMO.md) and
-> [SECURITY.md](SECURITY.md).
+**Tech stack:** Next.js · TypeScript · Tailwind CSS · PostgreSQL · Prisma ·
+Stripe · Solidity · Hardhat · Viem · Base Sepolia · local protected storage
+(future S3 / R2 / IPFS / Arweave) · GitHub Pages static project site.
 
-## Stack
+## Current MVP Boundaries
 
-- **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS v4**
-- API routes for the backend; **PostgreSQL** via Prisma (Phase 2)
-- AI agents (Copy / Launch / Community) with mock fallback when no API key
-- Payments: Stripe (cards) + USDC on Base
-- Solidity registry contract on Base Sepolia
-- Pluggable off-chain storage (local now; IPFS / Arweave / S3 later)
+- Base Sepolia **testnet**, not mainnet
+- Stripe **test mode**
+- **Local** protected storage
+- **Placeholder** author/reader auth seams
+- **Server-side signer** for proof registration
+- **Hosted interactive app deployment not live yet**
 
-## Getting started
+Each boundary sits behind a clean upgrade seam (storage driver, auth module,
+payments/registry clients), so productionizing is additive — not a rewrite.
+
+## Production Roadmap
+
+- Production authentication
+- Hosted app deployment
+- Cloud storage with S3 / R2 / IPFS / Arweave
+- Browser-wallet author signing
+- USDC payments on Base
+- Refund / revoke automation
+- Marketplace discovery
+- Security review
+
+## Run Locally
 
 ```bash
 npm install                  # also runs `prisma generate` (postinstall)
 cp .env.example .env         # Prisma + Next both read .env
 
-# 1. Start PostgreSQL (Docker)
-npm run db:up                # docker compose up -d
-
-# 2. Create the schema + tables
-npm run db:migrate           # prisma migrate dev
-
-# 3. Seed the demo author (Rigo Vivas) + books/sales
-npm run db:seed
-
-# 4. Run the app
+npm run db:up                # start PostgreSQL (Docker) — host port 5433
+npm run db:migrate           # create schema + tables
+npm run db:seed              # seed the demo author (Rigo Vivas) + books/sales
 npm run dev                  # http://localhost:3000
 ```
 
-> Requires Docker Desktop running. To stop the DB: `npm run db:down`
-> (data persists in a named volume; `docker compose down -v` wipes it).
+> Requires Docker Desktop. AuthorChain's local Postgres runs on **host port 5433**
+> (see [docker-compose.yml](docker-compose.yml)) to avoid clashing with other local
+> Postgres containers — `DATABASE_URL` uses `localhost:5433`. Stop the DB with
+> `npm run db:down` (data persists in a named volume; `docker compose down -v` wipes it).
 
-## Database
+## Documentation
 
-PostgreSQL via **Prisma** ([prisma/schema.prisma](prisma/schema.prisma)). Models:
-`Author`, `Book`, `BookFile`, `Sale`, `Royalty`, `AgentOutput`,
-`BlockchainRegistration`.
+- [DEMO.md](DEMO.md) — technical proof + demo flow
+- [docs/INVESTOR_MEMO.md](docs/INVESTOR_MEMO.md) — investor/collaborator positioning
+- [docs/LINKEDIN_POST.md](docs/LINKEDIN_POST.md) — launch post drafts
+- [docs/ARTICLE_PROOF_OF_AUTHORSHIP.md](docs/ARTICLE_PROOF_OF_AUTHORSHIP.md) — the proof-of-authorship explainer
+- [SECURITY.md](SECURITY.md) — dependency/security posture
+
+---
+
+## Deep dives
+
+### Database
+
+PostgreSQL via **Prisma** ([prisma/schema.prisma](prisma/schema.prisma)). Models
+include `Author`, `Book`, `BookFile`, `BookAsset`, `Sale`, `Royalty`, `Reader`,
+`ReaderLibrary`, `AgentOutput`, and `BlockchainRegistration`.
 
 | Script | What it does |
 | --- | --- |
@@ -83,73 +144,41 @@ PostgreSQL via **Prisma** ([prisma/schema.prisma](prisma/schema.prisma)). Models
 | `npm run db:seed` | load the demo author + books/sales |
 | `npm run db:studio` | open Prisma Studio |
 
-Auth is a placeholder: [src/lib/auth/session.ts](src/lib/auth/session.ts)
-returns the seeded demo author. Swap this one function for NextAuth/Clerk/
-Supabase in Phase 3 — callers don't change. The UI reads through a thin
-data-access layer ([src/lib/data/](src/lib/data/)) that returns plain DTOs, so
-it never depends on Prisma directly.
+Auth is a placeholder: [src/lib/auth/session.ts](src/lib/auth/session.ts) returns
+the seeded demo author. Swap this one function for NextAuth/Clerk/Supabase later —
+callers don't change. The UI reads through a thin data-access layer
+([src/lib/data/](src/lib/data/)) that returns plain DTOs, so it never depends on
+Prisma directly.
 
-## Payments (Stripe)
+### Payments (Stripe)
 
-Card checkout uses **Stripe Checkout**. A purchase flows:
-public book page → `startCheckoutAction` → Stripe hosted checkout →
-`checkout.session.completed` webhook → `Sale` + `Royalty` created (idempotent).
-
-Prices are always read server-side from the database — never trusted from the
-client. If `STRIPE_SECRET_KEY` is unset, the buy button shows a
+Card checkout uses **Stripe Checkout**: public book page → `startCheckoutAction` →
+Stripe hosted checkout → `checkout.session.completed` webhook → `Sale` + `Royalty`
+created (idempotent). Prices are always read server-side from the database — never
+trusted from the client. If `STRIPE_SECRET_KEY` is unset, the buy button shows a
 "payments unavailable" state and the webhook returns `503` instead of crashing.
 
-### Local testing
+**Local testing:** add test keys to `.env`, run `npm run dev`, forward webhooks
+with `stripe listen --forward-to localhost:3000/api/webhooks/stripe` (copy the
+printed `whsec_...` into `STRIPE_WEBHOOK_SECRET`), then buy a published book with
+the Stripe test card `4242 4242 4242 4242` (any future expiry / CVC / ZIP).
 
-1. Add your test keys to `.env` (see [.env.example](.env.example)):
+### Proof of authorship (blockchain)
 
-   ```bash
-   NEXT_PUBLIC_APP_URL="http://localhost:3000"
-   STRIPE_SECRET_KEY="sk_test_..."
-   STRIPE_WEBHOOK_SECRET="whsec_..."   # from `stripe listen`, step 3
-   ```
-
-2. Run the app: `npm run dev`
-
-3. In a second terminal, forward webhooks to the local route (this prints the
-   `whsec_...` value for `STRIPE_WEBHOOK_SECRET`):
-
-   ```bash
-   stripe listen --forward-to localhost:3000/api/webhooks/stripe
-   ```
-
-4. Open a published book, click **Buy with Card**, and pay with the Stripe test
-   card:
-
-   ```text
-   4242 4242 4242 4242   ·   any future expiry   ·   any CVC   ·   any ZIP
-   ```
-
-5. The webhook records the sale; confirm it under
-   **Dashboard → Sales & royalties**.
-
-## Proof of authorship (blockchain)
-
-Authors can register a book on **Base Sepolia** as tamper-evident proof of
-authorship + timestamp. The contract is
+Authors register a book on **Base Sepolia** as tamper-evident proof of authorship +
+timestamp. The contract is
 [`contracts/AuthorChainRegistry.sol`](contracts/AuthorChainRegistry.sol).
 
-**Stored on-chain:** a `bookHash` (a hash of the book, not the content), the
-author's wallet address, a `metadataHash`, a royalty rate (bps), and a timestamp.
+- **Stored on-chain:** a `bookHash`, the author's wallet, a `metadataHash`, a
+  royalty rate (bps), and a timestamp.
+- **Never on-chain:** book text, manuscripts, private file URLs, or buyer data.
 
-**Never on-chain:** book text, manuscripts, private file URLs, or buyer data.
-
-MVP signing uses a **server signer** (`DEPLOYER_PRIVATE_KEY`, testnet only) — the
-dashboard "Register Proof of Authorship" button submits the tx for the author. A
-later phase can switch to author-signed transactions (browser wallet). The book
-hash is currently derived from stable identity fields
-([`src/lib/blockchain/book-hash.ts`](src/lib/blockchain/book-hash.ts), marked
-MVP) and is designed to be swapped for a real uploaded-file SHA-256 / IPFS CID.
-
-If the registry env vars are missing, the dashboard shows a clear
-"not configured" state and never crashes.
-
-### Contract scripts
+The `bookHash` **prefers the real uploaded manuscript's SHA-256**, falling back to
+stable identity fields only when no file is uploaded
+([`src/lib/blockchain/book-hash.ts`](src/lib/blockchain/book-hash.ts)). MVP signing
+uses a **server signer** (`DEPLOYER_PRIVATE_KEY`, testnet only); a later phase can
+switch to author-signed (browser wallet) transactions. If registry env vars are
+missing, the dashboard shows a clear "not configured" state and never crashes.
 
 | Script | What it does |
 | --- | --- |
@@ -157,183 +186,87 @@ If the registry env vars are missing, the dashboard shows a clear
 | `npm run hh:test` | run the contract test suite (in-process EVM) |
 | `npm run hh:deploy` | deploy to Base Sepolia (needs RPC + deployer key) |
 
-### Deploy to Base Sepolia
+**Deploy:** fund a **testnet** wallet, set `BASE_SEPOLIA_RPC_URL` +
+`DEPLOYER_PRIVATE_KEY` (testnet key only) in `.env`, run `npm run hh:deploy`, then
+copy the printed address into `NEXT_PUBLIC_REGISTRY_ADDRESS` and restart the app.
 
-1. Fund a **testnet** wallet with Base Sepolia ETH (e.g. a faucet).
-2. Set in `.env`: `BASE_SEPOLIA_RPC_URL`, `DEPLOYER_PRIVATE_KEY` (testnet key only).
-3. `npm run hh:deploy` → copy the printed address into
-   `NEXT_PUBLIC_REGISTRY_ADDRESS` in `.env`, then restart the app.
+### Manuscript storage & file hashing
 
-### Required environment variables
+On upload the server computes a **SHA-256** of the file bytes
+([`src/lib/storage/hash.ts`](src/lib/storage/hash.ts)), stores the bytes via the
+active storage driver (locally under **`.storage/books/`**, gitignored, never in
+`public/`), records a `BookFile`, and sets `Book.fileHash`. The blockchain proof
+then uses that real file hash, so a registered book proves a *specific file*
+existed at registration time — not just a database row. Once a book is registered,
+manuscript replacement is disabled (a new file would invalidate the proof).
 
-```bash
-NEXT_PUBLIC_CHAIN_NETWORK="base-sepolia"
-NEXT_PUBLIC_BASE_SEPOLIA_CHAIN_ID="84532"
-NEXT_PUBLIC_REGISTRY_ADDRESS=""   # set after deploy
-BASE_SEPOLIA_RPC_URL="https://sepolia.base.org"
-DEPLOYER_PRIVATE_KEY=""           # testnet only, never a funded mainnet key
-```
+The `StorageDriver` interface is provider-agnostic (`STORAGE_DRIVER` env), so
+S3 / Cloudflare R2 / IPFS / Arweave can be added as drop-in drivers later.
 
-## Manuscript storage & file hashing
+### Cover, ISBN & barcode (publishing identity)
 
-Authors can upload a manuscript (**PDF** or **EPUB**) when creating a book or
-from the book detail page. On upload the server:
-
-1. reads the file bytes and computes a **SHA-256** hash
-   ([`src/lib/storage/hash.ts`](src/lib/storage/hash.ts)),
-2. stores the bytes via the active storage driver
-   ([`src/lib/storage/`](src/lib/storage/)) — locally under **`.storage/books/`**,
-3. records a `BookFile` (name, type, size, sha-256, storage key/provider) and
-   sets `Book.fileHash` to the sha-256.
-
-**Where files live locally:** `.storage/books/` at the repo root. This folder is
-**gitignored** and is **never** placed in `public/`, so files are not served or
-linked publicly. There are no reader downloads yet — the public book page shows
-only *"Protected reader access coming in Phase 2."*
-
-**Why it strengthens proof of authorship:** the blockchain proof hash now
-**prefers the real manuscript file hash**
-([`src/lib/blockchain/book-hash.ts`](src/lib/blockchain/book-hash.ts)); the
-metadata-derived hash is only an MVP fallback used when no file is uploaded. So a
-registered book proves a *specific file* existed at registration time — not just
-a database row. The dashboard shows whether a book's proof uses the real file
-hash or the fallback.
-
-**Registered-book safety:** once a book has an on-chain proof, manuscript
-replacement is disabled (a new file would invalidate the registered hash).
-Versioned re-registration (`BookVersion`) is a future release.
-
-**Future storage adapters:** the `StorageDriver` interface is provider-agnostic;
-`BookFile.storageProvider` (LOCAL/S3/IPFS/ARWEAVE) and `storageKey` are already
-in the schema so S3, Cloudflare R2, IPFS, or Arweave can be added as drop-in
-drivers selected by the `STORAGE_DRIVER` env var — no call-site changes.
-
-## Cover, ISBN & barcode (publishing identity)
-
-Beyond the protected manuscript, a book has a **public** publishing identity:
-a cover image, ISBN metadata, and an ISBN barcode.
-
-**Covers** — authors upload JPG/PNG/WEBP. Like manuscripts, covers are stored
-under `.storage/` (`.storage/covers/`), **not** in `public/`, and are hashed
-(SHA-256). Unlike manuscripts they are *meant to be shown*, so they're served
-through a **controlled route** — never by exposing a storage key:
+Covers (JPG/PNG/WEBP) and ISBN barcodes are **public** publishing assets, stored
+under `.storage/` and served only through a controlled route — never by exposing a
+storage key:
 
 ```text
 GET /api/assets/books/[bookId]/cover     # public cover image
 GET /api/assets/books/[bookId]/barcode   # ISBN barcode SVG
 ```
 
-That route only serves `COVER` / `BARCODE` assets — manuscripts are unreachable
-through it. Cover/ISBN are publishing metadata and **do not** change the
-registered manuscript proof hash (the dashboard states this explicitly).
+AuthorChain **does not issue ISBNs** — authors enter their own, and we validate the
+ISBN-13 ([`src/lib/publishing/isbn.ts`](src/lib/publishing/isbn.ts)). An ISBN-13 is
+an EAN-13, so the barcode is rendered as **SVG** via `bwip-js`
+([`src/lib/publishing/barcode.ts`](src/lib/publishing/barcode.ts)) and stored as a
+`BookAsset`. Cover/ISBN metadata are publishing assets and **do not** change the
+registered manuscript proof hash.
 
-**ISBN vs barcode** — the **ISBN** is the *number* (the identifier); the
-**barcode** is a scannable *rendering* of it. AuthorChain **does not issue
-ISBNs** — authors enter their own assigned ISBN (from Bowker/MyIdentifiers in the
-US, or their national agency). We only **validate** it
-([`src/lib/publishing/isbn.ts`](src/lib/publishing/isbn.ts): strip separators,
-13 digits, check-digit) and reject invalid input.
+### Reader library & protected access
 
-**Barcode generation** — an ISBN-13 *is* an EAN-13, so we render the standard
-Bookland EAN-13 as **SVG** via `bwip-js`
-([`src/lib/publishing/barcode.ts`](src/lib/publishing/barcode.ts)) and store it as
-a `BARCODE` asset. It's labelled an *"ISBN barcode preview/export asset"* — not a
-print-certified artifact.
+When a reader buys a book, the Stripe webhook — in the same transaction that
+records the `Sale` + `Royalty` — upserts a `Reader` by email and creates an
+`ACTIVE` `ReaderLibrary` entitlement linked to the sale (idempotent on retry). The
+checkout success page links to `GET /api/reader/claim?session_id=…`, which resolves
+the buyer server-side and sets a **signed, httpOnly cookie**
+([`src/lib/auth/reader-session.ts`](src/lib/auth/reader-session.ts)).
 
-**Metadata** — `Book` also carries optional `isbn10`, `publisherName`,
-`publicationDate`, `edition`, and `bookFormat` (EBOOK/PAPERBACK/HARDCOVER/
-AUDIOBOOK), shown on the public book page and used (cover image) in Stripe
-Checkout when a public `NEXT_PUBLIC_APP_URL` is configured.
-
-**Storage model** — assets live in a `BookAsset` table
-(`assetType`, `storageProvider`, `storageKey`, `mimeType`, `hash`, `isPrimary`),
-mirroring `BookFile`, so future S3/R2/IPFS/Arweave drivers are drop-in.
-
-**Future:** print-ready back-cover export (barcode + price add-on at exact print
-dimensions) — deliberately out of scope for now; this phase gets the data and
-assets right first.
-
-## Reader library & protected access
-
-When a reader buys a book, the Stripe webhook (in the same transaction that
-records the `Sale` + `Royalty`) upserts a **`Reader`** by email and creates a
-**`ReaderLibrary`** entitlement (`ACTIVE`) linked to that sale. This is idempotent
-— `saleId` is unique and a re-purchase upserts by `(reader, book)`, so webhook
-retries never duplicate access.
-
-**Getting access** — after checkout, the success page links to
-`GET /api/reader/claim?session_id=…`, which looks up the sale server-side,
-resolves the buyer's `Reader`, and sets a **signed, httpOnly cookie**
-(`reader_session`), then redirects to `/reader/library`. The reader session is an
-MVP placeholder ([`src/lib/auth/reader-session.ts`](src/lib/auth/reader-session.ts),
-HMAC-signed with `AUTH_SECRET`) — swap it for NextAuth/Clerk/Supabase later
-without touching callers, exactly like the author placeholder.
-
-**Reading** — `/reader/library` lists purchased books; `/reader/books/[id]` shows
-one, with proof-of-authorship links. The manuscript is delivered **only** through
-a gated route:
+The manuscript is delivered **only** through a gated route:
 
 ```text
 GET /api/reader/books/[bookId]/download
 ```
 
 It requires a signed-in reader with an **ACTIVE** entitlement — otherwise `403`.
-The manuscript is streamed from private storage with a safe filename; the storage
-key is never exposed, and this file is **never** reachable through the public
-`/api/assets/...` route.
-
-**Public vs private, recap:**
+The storage key is never exposed, and the manuscript is **never** reachable through
+the public `/api/assets/...` route.
 
 | Asset | Visibility | Route |
 | --- | --- | --- |
 | Cover, barcode | Public | `/api/assets/books/[id]/cover` · `/barcode` |
 | Manuscript | Private (ACTIVE entitlement only) | `/api/reader/books/[id]/download` |
 
-**Refunds/revocation** — `ReaderLibrary.accessStatus` supports `REFUNDED` /
-`REVOKED`; the download route only serves `ACTIVE`. Automated handling (a future
-Stripe `charge.refunded` webhook that flips status) is out of scope for now.
-
-## Project structure
+### Project structure
 
 ```text
 src/
   app/
     (marketing)/         # public site (own header/footer)
-      page.tsx           # landing — "Publish. Own. Earn. Grow."
       book/[slug]/       # public book sales page
-    dashboard/           # author app (own sidebar + header)
-      page.tsx           # overview (stats, recent sales, top book, agent activity)
-      upload/  books/  agents/  sales/
-  components/
-    ui/                  # Button, Card, StatusBadge
-    dashboard/           # sidebar, header, page shell
-    book-card.tsx  agent-card.tsx  logo.tsx  site-header.tsx  site-footer.tsx
+    dashboard/           # author app (upload / books / agents / sales)
+    reader/              # reader library + protected book pages
+    api/                 # webhooks/stripe, assets, reader routes
+  components/            # ui, dashboard chrome, cards
   lib/
-    db.ts                # Prisma client singleton
-    auth/session.ts      # placeholder auth (returns demo author)
-    data/                # data-access layer → DTOs (books, stats, sales, book-files)
-    cover.ts             # deterministic placeholder cover gradients
-    ai/agents/           # copy / launch / community (+ pricing/opportunity previews)
+    auth/                # placeholder author + reader sessions
+    data/                # data-access layer → DTOs
     storage/             # StorageDriver + local driver + sha-256 hashing
+    publishing/          # ISBN validation + barcode (bwip-js)
     payments/            # stripe + usdc boundaries
     blockchain/          # registry client (viem) + book-hash util
-prisma/
-  schema.prisma          # 7 models
-  seed.ts                # demo data
-docker-compose.yml       # local PostgreSQL
+prisma/                  # schema.prisma + seed.ts
 contracts/               # AuthorChainRegistry.sol (proof of authorship)
 test/                    # Hardhat contract tests
 scripts/deploy.ts        # Base Sepolia deploy script
-hardhat.config.ts        # Hardhat (Solidity 0.8.24)
+docs/                    # GitHub Pages site + memo/article/post
+docker-compose.yml       # local PostgreSQL (host port 5433)
 ```
-
-## Roadmap
-
-1. **Foundation** ✅ — Next.js + TS + Tailwind, layout, pages, lib scaffolding.
-2. **Data layer** ✅ — Prisma schema + Postgres, data-access layer, seed, upload→DB.
-3. **Auth + storage** — real auth (replace the placeholder) + manuscript file upload.
-4. **Pages live** — dashboard, my books, public book, sales backed by data.
-5. **AI agents** — live Claude generation behind the existing mock boundary.
-6. **Payments** — Stripe checkout + USDC on Base, status tracking, earnings.
-7. **Blockchain** ✅ — `AuthorChainRegistry` proof of authorship on Base Sepolia
-   (server-signer MVP). Next: author-signed (browser wallet) + real file hashes.
