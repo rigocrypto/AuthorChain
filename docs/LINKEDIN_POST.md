@@ -30,8 +30,10 @@ their readers.
 
 **Publish. Own. Earn. Grow.**
 
-Code + on-chain proof: https://github.com/rigocrypto/AuthorChain — feedback
-welcome. 🙏
+Project page — the validated MVP loop + verifiable on-chain proof:
+👉 https://rigocrypto.github.io/AuthorChain/
+
+Code (open source): https://github.com/rigocrypto/AuthorChain — feedback welcome. 🙏
 
 #IndieAuthors #Web3 #CreatorEconomy #Blockchain #Base #BuildInPublic
 
@@ -60,7 +62,10 @@ existed under my claim at this timestamp"* — verifiable by anyone on-chain.
 It's an MVP (testnet + Stripe test mode today), but the whole loop works end to
 end: **Publish → Prove → Sell → Earn → Deliver.**
 
-Code + verifiable proof: https://github.com/rigocrypto/AuthorChain
+Project page — what works today + verifiable proof:
+👉 https://rigocrypto.github.io/AuthorChain/
+
+Code (open source): https://github.com/rigocrypto/AuthorChain
 
 If you're an author, publisher, or builder in this space — I'd love your thoughts. 👇
 
