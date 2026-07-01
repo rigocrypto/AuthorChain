@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuthorChain — Publish. Own. Earn. Grow.</title>
+  <meta name="description" content="AI-powered Web3 publishing for independent authors. A validated MVP loop: publish, prove authorship on-chain, sell, track royalties, and deliver protected reader access." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AuthorChain — Publish. Own. Earn. Grow." />
+  <meta property="og:description" content="A validated MVP loop for publishing, proving authorship on-chain (Base Sepolia), selling books, tracking royalties, and delivering protected reader access." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://rigocrypto.github.io/AuthorChain/" />
+  <meta property="og:image" content="https://rigocrypto.github.io/AuthorChain/assets/authorchain-og.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="./assets/authorchain-og.svg" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- 1. Hero -->
+    <header class="hero">
+      <span class="brandmark">AI &times; Web3 Publishing</span>
+      <h1>AuthorChain</h1>
+      <p class="tagline">Publish. Own. Earn. Grow.</p>
+      <p class="subtitle">AI-powered Web3 publishing infrastructure for independent authors.</p>
+      <p class="lead">A validated MVP loop for publishing, proving authorship, selling books, tracking royalties, and delivering protected reader access.</p>
+
+      <!-- 5. Call-to-action buttons -->
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/rigocrypto/AuthorChain">View GitHub Repo</a>
+        <a class="btn" href="https://github.com/rigocrypto/AuthorChain/blob/main/DEMO.md">Read Demo Brief</a>
+        <a class="btn" href="https://github.com/rigocrypto/AuthorChain/blob/main/docs/INVESTOR_MEMO.md">Read Investor Memo</a>
+        <a class="btn" href="https://sepolia.basescan.org/address/0x804447c70af049dA4999AdDd4E344b19a17330E1">Base Sepolia Contract</a>
+        <a class="btn" href="https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8">Verified Transaction</a>
+      </div>
+    </header>
+
+    <!-- 2. Validated MVP loop -->
+    <section>
+      <p class="section-title">Validated MVP loop</p>
+      <div class="loop">
+        <span class="step">Publish</span><span class="arrow">&rarr;</span>
+        <span class="step">Prove</span><span class="arrow">&rarr;</span>
+        <span class="step">Sell</span><span class="arrow">&rarr;</span>
+        <span class="step">Earn</span><span class="arrow">&rarr;</span>
+        <span class="step">Deliver</span>
+      </div>
+      <p class="muted">Validated end-to-end with real PostgreSQL data, Stripe test checkout, protected local storage, and Base Sepolia on-chain proof.</p>
+    </section>
+
+    <!-- 3. What works today -->
+    <section>
+      <p class="section-title">What works today</p>
+      <h2>A working product, not a concept</h2>
+      <div class="card" style="margin-top:16px">
+        <div class="grid">
+          <div class="check"><span class="tick">&check;</span> Author dashboard</div>
+          <div class="check"><span class="tick">&check;</span> Private manuscript upload</div>
+          <div class="check"><span class="tick">&check;</span> Real SHA-256 file hashing</div>
+          <div class="check"><span class="tick">&check;</span> Base Sepolia proof-of-authorship registry</div>
+          <div class="check"><span class="tick">&check;</span> Cover upload</div>
+          <div class="check"><span class="tick">&check;</span> ISBN-13 validation</div>
+          <div class="check"><span class="tick">&check;</span> EAN-13 barcode (SVG) generation</div>
+          <div class="check"><span class="tick">&check;</span> Stripe checkout</div>
+          <div class="check"><span class="tick">&check;</span> Royalty tracking</div>
+          <div class="check"><span class="tick">&check;</span> Reader entitlement creation</div>
+          <div class="check"><span class="tick">&check;</span> Protected reader library</div>
+          <div class="check"><span class="tick">&check;</span> Secure manuscript download</div>
+          <div class="check"><span class="tick">&check;</span> 403 access blocking for non-buyers</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Verified proof -->
+    <section>
+      <p class="section-title">Verified on-chain proof</p>
+      <h2>Proof of the actual file</h2>
+      <p class="muted">AuthorChain does not put book content on-chain — it registers a cryptographic hash of the manuscript. The on-chain <code>bookHash</code> equals the SHA-256 of the exact file a buyer downloads.</p>
+      <div class="card" style="margin-top:16px">
+        <dl class="kv">
+          <dt>Book</dt><dd>The Ultimate AI Prompts PlayBook</dd>
+          <dt>Registry contract</dt>
+          <dd><a href="https://sepolia.basescan.org/address/0x804447c70af049dA4999AdDd4E344b19a17330E1">0x804447c70af049dA4999AdDd4E344b19a17330E1</a></dd>
+          <dt>Transaction</dt>
+          <dd><a href="https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8">0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8</a></dd>
+          <dt>Manuscript SHA-256</dt><dd>d84e60d24e33ae791998552e57a429772d8d2524e19dfd95bbafbeb14bdcdbc1</dd>
+          <dt>On-chain bookHash</dt><dd>0xd84e60d24e33ae791998552e57a429772d8d2524e19dfd95bbafbeb14bdcdbc1</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 6. MVP boundary note -->
+    <section>
+      <p class="section-title">Honest status</p>
+      <div class="note warn">
+        AuthorChain is currently a <strong>validated MVP</strong> using testnet blockchain (Base Sepolia), Stripe test mode, local protected storage, and placeholder auth seams. These are intentional MVP choices, each behind an upgrade seam (storage driver, auth module, payments/registry clients).
+      </div>
+    </section>
+
+    <!-- 7. Live demo app note -->
+    <section>
+      <p class="section-title">Live demo app status</p>
+      <div class="note">
+        The full interactive AuthorChain app cannot run directly on GitHub Pages because it uses server routes, PostgreSQL, Stripe webhooks, and protected file delivery. This page documents the validated demo and links to verifiable proof. A hosted app demo can be deployed next on Vercel or similar infrastructure (with a database, storage, and webhook endpoints).
+      </div>
+    </section>
+
+    <footer>
+      <p><strong>AuthorChain</strong> &middot; Publish. Own. Earn. Grow.</p>
+      <p>
+        <a href="https://github.com/rigocrypto/AuthorChain">GitHub</a> &middot;
+        <a href="https://github.com/rigocrypto/AuthorChain/blob/main/DEMO.md">Demo brief</a> &middot;
+        <a href="https://sepolia.basescan.org/address/0x804447c70af049dA4999AdDd4E344b19a17330E1">On-chain registry</a>
+      </p>
+    </footer>
+
+  </div>
+</body>
+</html>

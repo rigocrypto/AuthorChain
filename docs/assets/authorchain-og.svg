@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="AuthorChain — Publish. Own. Earn. Grow.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0b12"/>
+      <stop offset="1" stop-color="#141225"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c5cff"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1050" cy="120" r="240" fill="#7c5cff" opacity="0.14"/>
+  <circle cx="180" cy="560" r="200" fill="#22d3ee" opacity="0.10"/>
+  <text x="90" y="230" font-family="Segoe UI, Arial, sans-serif" font-size="92" font-weight="800" fill="#ffffff">AuthorChain</text>
+  <text x="92" y="300" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="700" fill="url(#brand)">Publish. Own. Earn. Grow.</text>
+  <text x="92" y="360" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#c7c7d9">AI-powered Web3 publishing for independent authors</text>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="700" fill="#e7e7ee">
+    <rect x="92" y="430" width="1016" height="72" rx="14" fill="#16161f" stroke="#2a2a3a"/>
+    <text x="120" y="476">Publish</text>
+    <text x="300" y="476" fill="#7c5cff">→</text>
+    <text x="340" y="476">Prove</text>
+    <text x="470" y="476" fill="#7c5cff">→</text>
+    <text x="510" y="476">Sell</text>
+    <text x="610" y="476" fill="#7c5cff">→</text>
+    <text x="650" y="476">Earn</text>
+    <text x="770" y="476" fill="#7c5cff">→</text>
+    <text x="810" y="476">Deliver</text>
+    <text x="965" y="476" font-size="22" fill="#34d399">validated MVP</text>
+  </g>
+</svg>

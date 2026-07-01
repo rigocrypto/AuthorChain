@@ -1,0 +1,115 @@
+:root {
+  --bg: #0b0b12;
+  --bg2: #141225;
+  --surface: #16161f;
+  --surface2: #1d1d2a;
+  --border: #2a2a3a;
+  --text: #e7e7ee;
+  --muted: #9a9ab0;
+  --primary: #7c5cff;
+  --accent: #22d3ee;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --maxw: 960px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 90% -10%, rgba(124, 92, 255, 0.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(34, 211, 238, 0.12), transparent 60%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+  background-attachment: fixed;
+  line-height: 1.6;
+}
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+
+/* Hero */
+.hero { padding: 88px 0 56px; text-align: center; }
+.brandmark {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 22px;
+}
+.hero h1 {
+  font-size: clamp(44px, 8vw, 76px);
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.tagline {
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 700;
+  margin: 10px 0 6px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.subtitle { color: var(--muted); font-size: 18px; margin: 0 auto 8px; max-width: 620px; }
+.lead { color: var(--text); font-size: 17px; margin: 14px auto 0; max-width: 680px; }
+
+/* Buttons */
+.cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none; font-weight: 600; font-size: 15px;
+  padding: 11px 18px; border-radius: 12px; transition: transform .12s ease, border-color .12s ease;
+  border: 1px solid var(--border); color: var(--text); background: var(--surface);
+}
+.btn:hover { transform: translateY(-1px); border-color: var(--primary); }
+.btn.primary {
+  background: linear-gradient(90deg, var(--primary), #6a4bff);
+  border-color: transparent; color: #fff;
+  box-shadow: 0 12px 34px -14px rgba(124, 92, 255, 0.9);
+}
+
+/* Sections */
+section { padding: 40px 0; }
+.section-title { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+h2 { font-size: clamp(26px, 5vw, 34px); margin: 0 0 8px; letter-spacing: -0.01em; }
+.muted { color: var(--muted); }
+
+/* Loop */
+.loop { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 18px 0 8px; }
+.loop .step {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 18px; font-weight: 700;
+}
+.loop .arrow { color: var(--primary); font-weight: 800; }
+
+/* Cards / grid */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 24px; }
+.grid { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+.check { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; }
+.check .tick { color: var(--success); font-weight: 800; flex: 0 0 auto; }
+
+/* Proof */
+.kv { display: grid; grid-template-columns: 160px 1fr; gap: 8px 16px; margin-top: 8px; }
+@media (max-width: 640px) { .kv { grid-template-columns: 1fr; gap: 2px 0; } .kv dt { margin-top: 10px; } }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 13px; word-break: break-all; }
+.kv dd a { color: var(--accent); }
+.note {
+  border-left: 3px solid var(--primary); background: var(--surface2);
+  padding: 12px 16px; border-radius: 0 10px 10px 0; color: var(--muted); font-size: 15px;
+}
+.note.warn { border-left-color: var(--warning); }
+
+/* Footer */
+footer { padding: 40px 0 60px; text-align: center; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); margin-top: 24px; }
+footer a { color: var(--accent); text-decoration: none; }

@@ -100,3 +100,18 @@ access are verifiable end to end**.
 Validated end-to-end MVP loop:
 
 **Publish → Prove → Sell → Earn → Deliver**
+
+## Project site (GitHub Pages)
+
+A static public project page lives in [`docs/`](docs/) (`docs/index.html`). It is
+a landing/proof page only — **not** the full app (which needs server routes,
+Postgres, Stripe webhooks, and protected downloads, so it deploys to Vercel/Railway
+later).
+
+To enable it:
+
+1. GitHub repo → **Settings → Pages**
+2. **Source:** Deploy from a branch
+3. **Branch:** `main` · **Folder:** `/docs` · **Save**
+
+Expected URL: `https://rigocrypto.github.io/AuthorChain/`
