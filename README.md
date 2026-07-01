@@ -143,6 +143,40 @@ BASE_SEPOLIA_RPC_URL="https://sepolia.base.org"
 DEPLOYER_PRIVATE_KEY=""           # testnet only, never a funded mainnet key
 ```
 
+## Manuscript storage & file hashing
+
+Authors can upload a manuscript (**PDF** or **EPUB**) when creating a book or
+from the book detail page. On upload the server:
+
+1. reads the file bytes and computes a **SHA-256** hash
+   ([`src/lib/storage/hash.ts`](src/lib/storage/hash.ts)),
+2. stores the bytes via the active storage driver
+   ([`src/lib/storage/`](src/lib/storage/)) — locally under **`.storage/books/`**,
+3. records a `BookFile` (name, type, size, sha-256, storage key/provider) and
+   sets `Book.fileHash` to the sha-256.
+
+**Where files live locally:** `.storage/books/` at the repo root. This folder is
+**gitignored** and is **never** placed in `public/`, so files are not served or
+linked publicly. There are no reader downloads yet — the public book page shows
+only *"Protected reader access coming in Phase 2."*
+
+**Why it strengthens proof of authorship:** the blockchain proof hash now
+**prefers the real manuscript file hash**
+([`src/lib/blockchain/book-hash.ts`](src/lib/blockchain/book-hash.ts)); the
+metadata-derived hash is only an MVP fallback used when no file is uploaded. So a
+registered book proves a *specific file* existed at registration time — not just
+a database row. The dashboard shows whether a book's proof uses the real file
+hash or the fallback.
+
+**Registered-book safety:** once a book has an on-chain proof, manuscript
+replacement is disabled (a new file would invalidate the registered hash).
+Versioned re-registration (`BookVersion`) is a future release.
+
+**Future storage adapters:** the `StorageDriver` interface is provider-agnostic;
+`BookFile.storageProvider` (LOCAL/S3/IPFS/ARWEAVE) and `storageKey` are already
+in the schema so S3, Cloudflare R2, IPFS, or Arweave can be added as drop-in
+drivers selected by the `STORAGE_DRIVER` env var — no call-site changes.
+
 ## Project structure
 
 ```text
@@ -161,10 +195,10 @@ src/
   lib/
     db.ts                # Prisma client singleton
     auth/session.ts      # placeholder auth (returns demo author)
-    data/                # data-access layer → DTOs (books, stats, sales)
+    data/                # data-access layer → DTOs (books, stats, sales, book-files)
     cover.ts             # deterministic placeholder cover gradients
     ai/agents/           # copy / launch / community (+ pricing/opportunity previews)
-    storage/             # StorageDriver interface + local driver
+    storage/             # StorageDriver + local driver + sha-256 hashing
     payments/            # stripe + usdc boundaries
     blockchain/          # registry client (viem) + book-hash util
 prisma/

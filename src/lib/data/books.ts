@@ -21,6 +21,8 @@ export type BookDTO = {
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   coverColor: string;
   coverUrl: string | null;
+  /** sha-256 of the uploaded manuscript, if any (drives the real proof hash). */
+  fileHash: string | null;
   unitsSold: number;
   earningsUsdc: number;
   createdAt: string;
@@ -43,6 +45,7 @@ function toDTO(book: BookRow, unitsSold = 0, earningsUsdc = 0): BookDTO {
     status: book.status,
     coverColor: coverGradient(book.id),
     coverUrl: book.coverUrl,
+    fileHash: book.fileHash,
     unitsSold,
     earningsUsdc,
     createdAt: book.createdAt.toISOString(),

@@ -58,9 +58,15 @@ export function UploadBookForm() {
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium">Manuscript file</label>
-          <input name="file" type="file" className={field} disabled />
+          <input
+            name="file"
+            type="file"
+            accept=".pdf,.epub,application/pdf,application/epub+zip"
+            className={field}
+          />
           <p className="mt-1 text-xs text-muted">
-            File upload arrives in Phase 7 (storage driver). Metadata saves now as a draft.
+            Optional. PDF or EPUB (max 25MB). Stored privately — its SHA-256 hash
+            becomes your on-chain proof of authorship. You can also add it later.
           </p>
         </div>
 

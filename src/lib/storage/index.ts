@@ -14,3 +14,4 @@ export function getStorage(): StorageDriver {
 }
 
 export type { StorageDriver, StoredFile } from "./types";
+export { sha256Hex, toBytes32 } from "./hash";

@@ -1,13 +1,21 @@
-import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { sha256Hex } from "./hash";
 import type { StorageDriver, StoredFile } from "./types";
 
 /**
- * Local filesystem driver for development. Writes under `.storage/` at the repo
- * root. Swap for IPFS/Arweave/S3 by implementing the same StorageDriver.
+ * Local filesystem driver for development. Writes protected manuscript files
+ * under `.storage/books/` at the repo root — OUTSIDE `public/`, so files are
+ * never served directly. The `.storage` folder is gitignored. Swap for
+ * S3/R2/IPFS/Arweave by implementing the same StorageDriver.
  */
 const ROOT = path.join(process.cwd(), ".storage");
+const BOOKS_DIR = "books";
+
+/** Keep only safe filename characters for the on-disk name. */
+function safeName(fileName: string): string {
+  return path.basename(fileName).replace(/[^a-zA-Z0-9._-]/g, "_");
+}
 
 export class LocalStorageDriver implements StorageDriver {
   async put(
@@ -16,14 +24,19 @@ export class LocalStorageDriver implements StorageDriver {
     contentType?: string,
   ): Promise<StoredFile> {
     const buf = Buffer.from(data);
-    const sha256 = createHash("sha256").update(buf).digest("hex");
-    const key = `${sha256}-${path.basename(fileName)}`;
-    await mkdir(ROOT, { recursive: true });
-    await writeFile(path.join(ROOT, key), buf);
+    const sha256 = sha256Hex(buf);
+    // Content-addressed key under books/ so identical bytes dedupe by name.
+    const key = `${BOOKS_DIR}/${sha256}-${safeName(fileName)}`;
+    const full = path.join(ROOT, key);
+    await mkdir(path.dirname(full), { recursive: true });
+    await writeFile(full, buf);
     return { key, sha256, size: buf.byteLength, contentType };
   }
 
   async get(key: string): Promise<Buffer> {
-    return readFile(path.join(ROOT, key));
+    // Guard against path traversal in a driver key.
+    const full = path.join(ROOT, key);
+    if (!full.startsWith(ROOT)) throw new Error("Invalid storage key.");
+    return readFile(full);
   }
 }

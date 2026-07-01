@@ -47,6 +47,13 @@ enum RegistrationStatus {
   FAILED
 }
 
+enum StorageProvider {
+  LOCAL
+  S3
+  IPFS
+  ARWEAVE
+}
+
 model Author {
   id            String   @id @default(cuid())
   name          String
@@ -94,9 +101,15 @@ model BookFile {
   bookId    String
   fileName  String
   fileType  String
-  fileUrl   String
-  fileSize  Int
+  // Protected storage locator (driver key). NOT a public URL. fileUrl stays
+  // reserved for a future public/CDN URL and is null for protected local files.
+  storageKey      String?
+  storageProvider StorageProvider @default(LOCAL)
+  fileUrl         String?
+  fileSize        Int
+  // sha-256 of the actual file bytes — used as the on-chain proof hash.
   hash      String?
+  isPrimary Boolean  @default(true)
   createdAt DateTime @default(now())
 
   book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)

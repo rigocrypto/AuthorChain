@@ -9,9 +9,9 @@ export default function UploadBookPage() {
   return (
     <DashboardPage title="Upload a book">
       <p className="mb-6 max-w-2xl text-sm text-muted">
-        Add your book&apos;s metadata. It saves as a <strong>draft</strong> you can publish
-        from <em>My Books</em>. Files stay off-chain; the manuscript upload + storage driver
-        arrive in a later phase.
+        Add your book&apos;s metadata and (optionally) upload the manuscript. It saves as a{" "}
+        <strong>draft</strong> you can publish from <em>My Books</em>. Manuscript files are
+        stored privately off-chain; only their SHA-256 hash is used for on-chain proof.
       </p>
       <div className="max-w-2xl">
         <UploadBookForm />

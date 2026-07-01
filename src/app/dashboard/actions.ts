@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentAuthor } from "@/lib/auth/session";
 import { createBook, publishBook } from "@/lib/data/books";
+import { storeManuscriptForBook, resolveManuscriptType } from "@/lib/data/book-files";
 
 export type CreateBookState = { error?: string };
 
@@ -26,8 +27,15 @@ export async function createBookAction(
     return { error: "Enter a valid price." };
   }
 
-  // TODO Phase 7: handle the manuscript file via the storage driver + BookFile.
-  await createBook({
+  // Optional manuscript upload — validate the type before creating the book so
+  // we don't leave an orphaned draft for an obviously-wrong file.
+  const file = formData.get("file");
+  const hasFile = file instanceof File && file.size > 0;
+  if (hasFile && !resolveManuscriptType(file.name)) {
+    return { error: "Unsupported file type. Upload a PDF or EPUB." };
+  }
+
+  const book = await createBook({
     authorId: author.id,
     title,
     subtitle: subtitle || undefined,
@@ -36,6 +44,11 @@ export async function createBookAction(
     language,
     price,
   });
+
+  if (hasFile) {
+    const res = await storeManuscriptForBook(book.id, file);
+    if (!res.ok) return { error: res.error };
+  }
 
   revalidatePath("/dashboard/books");
   redirect("/dashboard/books");

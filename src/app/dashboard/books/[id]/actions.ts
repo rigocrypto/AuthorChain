@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getCurrentAuthor } from "@/lib/auth/session";
 import { getAuthorBookById } from "@/lib/data/books";
+import { storeManuscriptForBook, resolveManuscriptType } from "@/lib/data/book-files";
 import { AUTHOR_ROYALTY_RATE } from "@/lib/data/sales";
 import { bookRegistrationHash, bookMetadataHash } from "@/lib/blockchain/book-hash";
 import {
@@ -23,6 +24,47 @@ import {
  * cases. On-chain failures mark the registration FAILED rather than throwing,
  * so the dashboard reflects the real status on reload.
  */
+export type UploadManuscriptState = { error?: string; ok?: boolean };
+
+/**
+ * Upload/replace a book's manuscript. Blocked once the book has an on-chain
+ * proof — replacing the file would invalidate the registered hash. Versioned
+ * re-registration is a future feature (see BookVersion in the roadmap).
+ */
+export async function uploadManuscriptAction(
+  _prev: UploadManuscriptState,
+  formData: FormData,
+): Promise<UploadManuscriptState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const registration = await getRegistrationForBook(bookId);
+  if (registration?.status === "REGISTERED") {
+    return {
+      error:
+        "This book already has an on-chain proof. Replacing the manuscript would need a new versioned proof (future release).",
+    };
+  }
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Choose a PDF or EPUB file to upload." };
+  }
+  if (!resolveManuscriptType(file.name)) {
+    return { error: "Unsupported file type. Upload a PDF or EPUB." };
+  }
+
+  const res = await storeManuscriptForBook(bookId, file);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  return { ok: true };
+}
+
 export async function registerProofAction(formData: FormData): Promise<void> {
   const author = await getCurrentAuthor();
   const bookId = String(formData.get("bookId") ?? "");

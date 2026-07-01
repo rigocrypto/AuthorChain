@@ -55,6 +55,10 @@ export default async function PublicBookPage({
 
           <p className="mt-6 max-w-prose text-muted">{book.description}</p>
 
+          <p className="mt-4 text-xs text-muted">
+            🔒 Protected reader access coming in Phase 2.
+          </p>
+
           <Card className="mt-8 max-w-sm">
             <CardTitle>Buy this book</CardTitle>
             <div className="mt-1 text-2xl font-semibold">
