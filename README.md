@@ -7,6 +7,37 @@ register proof of authorship on-chain.
 > Positioning: not an Amazon replacement — a **creator-first** platform giving
 > authors AI tools, instant payments, transparent royalties, and digital ownership.
 
+## Status: a validated MVP loop ✅
+
+AuthorChain is **not just a concept** — the full loop is implemented and validated
+end-to-end against a real database, Stripe (test mode), and the **Base Sepolia**
+testnet:
+
+**Publish → Prove → Sell → Earn → Deliver**
+
+### What works today
+
+- Author dashboard + book upload with **private** manuscript storage
+- Real **SHA-256** file hashing → **on-chain proof of authorship** (Base Sepolia)
+- Cover upload + **ISBN-13** validation + **EAN-13 barcode** (SVG)
+- **Stripe** checkout → idempotent **Sale + Royalty** webhook
+- Reader **entitlements** + protected **library** + gated manuscript download
+- Non-buyers blocked (**403**); manuscripts never exposed publicly
+
+### Verified on-chain proof
+
+The hash registered on-chain equals the SHA-256 of the exact file a buyer
+downloads — independently verifiable:
+
+- **Registry (Base Sepolia):** `0x804447c70af049dA4999AdDd4E344b19a17330E1`
+- **Transaction:** [`0x68f58137…954975e8`](https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8)
+
+📄 More detail: [Demo brief](DEMO.md) · [Investor memo](docs/INVESTOR_MEMO.md)
+
+> **MVP boundaries (intentional):** testnet, Stripe test mode, local storage,
+> placeholder auth — each behind an upgrade seam. See [DEMO.md](DEMO.md) and
+> [SECURITY.md](SECURITY.md).
+
 ## Stack
 
 - **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS v4**
