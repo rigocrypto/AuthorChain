@@ -72,7 +72,7 @@ AuthorChain currently runs on:
 - Testnet blockchain (Base Sepolia)
 - Stripe test mode
 - Local protected storage (`.storage/`)
-- Placeholder author session (seeded demo author)
+- Real auth via Privy (account abstraction); links to the seeded demo author by email
 - Signed reader-session cookie (HMAC placeholder, swappable for real auth)
 - Server-side signing for on-chain proof registration
 

@@ -1,26 +1,55 @@
 import { prisma } from "@/lib/db";
 import type { Author } from "@prisma/client";
+import { getPrivyUser } from "./privy";
 
 /**
- * Auth foundation (Phase 2) — INTENTIONALLY a placeholder.
+ * Author auth. Backed by Privy (account abstraction): the authenticated Privy
+ * user is linked to an existing `Author` by verified email on first login (which
+ * also makes the seeded demo author "just work" when you log in with its email).
  *
- * There is no real login yet: the "session" is the seeded demo author. Every
- * server action / page that needs the current author goes through here, so when
- * we add real auth (NextAuth/Auth.js, Clerk, or Supabase Auth in Phase 3) we
- * only change this one function — callers stay the same.
+ * Callers use `getCurrentAuthor()` (throws when unauthenticated, so actions are
+ * secure by default) or `getOptionalAuthor()` (for the dashboard route guard).
  */
 export const DEMO_AUTHOR_EMAIL = "rigovivas71@gmail.com";
 
-export async function getCurrentAuthor(): Promise<Author> {
-  const author = await prisma.author.findUnique({
-    where: { email: DEMO_AUTHOR_EMAIL },
-  });
+/** The authenticated author, or null. Links Privy → Author by email on first login. */
+export async function getOptionalAuthor(): Promise<Author | null> {
+  const p = await getPrivyUser();
+  if (!p) return null;
 
-  if (!author) {
-    throw new Error(
-      "No demo author found. Run `npm run db:seed` to create the demo session.",
-    );
+  const linked = await prisma.author.findUnique({
+    where: { privyUserId: p.privyUserId },
+  });
+  if (linked) return linked;
+
+  // First authenticated login: attach this Privy identity to an existing Author
+  // by verified email. (Author onboarding for brand-new users is a later step.)
+  if (p.email) {
+    const byEmail = await prisma.author.findUnique({ where: { email: p.email } });
+    if (byEmail && !byEmail.privyUserId) {
+      return prisma.author.update({
+        where: { id: byEmail.id },
+        data: {
+          privyUserId: p.privyUserId,
+          walletAddress: byEmail.walletAddress ?? p.walletAddress,
+        },
+      });
+    }
+    if (byEmail) return byEmail;
   }
 
+  // Authenticated, but not an author (e.g. a reader-only account).
+  return null;
+}
+
+/** The authenticated author; throws when not signed in as an author. */
+export async function getCurrentAuthor(): Promise<Author> {
+  const author = await getOptionalAuthor();
+  if (!author) {
+    throw new Error("Unauthorized: author authentication required.");
+  }
   return author;
 }
+
+/** Explicit guard for server actions (alias of getCurrentAuthor). */
+export const requireAuthor = getCurrentAuthor;

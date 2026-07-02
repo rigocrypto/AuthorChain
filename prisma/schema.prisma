@@ -83,6 +83,9 @@ model Author {
   email         String   @unique
   walletAddress String?
   avatarUrl     String?
+  // Links this author to a Privy identity (account-abstraction auth). Set on
+  // first authenticated login by matching the Privy-verified email.
+  privyUserId   String?  @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -197,6 +200,8 @@ model Reader {
   email         String   @unique
   name          String?
   walletAddress String?
+  // Links this reader to a Privy identity; set on first login by matching email.
+  privyUserId   String?  @unique
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

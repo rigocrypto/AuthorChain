@@ -2,19 +2,35 @@
 
 ## Dependency vulnerabilities (`npm audit`)
 
-Last reviewed: **2026-06-30**
+Last reviewed: **2026-07-02**
 
-### Summary
+### Production-tree advisories from Privy (accepted, moderate)
 
-`npm audit` reports advisories that all originate from **`hardhat`**, which is a
-**devDependency** used only for compiling, testing, and deploying the
-`AuthorChainRegistry` smart contract. **None of them are shipped in the
-production application** (the Next.js app bundles only `next`, `react`,
-`viem`, `stripe`, and `@prisma/client`).
+Adding **Privy** (`@privy-io/react-auth` + `@privy-io/server-auth`) for
+account-abstraction auth introduced **13 moderate** advisories into the
+production tree (previously 0). Every one comes from Privy's bundled Web3
+wallet-connector stack — the same libraries any embedded-wallet/AA SDK ships:
 
-The one advisory that *did* touch the production dependency tree — `ws` pulled in
-transitively by `viem` — has been fixed with an npm `override` to a patched
-version (`ws ^8.21.0`). See `package.json` → `overrides`.
+- `wagmi` / `@wagmi/connectors` / `@gemini-wallet/core`
+- `@metamask/sdk` + `@metamask/utils` / `@metamask/rpc-errors`
+- `@solana/web3.js` → `jayson`
+- rooted mostly in **`uuid`** ("missing buffer bounds check in v3/v5/v6") and
+  MetaMask/Solana connector code.
+
+**Accepted risk (moderate, monitored):** all are **moderate** (no high/critical).
+The `uuid` issue requires passing attacker-controlled bytes as a `buf` to
+uuid v3/v5/v6 — an API Privy's internals don't expose to us. The connector code
+runs in the client wallet flow. We do **not** force overrides here: bumping
+`uuid`/wallet-connector versions across MetaMask/Solana deps risks breaking
+Privy's login/wallet flow, and `npm audit fix --force` is prohibited. We monitor
+for upstream Privy releases that update these.
+
+### Dev-only advisories from Hardhat
+
+The remaining advisories originate from **`hardhat`**, a **devDependency** used
+only to compile/test/deploy the `AuthorChainRegistry` contract — **not shipped in
+production**. The one prod-tree advisory Hardhat *would* have shared (`ws` via
+`viem`) is fixed by an npm `override` to `ws ^8.21.0` (see `package.json`).
 
 ### Why we don't "fix" the rest
 

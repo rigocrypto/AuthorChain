@@ -152,11 +152,28 @@ include `Author`, `Book`, `BookFile`, `BookAsset`, `Sale`, `Royalty`, `Reader`,
 | `npm run db:seed` | load the demo author + books/sales |
 | `npm run db:studio` | open Prisma Studio |
 
-Auth is a placeholder: [src/lib/auth/session.ts](src/lib/auth/session.ts) returns
-the seeded demo author. Swap this one function for NextAuth/Clerk/Supabase later —
-callers don't change. The UI reads through a thin data-access layer
-([src/lib/data/](src/lib/data/)) that returns plain DTOs, so it never depends on
-Prisma directly.
+The UI reads through a thin data-access layer ([src/lib/data/](src/lib/data/))
+that returns plain DTOs, so it never depends on Prisma directly.
+
+### Authentication (Privy / account abstraction)
+
+Auth uses **Privy** — email/social login plus per-user **embedded smart-account
+wallets** (the account-abstraction foundation for author proof-signing and future
+USDC, with no MetaMask friction). The server verifies Privy's auth-token cookie in
+[src/lib/auth/privy.ts](src/lib/auth/privy.ts); the author/reader session layers
+([session.ts](src/lib/auth/session.ts), [reader-session.ts](src/lib/auth/reader-session.ts))
+link a Privy identity to an existing `Author`/`Reader` **by verified email** on
+first login (so the seeded demo author works when you log in with its email).
+
+- **Dashboard** (`/dashboard/*`) requires an authenticated author; server actions
+  call `getCurrentAuthor()` which throws when unauthenticated.
+- **Reader** (`/reader/*`) requires a signed-in user; the protected download
+  (`/api/reader/books/[id]/download`) additionally requires an **ACTIVE**
+  entitlement (else `403`).
+- **Setup:** create a Privy app, set `NEXT_PUBLIC_PRIVY_APP_ID` + `PRIVY_APP_SECRET`
+  (see [.env.example](.env.example)). Buyers sign in with the **same email they
+  purchased with** to access their library. Without Privy configured, auth
+  features are unavailable but the app still builds and public pages still load.
 
 ### Payments (Stripe)
 
@@ -265,7 +282,7 @@ src/
     api/                 # webhooks/stripe, assets, reader routes
   components/            # ui, dashboard chrome, cards
   lib/
-    auth/                # placeholder author + reader sessions
+    auth/                # Privy session bridge (author + reader)
     data/                # data-access layer → DTOs
     storage/             # StorageDriver + local driver + sha-256 hashing
     publishing/          # ISBN validation + barcode (bwip-js)

@@ -1,3 +1,5 @@
+import { SignOutButton } from "@/components/sign-out-button";
+
 export function DashboardHeader({
   title,
   authorName,
@@ -15,9 +17,7 @@ export function DashboardHeader({
       <h1 className="text-lg font-semibold">{title}</h1>
 
       <div className="flex items-center gap-4">
-        <span className="hidden text-xs text-muted sm:inline">
-          Mock session — auth lands in Phase 3
-        </span>
+        <SignOutButton className="hidden sm:inline" />
         <div className="flex items-center gap-2">
           <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-xs font-bold text-white">
             {initials}
