@@ -9,7 +9,7 @@ Validated MVP loop: **Publish → Prove → Sell → Earn → Deliver**
 [![Live project site](https://img.shields.io/badge/live-project%20site-22d3ee)](https://rigocrypto.github.io/AuthorChain/)
 [![Base Sepolia proof](https://img.shields.io/badge/proof-Base%20Sepolia-7c5cff)](https://sepolia.basescan.org/tx/0x68f58137aa9164d4a98be765695f61921900af9557b3f52339833581954975e8)
 ![Status](https://img.shields.io/badge/status-validated%20MVP-34d399)
-![Production audit](https://img.shields.io/badge/prod%20audit-0%20vulnerabilities-34d399)
+[![Security](https://img.shields.io/badge/security-no%20high%2Fcritical-22d3ee)](SECURITY.md)
 
 > Positioning: not an Amazon replacement — a **creator-first** platform giving
 > authors AI tools, instant payments, transparent royalties, and digital ownership.

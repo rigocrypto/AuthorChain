@@ -49,8 +49,10 @@ Verifiable proof of the hard part — on-chain authorship:
 - **Transaction:** `0x68f58137…954975e8` — public on basescan
 
 Engineering signals: idempotent payment webhooks, enforced access control
-(non-buyers blocked with 403), strict public/private asset separation, and a
-clean **0 vulnerabilities** in the production dependency tree.
+(non-buyers blocked with 403), strict public/private asset separation, and **no
+high or critical** advisories in the production dependency tree (the moderate
+Privy wallet-connector advisories introduced by the auth layer are documented in
+SECURITY.md).
 
 ## Market / why now
 
