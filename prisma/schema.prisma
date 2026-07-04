@@ -7,8 +7,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Runtime queries use the pooled connection (Neon pooler / PgBouncer) so Vercel
+  // serverless functions don't exhaust Postgres connections.
+  url       = env("DATABASE_URL")
+  // Migrations (`prisma migrate deploy/dev`) use a direct, non-pooled connection.
+  // Locally DIRECT_URL can mirror DATABASE_URL (the local Postgres isn't pooled).
+  directUrl = env("DIRECT_URL")
 }
 
 enum BookStatus {
