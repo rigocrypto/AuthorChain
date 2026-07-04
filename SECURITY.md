@@ -25,6 +25,30 @@ runs in the client wallet flow. We do **not** force overrides here: bumping
 Privy's login/wallet flow, and `npm audit fix --force` is prohibited. We monitor
 for upstream Privy releases that update these.
 
+### Dependabot: `uuid` transitive advisory — accepted / **not affected**
+
+- **Advisory:** `uuid` < 11.1.1 — missing buffer bounds check in `v3()`/`v5()`/`v6()`
+  when a caller-provided output `buf` is used (silent partial writes; `v4`/`v1`/`v7`
+  already throw `RangeError`).
+- **Source:** transitive dependency via `@privy-io/react-auth` / the wallet-connector
+  stack (`@metamask/utils`, MetaMask/Coinbase wallet SDKs). Not a direct dependency.
+- **App impact:** **not affected.**
+- **Reason:**
+  - AuthorChain does **not** import or call `uuid`.
+  - AuthorChain uses `node:crypto` `randomUUID()` for upload-key generation
+    (`src/lib/storage/index.ts`).
+  - The vulnerable path requires `uuid.v3()`, `uuid.v5()`, or `uuid.v6()` with a
+    **caller-provided output buffer**.
+  - AuthorChain never passes caller-controlled buffers to `uuid`.
+  - Known wallet-connector usage is for **random request IDs** (`v4()`), not the
+    vulnerable `v3/v5/v6` buffer API.
+- **Decision:**
+  - Accepted as a transitive moderate advisory.
+  - **No dependency override** — forcing `uuid` 11 across Privy/MetaMask/Coinbase
+    wallet dependencies could break validated auth/runtime behavior.
+  - Revisit when Privy or the wallet-connector dependencies naturally update to a
+    patched `uuid`. The Dependabot alert is dismissed as *not affected / risk accepted*.
+
 ### Dev-only advisories from Hardhat
 
 The remaining advisories originate from **`hardhat`**, a **devDependency** used
