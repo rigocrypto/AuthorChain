@@ -4,7 +4,7 @@ import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ButtonLink } from "@/components/ui/button";
-import { getCurrentAuthor } from "@/lib/auth/session";
+import { getOptionalAuthor } from "@/lib/auth/session";
 import { getDashboardStats, getRecentSales } from "@/lib/data/stats";
 import { getTopBook } from "@/lib/data/books";
 
@@ -16,7 +16,13 @@ const usd = (n: number) =>
 const num = (n: number) => n.toLocaleString("en-US");
 
 export default async function DashboardPageRoute() {
-  const author = await getCurrentAuthor();
+  // The dashboard layout guard owns the unauthenticated redirect. This page and
+  // the layout render in parallel, so use the non-throwing helper and bail
+  // quietly when there is no author — otherwise a throw here logs a redundant
+  // "Unauthorized" error even though the redirect is what serves the response.
+  const author = await getOptionalAuthor();
+  if (!author) return null;
+
   const [stats, sales, topBook] = await Promise.all([
     getDashboardStats(author.id),
     getRecentSales(author.id, 5),

@@ -4,7 +4,7 @@ import { AgentStudio, type StudioBook } from "@/components/agent-studio";
 import { AgentCard } from "@/components/agent-card";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { getCurrentAuthor } from "@/lib/auth/session";
+import { getOptionalAuthor } from "@/lib/auth/session";
 import { listAuthorBooks } from "@/lib/data/books";
 import { listAgentOutputs } from "@/lib/data/agent-outputs";
 import { getAgentMeta, previewAgents, isLiveConfigured } from "@/lib/agents";
@@ -13,7 +13,11 @@ export const metadata: Metadata = { title: "AI agents" };
 export const dynamic = "force-dynamic";
 
 export default async function AgentsPage() {
-  const author = await getCurrentAuthor();
+  // Layout guard owns the unauthenticated redirect; bail quietly to avoid a
+  // redundant "Unauthorized" throw during parallel render.
+  const author = await getOptionalAuthor();
+  if (!author) return null;
+
   const [books, history] = await Promise.all([
     listAuthorBooks(author.id),
     listAgentOutputs(author.id, 10),

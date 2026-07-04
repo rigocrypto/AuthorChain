@@ -5,7 +5,7 @@ import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { getCurrentAuthor } from "@/lib/auth/session";
+import { getOptionalAuthor } from "@/lib/auth/session";
 import { getAuthorBookById } from "@/lib/data/books";
 import { getRegistrationForBook } from "@/lib/data/registrations";
 import { getPrimaryBookFile } from "@/lib/data/book-files";
@@ -51,7 +51,11 @@ export default async function BookDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const author = await getCurrentAuthor();
+  // Layout guard owns the unauthenticated redirect; bail quietly to avoid a
+  // redundant "Unauthorized" throw during parallel render.
+  const author = await getOptionalAuthor();
+  if (!author) return null;
+
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 

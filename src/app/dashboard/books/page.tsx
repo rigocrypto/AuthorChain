@@ -4,7 +4,7 @@ import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { BookCard } from "@/components/book-card";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getCurrentAuthor } from "@/lib/auth/session";
+import { getOptionalAuthor } from "@/lib/auth/session";
 import { listAuthorBooks } from "@/lib/data/books";
 import { publishBookAction } from "@/app/dashboard/actions";
 
@@ -12,7 +12,11 @@ export const metadata: Metadata = { title: "My books" };
 export const dynamic = "force-dynamic";
 
 export default async function MyBooksPage() {
-  const author = await getCurrentAuthor();
+  // Layout guard owns the unauthenticated redirect; bail quietly to avoid a
+  // redundant "Unauthorized" throw during parallel render.
+  const author = await getOptionalAuthor();
+  if (!author) return null;
+
   const books = await listAuthorBooks(author.id);
 
   return (

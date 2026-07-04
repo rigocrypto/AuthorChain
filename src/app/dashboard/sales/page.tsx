@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { getCurrentAuthor } from "@/lib/auth/session";
+import { getOptionalAuthor } from "@/lib/auth/session";
 import { getRecentSales, getRoyaltySummary } from "@/lib/data/stats";
 
 export const metadata: Metadata = { title: "Sales & royalties" };
@@ -18,7 +18,11 @@ const statusTone = (status: string) => {
 };
 
 export default async function SalesPage() {
-  const author = await getCurrentAuthor();
+  // Layout guard owns the unauthenticated redirect; bail quietly to avoid a
+  // redundant "Unauthorized" throw during parallel render.
+  const author = await getOptionalAuthor();
+  if (!author) return null;
+
   const [summary, sales] = await Promise.all([
     getRoyaltySummary(author.id),
     getRecentSales(author.id, 50),
