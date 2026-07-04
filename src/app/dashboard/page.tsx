@@ -128,8 +128,19 @@ export default async function DashboardPageRoute() {
               href="/dashboard/agents"
               className="mt-2 inline-block text-sm text-accent hover:underline"
             >
-              Open AI agents →
+              Open AI tools →
             </Link>
+          </Card>
+
+          <Card>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-semibold">Collector Editions</h2>
+              <StatusBadge tone="muted">Soon</StatusBadge>
+            </div>
+            <p className="mt-2 text-sm text-muted">
+              Tokenized Collector Editions are coming soon — launch limited digital
+              editions and premium book collections backed by verified proof-of-authorship.
+            </p>
           </Card>
         </div>
       </div>

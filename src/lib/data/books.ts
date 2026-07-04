@@ -146,6 +146,62 @@ export async function getPublicBookBySlug(
   };
 }
 
+/** Public discovery card for ReaderChain — no storage keys or private fields. */
+export type PublishedBookDTO = {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  description: string;
+  authorName: string;
+  category: string;
+  price: number;
+  currency: string;
+  coverColor: string;
+  hasCover: boolean;
+  /** True when the book has a successful on-chain proof of authorship. */
+  proofVerified: boolean;
+};
+
+/**
+ * All published books for the public ReaderChain marketplace + homepage
+ * featured section. Read-only; never returns manuscript files or storage keys.
+ * Independent of the author-scoped functions above.
+ */
+export async function listPublishedBooks(): Promise<PublishedBookDTO[]> {
+  const books = await prisma.book.findMany({
+    where: { status: "PUBLISHED" },
+    orderBy: { createdAt: "desc" },
+    include: {
+      author: { select: { name: true } },
+      assets: {
+        where: { assetType: "COVER", isPrimary: true },
+        select: { id: true },
+        take: 1,
+      },
+      blockchainRegistrations: {
+        where: { status: "REGISTERED" },
+        select: { id: true },
+        take: 1,
+      },
+    },
+  });
+  return books.map((b) => ({
+    id: b.id,
+    slug: b.slug,
+    title: b.title,
+    subtitle: b.subtitle,
+    description: b.description,
+    authorName: b.author.name,
+    category: b.category,
+    price: Number(b.price),
+    currency: b.currency,
+    coverColor: coverGradient(b.id),
+    hasCover: b.assets.length > 0,
+    proofVerified: b.blockchainRegistrations.length > 0,
+  }));
+}
+
 /** Generate a URL-safe, unique slug from a title. */
 export async function generateUniqueSlug(title: string): Promise<string> {
   const base =

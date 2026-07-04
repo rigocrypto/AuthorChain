@@ -15,6 +15,8 @@ export type LibraryItemDTO = {
   hasCover: boolean;
   purchaseDate: string;
   accessStatus: AccessStatus;
+  /** True when the book has a successful on-chain proof of authorship. */
+  proofVerified: boolean;
 };
 
 const coverInclude = {
@@ -36,7 +38,18 @@ export async function listReaderLibrary(
   const rows = await prisma.readerLibrary.findMany({
     where: { readerId },
     orderBy: { createdAt: "desc" },
-    include: { book: { include: coverInclude } },
+    include: {
+      book: {
+        include: {
+          ...coverInclude,
+          blockchainRegistrations: {
+            where: { status: "REGISTERED" },
+            select: { id: true },
+            take: 1,
+          },
+        },
+      },
+    },
   });
   return rows.map((r) => ({
     bookId: r.bookId,
@@ -47,6 +60,7 @@ export async function listReaderLibrary(
     hasCover: r.book.assets.length > 0,
     purchaseDate: r.createdAt.toISOString(),
     accessStatus: r.accessStatus,
+    proofVerified: r.book.blockchainRegistrations.length > 0,
   }));
 }
 

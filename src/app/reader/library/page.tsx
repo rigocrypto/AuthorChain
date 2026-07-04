@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { getCurrentReader } from "@/lib/auth/reader-session";
 import { listReaderLibrary } from "@/lib/data/reader";
 
-export const metadata: Metadata = { title: "My library" };
+export const metadata: Metadata = { title: "My ReaderChain Library" };
 export const dynamic = "force-dynamic";
 
 function accessBadge(status: string) {
@@ -23,13 +23,14 @@ export default async function ReaderLibraryPage() {
     return (
       <PageShell>
         <div className="mx-auto max-w-lg text-center">
-          <h1 className="text-3xl font-bold">Your library</h1>
+          <h1 className="text-3xl font-bold">My ReaderChain Library</h1>
           <p className="mt-3 text-muted">
-            Access is granted right after you buy a book. Complete a purchase and
-            you&apos;ll land here automatically with your books ready to read.
+            You do not have any books in your ReaderChain Library yet. Access is granted
+            right after you buy a book — complete a purchase and you&apos;ll land here
+            automatically with your books ready to read.
           </p>
           <div className="mt-6">
-            <ButtonLink href="/">Browse books</ButtonLink>
+            <ButtonLink href="/explore">Explore ReaderChain</ButtonLink>
           </div>
         </div>
       </PageShell>
@@ -40,17 +41,22 @@ export default async function ReaderLibraryPage() {
 
   return (
     <PageShell>
-      <h1 className="text-2xl font-bold tracking-tight">My library</h1>
+      <h1 className="text-2xl font-bold tracking-tight">My ReaderChain Library</h1>
       <p className="mt-1 text-sm text-muted">
-        Signed in as {reader.email} · {items.length} book{items.length === 1 ? "" : "s"}
+        Signed in as {reader.email} · {items.length} purchased book
+        {items.length === 1 ? "" : "s"}
       </p>
 
       {items.length === 0 ? (
         <Card className="mt-6 text-center">
-          <p className="text-foreground">No books yet.</p>
+          <p className="text-foreground">
+            You do not have any books in your ReaderChain Library yet.
+          </p>
           <p className="mt-1 text-sm text-muted">Your purchases will appear here.</p>
           <div className="mt-4 flex justify-center">
-            <ButtonLink href="/" variant="secondary">Browse books</ButtonLink>
+            <ButtonLink href="/explore" variant="secondary">
+              Explore ReaderChain
+            </ButtonLink>
           </div>
         </Card>
       ) : (
@@ -73,8 +79,11 @@ export default async function ReaderLibraryPage() {
               )}
               <CardTitle>{b.title}</CardTitle>
               <p className="text-sm text-muted">by {b.authorName}</p>
-              <div className="mt-2 flex items-center gap-2 text-xs text-muted">
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
                 {accessBadge(b.accessStatus)}
+                {b.proofVerified ? (
+                  <StatusBadge tone="accent">✓ Verified proof</StatusBadge>
+                ) : null}
                 <span>· {b.purchaseDate.slice(0, 10)}</span>
               </div>
               <div className="mt-3 flex items-center justify-between">
