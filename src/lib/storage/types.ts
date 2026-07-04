@@ -25,4 +25,17 @@ export interface StorageDriver {
   ): Promise<StoredFile>;
   /** Read bytes back by key. */
   get(key: string): Promise<Buffer>;
+  /**
+   * Optional: presign a direct client-to-storage PUT for `key`. Drivers that
+   * support it (e.g. R2/S3) let large files skip the server request-body limit;
+   * callers own the key namespace and re-validate on finalize. Absent on the
+   * local driver, where uploads go through the server as before.
+   */
+  presignPut?(
+    key: string,
+    contentType: string,
+    expiresSeconds?: number,
+  ): Promise<{ uploadUrl: string; key: string }>;
+  /** Optional: delete an object by key (cleanup for rejected uploads). */
+  delete?(key: string): Promise<void>;
 }
