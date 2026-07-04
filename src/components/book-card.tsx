@@ -2,11 +2,16 @@ import Link from "next/link";
 import type { BookDTO } from "@/lib/data/books";
 import { BookStatusBadge } from "@/components/ui/status-badge";
 
-/** Compact book preview card used in My Books and the marketplace later. */
+/**
+ * Compact book card for the author dashboard's My Books view. Clicking it opens
+ * the author manage page (`/dashboard/books/[id]`) — not the public storefront —
+ * so it works for drafts too (drafts have no public `/book/[slug]` page yet).
+ * Public discovery uses `PublishedBookCard` instead.
+ */
 export function BookCard({ book }: { book: BookDTO }) {
   return (
     <Link
-      href={`/book/${book.slug}`}
+      href={`/dashboard/books/${book.id}`}
       className="group block overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-primary/60"
     >
       <div

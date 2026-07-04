@@ -55,6 +55,14 @@ export default async function MyBooksPage() {
               >
                 Manage &amp; register proof →
               </Link>
+              {book.status === "PUBLISHED" ? (
+                <Link
+                  href={`/book/${book.slug}`}
+                  className="block text-center text-xs text-muted hover:text-foreground"
+                >
+                  View public page →
+                </Link>
+              ) : null}
             </div>
           ))}
         </div>
