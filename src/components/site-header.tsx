@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { marketingNav } from "@/lib/nav";
-import { ButtonLink } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { LandingUserMenu } from "@/components/auth/landing-user-menu";
 
 export function SiteHeader() {
   return (
@@ -22,9 +22,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <ButtonLink href="/dashboard" variant="primary">
-            Open App
-          </ButtonLink>
+          <LandingUserMenu />
         </div>
       </div>
     </header>

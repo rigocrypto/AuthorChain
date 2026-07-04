@@ -1,33 +1,25 @@
-import { SignOutButton } from "@/components/sign-out-button";
+import { UserMenu } from "@/components/auth/user-menu";
 
 export function DashboardHeader({
   title,
   authorName,
+  email,
+  walletAddress,
 }: {
   title: string;
   authorName: string;
+  email?: string | null;
+  walletAddress?: string | null;
 }) {
-  const initials = authorName
-    .split(" ")
-    .map((p) => p[0])
-    .join("");
-
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur">
       <h1 className="text-lg font-semibold">{title}</h1>
-
-      <div className="flex items-center gap-4">
-        <SignOutButton className="hidden sm:inline" />
-        <div className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-primary to-accent text-xs font-bold text-white">
-            {initials}
-          </span>
-          <div className="hidden leading-tight sm:block">
-            <div className="text-sm font-medium">{authorName}</div>
-            <div className="text-xs text-muted">Author</div>
-          </div>
-        </div>
-      </div>
+      <UserMenu
+        name={authorName}
+        email={email}
+        walletAddress={walletAddress}
+        role="Author"
+      />
     </header>
   );
 }

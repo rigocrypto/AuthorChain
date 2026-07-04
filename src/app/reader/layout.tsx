@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { UserMenu } from "@/components/auth/user-menu";
 import { getPrivyUser } from "@/lib/auth/privy";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,18 @@ export default async function ReaderLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
+      <div className="border-b border-border bg-surface/40">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
+          <span className="text-xs uppercase tracking-wide text-muted">
+            Reader area
+          </span>
+          <UserMenu
+            email={privy.email}
+            walletAddress={privy.walletAddress}
+            role="Reader"
+          />
+        </div>
+      </div>
       <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>
