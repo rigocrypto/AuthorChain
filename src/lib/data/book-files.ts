@@ -1,6 +1,6 @@
 import type { BookFile, StorageProvider } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { getStorage } from "@/lib/storage";
+import { getStorage, sha256Hex, deleteStoredObject } from "@/lib/storage";
 
 /**
  * Manuscript file handling — the single server-side seam where an uploaded book
@@ -56,6 +56,8 @@ export function resolveManuscriptType(fileName: string): {
 /** Which storage backend is active (mirrors STORAGE_DRIVER). */
 function currentProvider(): StorageProvider {
   switch (process.env.STORAGE_DRIVER) {
+    case "r2":
+      return "R2";
     case "s3":
       return "S3";
     case "ipfs":
@@ -72,9 +74,45 @@ export type StoreManuscriptResult =
   | { ok: false; error: string };
 
 /**
+ * Record freshly-stored manuscript bytes as the book's primary file and set
+ * Book.fileHash to the real sha-256. MVP: one primary manuscript per book, so
+ * any existing primary is replaced. Shared by the local (server-proxied) and R2
+ * (presigned direct-upload) paths so the recorded shape + proof hash are identical.
+ */
+async function recordPrimaryManuscript(input: {
+  bookId: string;
+  fileName: string;
+  fileType: string;
+  storageKey: string;
+  sha256: string;
+  size: number;
+}): Promise<void> {
+  await prisma.$transaction([
+    prisma.bookFile.deleteMany({ where: { bookId: input.bookId, isPrimary: true } }),
+    prisma.bookFile.create({
+      data: {
+        bookId: input.bookId,
+        fileName: input.fileName,
+        fileType: input.fileType,
+        fileSize: input.size,
+        hash: input.sha256,
+        storageKey: input.storageKey,
+        storageProvider: currentProvider(),
+        isPrimary: true,
+      },
+    }),
+    prisma.book.update({
+      where: { id: input.bookId },
+      data: { fileHash: input.sha256 },
+    }),
+  ]);
+}
+
+/**
  * Store an uploaded manuscript as the book's primary file: validate → persist
  * bytes via the storage driver → record BookFile → set Book.fileHash to the
  * real sha-256. Callers must enforce authorization + registration guards first.
+ * Used by the local (server-proxied) upload path.
  */
 export async function storeManuscriptForBook(
   bookId: string,
@@ -92,26 +130,14 @@ export async function storeManuscriptForBook(
   const bytes = Buffer.from(await file.arrayBuffer());
   const stored = await getStorage().put(file.name, bytes, type.mime);
 
-  // MVP: one primary manuscript per book. Replace any existing primary file.
-  await prisma.$transaction([
-    prisma.bookFile.deleteMany({ where: { bookId, isPrimary: true } }),
-    prisma.bookFile.create({
-      data: {
-        bookId,
-        fileName: file.name,
-        fileType: type.mime,
-        fileSize: stored.size,
-        hash: stored.sha256,
-        storageKey: stored.key,
-        storageProvider: currentProvider(),
-        isPrimary: true,
-      },
-    }),
-    prisma.book.update({
-      where: { id: bookId },
-      data: { fileHash: stored.sha256 },
-    }),
-  ]);
+  await recordPrimaryManuscript({
+    bookId,
+    fileName: file.name,
+    fileType: type.mime,
+    storageKey: stored.key,
+    sha256: stored.sha256,
+    size: stored.size,
+  });
 
   return {
     ok: true,
@@ -119,6 +145,60 @@ export async function storeManuscriptForBook(
     fileName: file.name,
     fileLabel: type.label,
     fileSize: stored.size,
+  };
+}
+
+/**
+ * Finalize a presigned direct-to-storage manuscript upload: fetch the uploaded
+ * bytes back by key, compute the AUTHORITATIVE sha-256 + size server-side (so the
+ * proof hash never depends on the client), enforce the same limits as the proxied
+ * path, then record. On any rejection the stray object is cleaned up. Callers
+ * must enforce authorization + registration guards first, and must have issued
+ * `key` themselves via `buildUploadKey`.
+ */
+export async function finalizeManuscriptForBook(
+  bookId: string,
+  storageKey: string,
+  fileName: string,
+): Promise<StoreManuscriptResult> {
+  const type = resolveManuscriptType(fileName);
+  if (!type) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "Unsupported file type. Upload a PDF or EPUB." };
+  }
+
+  let bytes: Buffer;
+  try {
+    bytes = await getStorage().get(storageKey);
+  } catch {
+    return { ok: false, error: "Uploaded file was not found in storage." };
+  }
+
+  if (bytes.byteLength === 0) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "The file is empty." };
+  }
+  if (bytes.byteLength > MAX_MANUSCRIPT_BYTES) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "File is too large (max 25MB)." };
+  }
+
+  const sha256 = sha256Hex(bytes);
+  await recordPrimaryManuscript({
+    bookId,
+    fileName,
+    fileType: type.mime,
+    storageKey,
+    sha256,
+    size: bytes.byteLength,
+  });
+
+  return {
+    ok: true,
+    sha256,
+    fileName,
+    fileLabel: type.label,
+    fileSize: bytes.byteLength,
   };
 }
 

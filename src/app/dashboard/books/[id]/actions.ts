@@ -3,9 +3,23 @@
 import { revalidatePath } from "next/cache";
 import type { BookFormat } from "@prisma/client";
 import { getCurrentAuthor } from "@/lib/auth/session";
+import {
+  getStorage,
+  storageSupportsDirectUpload,
+  buildUploadKey,
+} from "@/lib/storage";
 import { getAuthorBookById, updatePublishingMetadata } from "@/lib/data/books";
-import { storeManuscriptForBook, resolveManuscriptType } from "@/lib/data/book-files";
-import { saveCover, saveBarcode } from "@/lib/data/book-assets";
+import {
+  storeManuscriptForBook,
+  finalizeManuscriptForBook,
+  resolveManuscriptType,
+} from "@/lib/data/book-files";
+import {
+  saveCover,
+  finalizeCoverUpload,
+  resolveCoverType,
+  saveBarcode,
+} from "@/lib/data/book-assets";
 import { checkIsbn13, normalizeIsbn, isValidIsbn10 } from "@/lib/publishing/isbn";
 import { generateIsbnBarcodeSvg } from "@/lib/publishing/barcode";
 import { AUTHOR_ROYALTY_RATE } from "@/lib/data/sales";
@@ -185,6 +199,119 @@ export async function uploadManuscriptAction(
   }
 
   const res = await storeManuscriptForBook(bookId, file);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  return { ok: true };
+}
+
+/**
+ * Presigned direct-to-storage upload (STORAGE_DRIVER=r2). Two steps: a `presign*`
+ * action validates authorization and returns a short-lived PUT URL for a
+ * server-owned key; the client uploads straight to R2; then a `finalize*` action
+ * re-validates authorization and records the asset from the stored bytes, with
+ * the sha-256 proof hash computed server-side. Keys are always issued here (never
+ * accepted from the client for reads), and finalize rejects any key outside the
+ * book's own namespace.
+ */
+export type PresignResult =
+  | { ok: true; uploadUrl: string; key: string }
+  | { ok: false; error: string };
+
+export async function presignCoverUploadAction(
+  bookId: string,
+  fileName: string,
+): Promise<PresignResult> {
+  const author = await getCurrentAuthor();
+  if (!bookId) return { ok: false, error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { ok: false, error: "Book not found." };
+
+  const mime = resolveCoverType(fileName);
+  if (!mime) return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
+
+  const store = getStorage();
+  if (!storageSupportsDirectUpload() || !store.presignPut) {
+    return { ok: false, error: "Direct upload is not available." };
+  }
+  const key = buildUploadKey("covers", bookId, fileName);
+  const { uploadUrl } = await store.presignPut(key, mime);
+  return { ok: true, uploadUrl, key };
+}
+
+export async function finalizeCoverUploadAction(
+  bookId: string,
+  key: string,
+  fileName: string,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  if (!bookId || !key) return { error: "Missing upload." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+  if (!key.startsWith(`covers/${bookId}/`)) return { error: "Invalid upload key." };
+
+  const res = await finalizeCoverUpload(bookId, key, fileName);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  return { ok: true };
+}
+
+export async function presignManuscriptUploadAction(
+  bookId: string,
+  fileName: string,
+): Promise<PresignResult> {
+  const author = await getCurrentAuthor();
+  if (!bookId) return { ok: false, error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { ok: false, error: "Book not found." };
+
+  const registration = await getRegistrationForBook(bookId);
+  if (registration?.status === "REGISTERED") {
+    return {
+      ok: false,
+      error:
+        "This book already has an on-chain proof. Replacing the manuscript would need a new versioned proof (future release).",
+    };
+  }
+
+  const type = resolveManuscriptType(fileName);
+  if (!type) return { ok: false, error: "Unsupported file type. Upload a PDF or EPUB." };
+
+  const store = getStorage();
+  if (!storageSupportsDirectUpload() || !store.presignPut) {
+    return { ok: false, error: "Direct upload is not available." };
+  }
+  const key = buildUploadKey("books", bookId, fileName);
+  const { uploadUrl } = await store.presignPut(key, type.mime);
+  return { ok: true, uploadUrl, key };
+}
+
+export async function finalizeManuscriptUploadAction(
+  bookId: string,
+  key: string,
+  fileName: string,
+): Promise<UploadManuscriptState> {
+  const author = await getCurrentAuthor();
+  if (!bookId || !key) return { error: "Missing upload." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+  if (!key.startsWith(`books/${bookId}/`)) return { error: "Invalid upload key." };
+
+  // Re-check the registration guard at finalize — state may have changed since presign.
+  const registration = await getRegistrationForBook(bookId);
+  if (registration?.status === "REGISTERED") {
+    return {
+      error:
+        "This book already has an on-chain proof. Replacing the manuscript would need a new versioned proof (future release).",
+    };
+  }
+
+  const res = await finalizeManuscriptForBook(bookId, key, fileName);
   if (!res.ok) return { error: res.error };
 
   revalidatePath(`/dashboard/books/${bookId}`);

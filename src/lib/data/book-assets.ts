@@ -1,6 +1,6 @@
 import type { AssetType, BookAsset, StorageProvider } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { getStorage } from "@/lib/storage";
+import { getStorage, sha256Hex, deleteStoredObject } from "@/lib/storage";
 
 /**
  * Public-facing book assets (cover images, ISBN barcodes). Unlike the manuscript
@@ -61,7 +61,41 @@ function currentProvider(): StorageProvider {
   }
 }
 
-/** Replace the primary asset of a type with freshly-stored bytes. */
+/**
+ * Record a freshly-stored asset as the primary of its type. Shared by the local
+ * (server-proxied) and R2 (presigned direct-upload) paths so the stored shape is
+ * identical regardless of how the bytes arrived.
+ */
+async function recordPrimaryAsset(input: {
+  bookId: string;
+  assetType: AssetType;
+  fileName: string;
+  mimeType: string;
+  storageKey: string;
+  sha256: string;
+  size: number;
+}): Promise<void> {
+  await prisma.$transaction([
+    prisma.bookAsset.deleteMany({
+      where: { bookId: input.bookId, assetType: input.assetType, isPrimary: true },
+    }),
+    prisma.bookAsset.create({
+      data: {
+        bookId: input.bookId,
+        assetType: input.assetType,
+        storageProvider: currentProvider(),
+        storageKey: input.storageKey,
+        fileName: input.fileName,
+        mimeType: input.mimeType,
+        fileSize: input.size,
+        hash: input.sha256,
+        isPrimary: true,
+      },
+    }),
+  ]);
+}
+
+/** Replace the primary asset of a type with freshly-stored bytes (local path). */
 async function upsertPrimaryAsset(input: {
   bookId: string;
   assetType: AssetType;
@@ -76,24 +110,15 @@ async function upsertPrimaryAsset(input: {
     input.mimeType,
     input.prefix,
   );
-  await prisma.$transaction([
-    prisma.bookAsset.deleteMany({
-      where: { bookId: input.bookId, assetType: input.assetType, isPrimary: true },
-    }),
-    prisma.bookAsset.create({
-      data: {
-        bookId: input.bookId,
-        assetType: input.assetType,
-        storageProvider: currentProvider(),
-        storageKey: stored.key,
-        fileName: input.fileName,
-        mimeType: input.mimeType,
-        fileSize: stored.size,
-        hash: stored.sha256,
-        isPrimary: true,
-      },
-    }),
-  ]);
+  await recordPrimaryAsset({
+    bookId: input.bookId,
+    assetType: input.assetType,
+    fileName: input.fileName,
+    mimeType: input.mimeType,
+    storageKey: stored.key,
+    sha256: stored.sha256,
+    size: stored.size,
+  });
   return { sha256: stored.sha256, fileSize: stored.size };
 }
 
@@ -123,6 +148,52 @@ export async function saveCover(
     bytes,
   });
   return { ok: true, sha256, fileName: file.name, fileSize };
+}
+
+/**
+ * Finalize a presigned direct-to-storage cover upload: fetch the uploaded bytes
+ * back by key, validate the image type + size server-side, hash, then record.
+ * On any rejection the stray object is cleaned up. Callers must enforce
+ * author/book authorization first, and must have issued `key` via `buildUploadKey`.
+ */
+export async function finalizeCoverUpload(
+  bookId: string,
+  storageKey: string,
+  fileName: string,
+): Promise<SaveCoverResult> {
+  const mime = resolveCoverType(fileName);
+  if (!mime) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
+  }
+
+  let bytes: Buffer;
+  try {
+    bytes = await getStorage().get(storageKey);
+  } catch {
+    return { ok: false, error: "Uploaded image was not found in storage." };
+  }
+
+  if (bytes.byteLength === 0) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "The image is empty." };
+  }
+  if (bytes.byteLength > MAX_COVER_BYTES) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "Cover image is too large (max 8MB)." };
+  }
+
+  const sha256 = sha256Hex(bytes);
+  await recordPrimaryAsset({
+    bookId,
+    assetType: "COVER",
+    fileName,
+    mimeType: mime,
+    storageKey,
+    sha256,
+    size: bytes.byteLength,
+  });
+  return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
 }
 
 export async function saveBarcode(

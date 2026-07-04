@@ -6,6 +6,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOptionalAuthor } from "@/lib/auth/session";
+import { storageSupportsDirectUpload } from "@/lib/storage";
 import { getAuthorBookById } from "@/lib/data/books";
 import { getRegistrationForBook } from "@/lib/data/registrations";
 import { getPrimaryBookFile } from "@/lib/data/book-files";
@@ -67,6 +68,7 @@ export default async function BookDetailPage({
   ]);
   const proofHash = bookRegistrationHash(book);
   const usesRealFileHash = Boolean(book.fileHash);
+  const directUpload = storageSupportsDirectUpload();
   const registryReady = isRegistryConfigured();
   const hasWallet = Boolean(author.walletAddress);
   const cfg = getChainConfig();
@@ -171,7 +173,11 @@ export default async function BookDetailPage({
               version should create a new versioned proof in a future release.
             </p>
           ) : (
-            <ManuscriptUploadForm bookId={book.id} hasFile={Boolean(manuscript)} />
+            <ManuscriptUploadForm
+              bookId={book.id}
+              hasFile={Boolean(manuscript)}
+              directUpload={directUpload}
+            />
           )}
 
           <p className="mt-3 text-xs text-muted">
@@ -205,7 +211,11 @@ export default async function BookDetailPage({
               No cover
             </div>
           )}
-          <CoverUploadForm bookId={book.id} hasCover={Boolean(cover)} />
+          <CoverUploadForm
+            bookId={book.id}
+            hasCover={Boolean(cover)}
+            directUpload={directUpload}
+          />
           <p className="mt-3 text-xs text-muted">
             Covers are public assets served through a controlled route — separate
             from the protected manuscript.
