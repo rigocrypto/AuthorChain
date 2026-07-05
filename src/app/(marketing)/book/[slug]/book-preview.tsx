@@ -19,6 +19,7 @@ export function BookPreview({
   coverColor,
   proofVerified,
   hasPreview,
+  hasBackCover,
   price,
   currency,
   stripeReady,
@@ -31,6 +32,7 @@ export function BookPreview({
   coverColor: string;
   proofVerified: boolean;
   hasPreview: boolean;
+  hasBackCover: boolean;
   price: number;
   currency: string;
   stripeReady: boolean;
@@ -124,14 +126,14 @@ export function BookPreview({
               </button>
             </div>
 
-            <div className="min-h-0 flex-1 bg-surface-2">
+            <div className="min-h-0 flex-1 overflow-y-auto bg-surface-2">
               {hasPreview ? (
                 <iframe
                   src={`/api/assets/books/${bookId}/preview#view=FitH`}
                   title={`${title} — reader preview`}
-                  className="h-[62vh] w-full border-0"
+                  className="h-[60vh] w-full border-0"
                 />
-              ) : (
+              ) : !hasBackCover ? (
                 <div className="flex h-[38vh] items-center justify-center p-8 text-center">
                   <div>
                     <p className="font-medium text-foreground">Preview coming soon</p>
@@ -140,7 +142,20 @@ export function BookPreview({
                     </p>
                   </div>
                 </div>
-              )}
+              ) : null}
+              {hasBackCover ? (
+                <div className="p-4">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+                    Back cover
+                  </p>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/api/assets/books/${bookId}/backcover`}
+                    alt={`${title} back cover`}
+                    className="mx-auto max-h-[60vh] w-auto rounded-lg border border-border"
+                  />
+                </div>
+              ) : null}
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-4">

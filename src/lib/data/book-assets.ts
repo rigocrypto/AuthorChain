@@ -196,6 +196,69 @@ export async function finalizeCoverUpload(
   return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
 }
 
+/** Store a public back-cover image (server-proxied / local path). */
+export async function saveBackCover(
+  bookId: string,
+  file: File,
+): Promise<SaveCoverResult> {
+  const mime = resolveCoverType(file.name);
+  if (!mime) {
+    return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
+  }
+  if (file.size === 0) return { ok: false, error: "The image is empty." };
+  if (file.size > MAX_COVER_BYTES) {
+    return { ok: false, error: "Back cover image is too large (max 8MB)." };
+  }
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const { sha256, fileSize } = await upsertPrimaryAsset({
+    bookId,
+    assetType: "BACK_COVER",
+    fileName: file.name,
+    mimeType: mime,
+    prefix: "backcovers",
+    bytes,
+  });
+  return { ok: true, sha256, fileName: file.name, fileSize };
+}
+
+/** Finalize a presigned direct-to-storage back-cover upload. */
+export async function finalizeBackCoverUpload(
+  bookId: string,
+  storageKey: string,
+  fileName: string,
+): Promise<SaveCoverResult> {
+  const mime = resolveCoverType(fileName);
+  if (!mime) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
+  }
+  let bytes: Buffer;
+  try {
+    bytes = await getStorage().get(storageKey);
+  } catch {
+    return { ok: false, error: "Uploaded image was not found in storage." };
+  }
+  if (bytes.byteLength === 0) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "The image is empty." };
+  }
+  if (bytes.byteLength > MAX_COVER_BYTES) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "Back cover image is too large (max 8MB)." };
+  }
+  const sha256 = sha256Hex(bytes);
+  await recordPrimaryAsset({
+    bookId,
+    assetType: "BACK_COVER",
+    fileName,
+    mimeType: mime,
+    storageKey,
+    sha256,
+    size: bytes.byteLength,
+  });
+  return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
+}
+
 /** Public reader-preview PDF (first pages only). Max size well under the cover limit isn't needed; allow up to 15MB. */
 export const MAX_PREVIEW_BYTES = 15 * 1024 * 1024;
 

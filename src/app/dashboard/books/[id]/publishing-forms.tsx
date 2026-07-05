@@ -6,6 +6,9 @@ import {
   uploadCoverAction,
   presignCoverUploadAction,
   finalizeCoverUploadAction,
+  uploadBackCoverAction,
+  presignBackCoverUploadAction,
+  finalizeBackCoverUploadAction,
   uploadPreviewAction,
   presignPreviewUploadAction,
   finalizePreviewUploadAction,
@@ -111,6 +114,89 @@ export function CoverUploadForm({
     <CoverDirectUpload bookId={bookId} hasCover={hasCover} />
   ) : (
     <CoverProxyUpload bookId={bookId} hasCover={hasCover} />
+  );
+}
+
+/** Local / server-proxied back-cover image upload. */
+function BackCoverProxyUpload({ bookId, hasBackCover }: { bookId: string; hasBackCover: boolean }) {
+  const [state, action, pending] = useActionState(uploadBackCoverAction, initial);
+  return (
+    <form action={action} className="mt-4 space-y-2">
+      <input type="hidden" name="bookId" value={bookId} />
+      <input name="file" type="file" accept={coverAccept} className={coverInputClass} />
+      <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
+        {pending ? "Uploading…" : hasBackCover ? "Replace back cover" : "Upload back cover"}
+      </Button>
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+/** Presigned direct-to-R2 back-cover upload: presign → PUT → finalize. */
+function BackCoverDirectUpload({ bookId, hasBackCover }: { bookId: string; hasBackCover: boolean }) {
+  const [state, setState] = useState<PublishingState>(initial);
+  const [pending, setPending] = useState(false);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const input = form.elements.namedItem("file") as HTMLInputElement | null;
+    const file = input?.files?.[0];
+    if (!file) {
+      setState({ error: "Choose an image file (JPG, PNG, or WEBP)." });
+      return;
+    }
+    setPending(true);
+    setState(initial);
+    try {
+      const pre = await presignBackCoverUploadAction(bookId, file.name);
+      if (!pre.ok) {
+        setState({ error: pre.error });
+        return;
+      }
+      const put = await fetch(pre.uploadUrl, { method: "PUT", body: file });
+      if (!put.ok) {
+        setState({ error: "Upload to storage failed. Please try again." });
+        return;
+      }
+      const fin = await finalizeBackCoverUploadAction(bookId, pre.key, file.name);
+      if (fin.error) {
+        setState({ error: fin.error });
+        return;
+      }
+      form.reset();
+      setState({ ok: true });
+    } catch {
+      setState({ error: "Upload failed. Please try again." });
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="mt-4 space-y-2">
+      <input name="file" type="file" accept={coverAccept} className={coverInputClass} />
+      <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
+        {pending ? "Uploading…" : hasBackCover ? "Replace back cover" : "Upload back cover"}
+      </Button>
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+export function BackCoverUploadForm({
+  bookId,
+  hasBackCover,
+  directUpload,
+}: {
+  bookId: string;
+  hasBackCover: boolean;
+  directUpload: boolean;
+}) {
+  return directUpload ? (
+    <BackCoverDirectUpload bookId={bookId} hasBackCover={hasBackCover} />
+  ) : (
+    <BackCoverProxyUpload bookId={bookId} hasBackCover={hasBackCover} />
   );
 }
 

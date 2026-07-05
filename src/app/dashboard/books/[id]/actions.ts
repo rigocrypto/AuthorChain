@@ -22,6 +22,8 @@ import {
   saveCover,
   finalizeCoverUpload,
   resolveCoverType,
+  saveBackCover,
+  finalizeBackCoverUpload,
   savePreview,
   finalizePreviewUpload,
   resolvePreviewType,
@@ -121,6 +123,76 @@ export async function updateBookDetailsAction(
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath("/dashboard/books");
+  return { ok: true };
+}
+
+/**
+ * Back-cover image upload (public asset, like the front cover). Server-proxied
+ * path for local dev.
+ */
+export async function uploadBackCoverAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Choose an image file (JPG, PNG, or WEBP)." };
+  }
+
+  const res = await saveBackCover(bookId, file);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
+  return { ok: true };
+}
+
+export async function presignBackCoverUploadAction(
+  bookId: string,
+  fileName: string,
+): Promise<PresignResult> {
+  const author = await getCurrentAuthor();
+  if (!bookId) return { ok: false, error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { ok: false, error: "Book not found." };
+
+  const mime = resolveCoverType(fileName);
+  if (!mime) return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
+
+  const store = getStorage();
+  if (!storageSupportsDirectUpload() || !store.presignPut) {
+    return { ok: false, error: "Direct upload is not available." };
+  }
+  const key = buildUploadKey("backcovers", bookId, fileName);
+  const { uploadUrl } = await store.presignPut(key, mime);
+  return { ok: true, uploadUrl, key };
+}
+
+export async function finalizeBackCoverUploadAction(
+  bookId: string,
+  key: string,
+  fileName: string,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  if (!bookId || !key) return { error: "Missing upload." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+  if (!key.startsWith(`backcovers/${bookId}/`)) return { error: "Invalid upload key." };
+
+  const res = await finalizeBackCoverUpload(bookId, key, fileName);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
   return { ok: true };
 }
 

@@ -31,6 +31,7 @@ import { ManuscriptUploadForm } from "./manuscript-upload-form";
 import {
   BookDetailsForm,
   CoverUploadForm,
+  BackCoverUploadForm,
   PreviewUploadForm,
   PublishingMetadataForm,
   GenerateBarcodeForm,
@@ -66,13 +67,15 @@ export default async function BookDetailPage({
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 
-  const [registration, manuscript, cover, barcode, preview] = await Promise.all([
-    getRegistrationForBook(id),
-    getPrimaryBookFile(id),
-    getPrimaryAsset(id, "COVER"),
-    getPrimaryAsset(id, "BARCODE"),
-    getPrimaryAsset(id, "PREVIEW"),
-  ]);
+  const [registration, manuscript, cover, barcode, preview, backCover] =
+    await Promise.all([
+      getRegistrationForBook(id),
+      getPrimaryBookFile(id),
+      getPrimaryAsset(id, "COVER"),
+      getPrimaryAsset(id, "BARCODE"),
+      getPrimaryAsset(id, "PREVIEW"),
+      getPrimaryAsset(id, "BACK_COVER"),
+    ]);
   const proofHash = bookRegistrationHash(book);
   const usesRealFileHash = Boolean(book.fileHash);
   const directUpload = storageSupportsDirectUpload();
@@ -85,6 +88,9 @@ export default async function BookDetailPage({
   const hasValidIsbn = Boolean(book.isbn13 && isValidIsbn13(book.isbn13));
   // Cache-bust asset previews when the underlying file changes (hash in query).
   const coverSrc = cover ? `/api/assets/books/${id}/cover?v=${cover.hash ?? ""}` : null;
+  const backCoverSrc = backCover
+    ? `/api/assets/books/${id}/backcover?v=${backCover.hash ?? ""}`
+    : null;
   const barcodeSrc = barcode
     ? `/api/assets/books/${id}/barcode?v=${barcode.hash ?? ""}`
     : null;
@@ -233,6 +239,35 @@ export default async function BookDetailPage({
             Covers are public assets served through a controlled route — separate
             from the protected manuscript.
           </p>
+
+          {/* Back cover */}
+          <div className="mt-6 border-t border-border pt-4">
+            <p className="text-sm font-medium">Back cover</p>
+            {backCoverSrc ? (
+              <div className="mt-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={backCoverSrc}
+                  alt={`${book.title} back cover`}
+                  className="max-h-48 w-auto rounded-lg border border-border"
+                />
+                <div className="mt-2 text-xs text-muted">
+                  {backCover!.fileName} · {formatBytes(backCover!.fileSize)}
+                </div>
+              </div>
+            ) : (
+              <p className="mt-2 text-sm text-muted">No back cover yet.</p>
+            )}
+            <BackCoverUploadForm
+              bookId={book.id}
+              hasBackCover={Boolean(backCover)}
+              directUpload={directUpload}
+            />
+            <p className="mt-2 text-xs text-muted">
+              Optional public back-cover image — shown in the reader preview and on
+              print editions later.
+            </p>
+          </div>
         </Card>
 
         {/* Reader preview */}

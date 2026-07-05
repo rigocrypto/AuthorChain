@@ -64,6 +64,7 @@ export default async function PublicBookPage({
             coverColor={book.coverColor}
             proofVerified={book.proofVerified}
             hasPreview={book.hasPreview}
+            hasBackCover={book.hasBackCover}
             price={book.price}
             currency={book.currency}
             stripeReady={stripeReady}

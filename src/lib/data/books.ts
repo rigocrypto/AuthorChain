@@ -157,6 +157,8 @@ export type PublicBookDTO = BookDTO & {
   hasCover: boolean;
   /** Whether a public reader-preview PDF exists (served via /api/assets/books/[id]/preview). */
   hasPreview: boolean;
+  /** Whether a public back-cover image exists (served via /api/assets/books/[id]/backcover). */
+  hasBackCover: boolean;
   /** On-chain proof transaction hash, if registered (for a public explorer link). */
   proofTxHash: string | null;
 };
@@ -169,7 +171,7 @@ export async function getPublicBookBySlug(
     include: {
       author: true,
       assets: {
-        where: { assetType: { in: ["COVER", "PREVIEW"] }, isPrimary: true },
+        where: { assetType: { in: ["COVER", "PREVIEW", "BACK_COVER"] }, isPrimary: true },
         select: { assetType: true },
       },
       blockchainRegistrations: {
@@ -187,6 +189,7 @@ export async function getPublicBookBySlug(
     authorName: book.author.name,
     hasCover: book.assets.some((a) => a.assetType === "COVER"),
     hasPreview: book.assets.some((a) => a.assetType === "PREVIEW"),
+    hasBackCover: book.assets.some((a) => a.assetType === "BACK_COVER"),
     proofVerified: Boolean(reg),
     proofTxHash: reg?.transactionHash ?? null,
   };

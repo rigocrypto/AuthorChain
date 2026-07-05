@@ -65,6 +65,8 @@ enum AssetType {
   BARCODE
   // Public reader-preview PDF (first pages only). Never the private manuscript.
   PREVIEW
+  // Public back-cover image (wraparound print cover / storefront back).
+  BACK_COVER
 }
 
 enum BookFormat {
