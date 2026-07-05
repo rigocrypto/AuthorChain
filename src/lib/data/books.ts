@@ -33,6 +33,8 @@ export type BookDTO = {
   edition: string | null;
   unitsSold: number;
   earningsUsdc: number;
+  /** Soft-archive timestamp (ISO) or null. Archived = hidden from active list + public. */
+  archivedAt: string | null;
   createdAt: string;
 };
 
@@ -64,6 +66,7 @@ function toDTO(book: BookRow, unitsSold = 0, earningsUsdc = 0): BookDTO {
     edition: book.edition,
     unitsSold,
     earningsUsdc,
+    archivedAt: book.archivedAt ? book.archivedAt.toISOString() : null,
     createdAt: book.createdAt.toISOString(),
   };
 }
@@ -128,7 +131,7 @@ export async function getPublicBookBySlug(
   slug: string,
 ): Promise<PublicBookDTO | null> {
   const book = await prisma.book.findFirst({
-    where: { slug, status: "PUBLISHED" },
+    where: { slug, status: "PUBLISHED", archivedAt: null },
     include: {
       author: true,
       assets: {
@@ -170,7 +173,7 @@ export type PublishedBookDTO = {
  */
 export async function listPublishedBooks(): Promise<PublishedBookDTO[]> {
   const books = await prisma.book.findMany({
-    where: { status: "PUBLISHED" },
+    where: { status: "PUBLISHED", archivedAt: null },
     orderBy: { createdAt: "desc" },
     include: {
       author: { select: { name: true } },
@@ -307,5 +310,44 @@ export async function publishBook(
   await prisma.book.updateMany({
     where: { id: bookId, authorId },
     data: { status: "PUBLISHED" },
+  });
+}
+
+/**
+ * Visibility controls (all author-scoped so an author can only touch their own
+ * books). None of these delete files, proof registrations, sales, or reader
+ * entitlements — history stays auditable.
+ */
+
+/** Remove a book from public pages by moving it back to DRAFT. */
+export async function unpublishBook(
+  bookId: string,
+  authorId: string,
+): Promise<void> {
+  await prisma.book.updateMany({
+    where: { id: bookId, authorId },
+    data: { status: "DRAFT" },
+  });
+}
+
+/** Soft-archive: hide from the active dashboard list and all public pages. */
+export async function archiveBook(
+  bookId: string,
+  authorId: string,
+): Promise<void> {
+  await prisma.book.updateMany({
+    where: { id: bookId, authorId },
+    data: { archivedAt: new Date() },
+  });
+}
+
+/** Restore an archived book (returns it to its current status). */
+export async function restoreBook(
+  bookId: string,
+  authorId: string,
+): Promise<void> {
+  await prisma.book.updateMany({
+    where: { id: bookId, authorId },
+    data: { archivedAt: null },
   });
 }

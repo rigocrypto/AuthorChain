@@ -20,6 +20,13 @@ import {
   getExplorerAddressUrl,
 } from "@/lib/blockchain/registry";
 import { registerProofAction } from "./actions";
+import { BookActionButton } from "@/components/dashboard/book-actions";
+import {
+  publishBookAction,
+  unpublishBookAction,
+  archiveBookAction,
+  restoreBookAction,
+} from "@/app/dashboard/actions";
 import { ManuscriptUploadForm } from "./manuscript-upload-form";
 import {
   BookDetailsForm,
@@ -67,6 +74,8 @@ export default async function BookDetailPage({
   const proofHash = bookRegistrationHash(book);
   const usesRealFileHash = Boolean(book.fileHash);
   const directUpload = storageSupportsDirectUpload();
+  const archived = Boolean(book.archivedAt);
+  const isPublic = book.status === "PUBLISHED" && !archived;
   const registryReady = isRegistryConfigured();
   const hasWallet = Boolean(author.walletAddress);
   const cfg = getChainConfig();
@@ -285,6 +294,71 @@ export default async function BookDetailPage({
             <p className="mt-4 text-sm text-muted">No barcode generated yet.</p>
           )}
           <GenerateBarcodeForm bookId={book.id} disabled={!hasValidIsbn} />
+        </Card>
+
+        {/* Book visibility / publishing controls */}
+        <Card className="lg:col-span-2">
+          <CardTitle>Publishing &amp; visibility</CardTitle>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-muted">Status:</span>
+            <StatusBadge tone={book.status === "PUBLISHED" ? "success" : "muted"}>
+              {book.status}
+            </StatusBadge>
+            {archived ? <StatusBadge tone="warning">Archived</StatusBadge> : null}
+            <span className="text-muted">· Public page:</span>
+            {isPublic ? (
+              <StatusBadge tone="success">Live on ReaderChain</StatusBadge>
+            ) : (
+              <StatusBadge tone="muted">Not public</StatusBadge>
+            )}
+          </div>
+
+          <p className="mt-2 text-xs text-muted">
+            {archived
+              ? "This book is archived — hidden from your active list and all public pages. Files, proof, and sales history are kept."
+              : isPublic
+                ? "This book is live on ReaderChain and the public storefront."
+                : "This book is a draft — not visible publicly until you publish it."}
+          </p>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {archived ? (
+              <BookActionButton
+                action={restoreBookAction}
+                bookId={book.id}
+                label="Restore book"
+              />
+            ) : (
+              <>
+                {book.status === "PUBLISHED" ? (
+                  <BookActionButton
+                    action={unpublishBookAction}
+                    bookId={book.id}
+                    label="Unpublish"
+                    confirmText="Unpublish this book? It will be removed from ReaderChain and the public storefront. Existing buyers keep their access."
+                  />
+                ) : (
+                  <BookActionButton
+                    action={publishBookAction}
+                    bookId={book.id}
+                    label="Publish"
+                    variant="primary"
+                  />
+                )}
+                <BookActionButton
+                  action={archiveBookAction}
+                  bookId={book.id}
+                  label="Archive"
+                  confirmText="Archive this book? It will be hidden from your active dashboard list and from public pages. Files, proof, and sales are kept and it can be restored."
+                  variant="ghost"
+                />
+              </>
+            )}
+          </div>
+          <p className="mt-3 text-xs text-muted">
+            Unpublish and archive never delete your manuscript, cover, on-chain proof,
+            sales, or readers&apos; access — your history stays auditable.
+          </p>
         </Card>
 
         {/* Proof of authorship */}

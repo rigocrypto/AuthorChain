@@ -3,7 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getCurrentAuthor } from "@/lib/auth/session";
-import { createBook, publishBook } from "@/lib/data/books";
+import {
+  createBook,
+  publishBook,
+  unpublishBook,
+  archiveBook,
+  restoreBook,
+} from "@/lib/data/books";
 import { storeManuscriptForBook, resolveManuscriptType } from "@/lib/data/book-files";
 
 export type CreateBookState = { error?: string };
@@ -60,6 +66,40 @@ export async function publishBookAction(formData: FormData): Promise<void> {
   if (!bookId) return;
 
   await publishBook(bookId, author.id);
+  revalidateVisibility(bookId);
+}
+
+/** Revalidate the surfaces a visibility change can affect (author + public). */
+function revalidateVisibility(bookId: string): void {
   revalidatePath("/dashboard/books");
+  revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath("/");
+  revalidatePath("/explore");
+}
+
+export async function unpublishBookAction(formData: FormData): Promise<void> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return;
+
+  await unpublishBook(bookId, author.id);
+  revalidateVisibility(bookId);
+}
+
+export async function archiveBookAction(formData: FormData): Promise<void> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return;
+
+  await archiveBook(bookId, author.id);
+  revalidateVisibility(bookId);
+}
+
+export async function restoreBookAction(formData: FormData): Promise<void> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return;
+
+  await restoreBook(bookId, author.id);
+  revalidateVisibility(bookId);
 }

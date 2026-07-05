@@ -115,6 +115,9 @@ model Book {
   coverUrl    String?
   status      BookStatus @default(DRAFT)
   fileHash    String?
+  // Soft-archive: hidden from the author's active dashboard list and from all
+  // public pages while set. Restore = clear this. Never deletes files/proof/sales.
+  archivedAt  DateTime?
 
   // Publishing identity (authors provide their own ISBN — we never issue one).
   isbn13          String?
