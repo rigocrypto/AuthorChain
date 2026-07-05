@@ -14,6 +14,8 @@ export const dynamic = "force-dynamic";
 const TYPE_MAP: Record<string, AssetType> = {
   cover: "COVER",
   barcode: "BARCODE",
+  // Public reader-preview PDF (first pages only) — never the private manuscript.
+  preview: "PREVIEW",
 };
 
 export async function GET(

@@ -6,6 +6,9 @@ import {
   uploadCoverAction,
   presignCoverUploadAction,
   finalizeCoverUploadAction,
+  uploadPreviewAction,
+  presignPreviewUploadAction,
+  finalizePreviewUploadAction,
   savePublishingMetadataAction,
   updateBookDetailsAction,
   generateBarcodeAction,
@@ -108,6 +111,91 @@ export function CoverUploadForm({
     <CoverDirectUpload bookId={bookId} hasCover={hasCover} />
   ) : (
     <CoverProxyUpload bookId={bookId} hasCover={hasCover} />
+  );
+}
+
+const previewAccept = ".pdf,application/pdf";
+
+/** Local / server-proxied reader-preview PDF upload. */
+function PreviewProxyUpload({ bookId, hasPreview }: { bookId: string; hasPreview: boolean }) {
+  const [state, action, pending] = useActionState(uploadPreviewAction, initial);
+  return (
+    <form action={action} className="mt-4 space-y-2">
+      <input type="hidden" name="bookId" value={bookId} />
+      <input name="file" type="file" accept={previewAccept} className={coverInputClass} />
+      <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
+        {pending ? "Uploading…" : hasPreview ? "Replace preview" : "Upload preview"}
+      </Button>
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+/** Presigned direct-to-R2 reader-preview PDF upload: presign → PUT → finalize. */
+function PreviewDirectUpload({ bookId, hasPreview }: { bookId: string; hasPreview: boolean }) {
+  const [state, setState] = useState<PublishingState>(initial);
+  const [pending, setPending] = useState(false);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const input = form.elements.namedItem("file") as HTMLInputElement | null;
+    const file = input?.files?.[0];
+    if (!file) {
+      setState({ error: "Choose a PDF preview file." });
+      return;
+    }
+    setPending(true);
+    setState(initial);
+    try {
+      const pre = await presignPreviewUploadAction(bookId, file.name);
+      if (!pre.ok) {
+        setState({ error: pre.error });
+        return;
+      }
+      const put = await fetch(pre.uploadUrl, { method: "PUT", body: file });
+      if (!put.ok) {
+        setState({ error: "Upload to storage failed. Please try again." });
+        return;
+      }
+      const fin = await finalizePreviewUploadAction(bookId, pre.key, file.name);
+      if (fin.error) {
+        setState({ error: fin.error });
+        return;
+      }
+      form.reset();
+      setState({ ok: true });
+    } catch {
+      setState({ error: "Upload failed. Please try again." });
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="mt-4 space-y-2">
+      <input name="file" type="file" accept={previewAccept} className={coverInputClass} />
+      <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
+        {pending ? "Uploading…" : hasPreview ? "Replace preview" : "Upload preview"}
+      </Button>
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+export function PreviewUploadForm({
+  bookId,
+  hasPreview,
+  directUpload,
+}: {
+  bookId: string;
+  hasPreview: boolean;
+  directUpload: boolean;
+}) {
+  return directUpload ? (
+    <PreviewDirectUpload bookId={bookId} hasPreview={hasPreview} />
+  ) : (
+    <PreviewProxyUpload bookId={bookId} hasPreview={hasPreview} />
   );
 }
 

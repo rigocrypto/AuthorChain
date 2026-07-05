@@ -31,6 +31,7 @@ import { ManuscriptUploadForm } from "./manuscript-upload-form";
 import {
   BookDetailsForm,
   CoverUploadForm,
+  PreviewUploadForm,
   PublishingMetadataForm,
   GenerateBarcodeForm,
 } from "./publishing-forms";
@@ -65,11 +66,12 @@ export default async function BookDetailPage({
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 
-  const [registration, manuscript, cover, barcode] = await Promise.all([
+  const [registration, manuscript, cover, barcode, preview] = await Promise.all([
     getRegistrationForBook(id),
     getPrimaryBookFile(id),
     getPrimaryAsset(id, "COVER"),
     getPrimaryAsset(id, "BARCODE"),
+    getPrimaryAsset(id, "PREVIEW"),
   ]);
   const proofHash = bookRegistrationHash(book);
   const usesRealFileHash = Boolean(book.fileHash);
@@ -230,6 +232,43 @@ export default async function BookDetailPage({
           <p className="mt-3 text-xs text-muted">
             Covers are public assets served through a controlled route — separate
             from the protected manuscript.
+          </p>
+        </Card>
+
+        {/* Reader preview */}
+        <Card>
+          <CardTitle>Reader preview</CardTitle>
+          {preview ? (
+            <div className="mt-3 space-y-1 text-sm">
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge tone="success">Preview live</StatusBadge>
+                <a
+                  href={`/api/assets/books/${id}/preview`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  View preview →
+                </a>
+              </div>
+              <p className="text-xs text-muted">
+                {preview.fileName} · {formatBytes(preview.fileSize)}
+              </p>
+            </div>
+          ) : (
+            <p className="mt-2 text-sm text-muted">
+              No reader preview yet. Add a short PDF so readers can sample the book.
+            </p>
+          )}
+          <PreviewUploadForm
+            bookId={book.id}
+            hasPreview={Boolean(preview)}
+            directUpload={directUpload}
+          />
+          <p className="mt-3 rounded-lg bg-warning/10 px-3 py-2 text-xs text-warning">
+            This file is <strong>public</strong> — upload a PDF containing only the
+            pages you want readers to preview (e.g. the first few pages). Your full
+            manuscript stays private and download-protected.
           </p>
         </Card>
 

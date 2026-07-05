@@ -63,6 +63,8 @@ enum StorageProvider {
 enum AssetType {
   COVER
   BARCODE
+  // Public reader-preview PDF (first pages only). Never the private manuscript.
+  PREVIEW
 }
 
 enum BookFormat {

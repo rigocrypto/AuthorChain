@@ -196,6 +196,78 @@ export async function finalizeCoverUpload(
   return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
 }
 
+/** Public reader-preview PDF (first pages only). Max size well under the cover limit isn't needed; allow up to 15MB. */
+export const MAX_PREVIEW_BYTES = 15 * 1024 * 1024;
+
+export function resolvePreviewType(fileName: string): string | null {
+  return fileName.toLowerCase().endsWith(".pdf") ? "application/pdf" : null;
+}
+
+export type SavePreviewResult =
+  | { ok: true; sha256: string; fileName: string; fileSize: number }
+  | { ok: false; error: string };
+
+/** Store a public reader-preview PDF (server-proxied / local path). */
+export async function savePreview(
+  bookId: string,
+  file: File,
+): Promise<SavePreviewResult> {
+  const mime = resolvePreviewType(file.name);
+  if (!mime) return { ok: false, error: "Upload a PDF preview file." };
+  if (file.size === 0) return { ok: false, error: "The file is empty." };
+  if (file.size > MAX_PREVIEW_BYTES) {
+    return { ok: false, error: "Preview is too large (max 15MB)." };
+  }
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const { sha256, fileSize } = await upsertPrimaryAsset({
+    bookId,
+    assetType: "PREVIEW",
+    fileName: file.name,
+    mimeType: mime,
+    prefix: "previews",
+    bytes,
+  });
+  return { ok: true, sha256, fileName: file.name, fileSize };
+}
+
+/** Finalize a presigned direct-to-storage reader-preview upload. */
+export async function finalizePreviewUpload(
+  bookId: string,
+  storageKey: string,
+  fileName: string,
+): Promise<SavePreviewResult> {
+  const mime = resolvePreviewType(fileName);
+  if (!mime) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "Upload a PDF preview file." };
+  }
+  let bytes: Buffer;
+  try {
+    bytes = await getStorage().get(storageKey);
+  } catch {
+    return { ok: false, error: "Uploaded file was not found in storage." };
+  }
+  if (bytes.byteLength === 0) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "The file is empty." };
+  }
+  if (bytes.byteLength > MAX_PREVIEW_BYTES) {
+    await deleteStoredObject(storageKey);
+    return { ok: false, error: "Preview is too large (max 15MB)." };
+  }
+  const sha256 = sha256Hex(bytes);
+  await recordPrimaryAsset({
+    bookId,
+    assetType: "PREVIEW",
+    fileName,
+    mimeType: mime,
+    storageKey,
+    sha256,
+    size: bytes.byteLength,
+  });
+  return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
+}
+
 export async function saveBarcode(
   bookId: string,
   isbn13: string,

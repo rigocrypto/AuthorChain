@@ -22,6 +22,9 @@ import {
   saveCover,
   finalizeCoverUpload,
   resolveCoverType,
+  savePreview,
+  finalizePreviewUpload,
+  resolvePreviewType,
   saveBarcode,
 } from "@/lib/data/book-assets";
 import { checkIsbn13, normalizeIsbn, isValidIsbn10 } from "@/lib/publishing/isbn";
@@ -118,6 +121,76 @@ export async function updateBookDetailsAction(
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath("/dashboard/books");
+  return { ok: true };
+}
+
+/**
+ * Reader preview upload (public PDF, first pages only). Separate from the private
+ * manuscript — this file is public by design. Server-proxied path for local dev.
+ */
+export async function uploadPreviewAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Choose a PDF preview file." };
+  }
+
+  const res = await savePreview(bookId, file);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
+  return { ok: true };
+}
+
+export async function presignPreviewUploadAction(
+  bookId: string,
+  fileName: string,
+): Promise<PresignResult> {
+  const author = await getCurrentAuthor();
+  if (!bookId) return { ok: false, error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { ok: false, error: "Book not found." };
+
+  const mime = resolvePreviewType(fileName);
+  if (!mime) return { ok: false, error: "Upload a PDF preview file." };
+
+  const store = getStorage();
+  if (!storageSupportsDirectUpload() || !store.presignPut) {
+    return { ok: false, error: "Direct upload is not available." };
+  }
+  const key = buildUploadKey("previews", bookId, fileName);
+  const { uploadUrl } = await store.presignPut(key, mime);
+  return { ok: true, uploadUrl, key };
+}
+
+export async function finalizePreviewUploadAction(
+  bookId: string,
+  key: string,
+  fileName: string,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  if (!bookId || !key) return { error: "Missing upload." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+  if (!key.startsWith(`previews/${bookId}/`)) return { error: "Invalid upload key." };
+
+  const res = await finalizePreviewUpload(bookId, key, fileName);
+  if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
   return { ok: true };
 }
 

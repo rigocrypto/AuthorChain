@@ -1,0 +1,169 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ProofSeal } from "@/components/proof-seal";
+import { startCheckoutAction } from "./actions";
+
+/**
+ * Interactive cover + reader-preview modal for the public book page. The modal
+ * embeds the PUBLIC reader-preview PDF (first pages only) via the browser's
+ * native viewer — it never touches the private manuscript or its download route.
+ */
+export function BookPreview({
+  bookId,
+  slug,
+  title,
+  authorName,
+  hasCover,
+  coverColor,
+  proofVerified,
+  hasPreview,
+  price,
+  currency,
+  stripeReady,
+}: {
+  bookId: string;
+  slug: string;
+  title: string;
+  authorName: string;
+  hasCover: boolean;
+  coverColor: string;
+  proofVerified: boolean;
+  hasPreview: boolean;
+  price: number;
+  currency: string;
+  stripeReady: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const cover = hasCover ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`/api/assets/books/${bookId}/cover`}
+      alt={`${title} cover`}
+      className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
+    />
+  ) : (
+    <div
+      className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${coverColor} p-5`}
+    >
+      <span className="text-2xl font-bold text-white drop-shadow">{title}</span>
+    </div>
+  );
+
+  return (
+    <>
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={`Preview ${title}`}
+          className="group block w-full cursor-pointer overflow-hidden rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+        >
+          <span className="block transition-transform duration-300 group-hover:scale-[1.02]">
+            {cover}
+          </span>
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
+            <span className="rounded-lg bg-white/90 px-3 py-1.5 text-sm font-semibold text-black shadow">
+              Preview book
+            </span>
+          </span>
+        </button>
+        {proofVerified ? (
+          <ProofSeal
+            variant="full"
+            className="pointer-events-none absolute bottom-3 right-3 w-[38%] max-w-[120px] -rotate-6 drop-shadow-lg"
+          />
+        ) : null}
+      </div>
+
+      <Button variant="secondary" className="mt-3 w-full" onClick={() => setOpen(true)}>
+        Preview first pages
+      </Button>
+
+      {open ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${title} preview`}
+        >
+          <button
+            type="button"
+            aria-label="Close preview"
+            className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
+          <div className="relative z-10 flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
+            <div className="flex items-center justify-between gap-4 border-b border-border p-4">
+              <div className="min-w-0">
+                <h2 className="truncate text-lg font-semibold">{title}</h2>
+                <p className="truncate text-sm text-muted">by {authorName}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close preview"
+                className="rounded-lg px-2 py-1 text-lg text-muted hover:bg-surface-2 hover:text-foreground"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="min-h-0 flex-1 bg-surface-2">
+              {hasPreview ? (
+                <iframe
+                  src={`/api/assets/books/${bookId}/preview#view=FitH`}
+                  title={`${title} — reader preview`}
+                  className="h-[62vh] w-full border-0"
+                />
+              ) : (
+                <div className="flex h-[38vh] items-center justify-center p-8 text-center">
+                  <div>
+                    <p className="font-medium text-foreground">Preview coming soon</p>
+                    <p className="mt-1 text-sm text-muted">
+                      The author hasn&apos;t added a reader preview for this book yet.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-4">
+              <span className="text-xs text-muted">
+                Free sample · the full book requires purchase.
+              </span>
+              <div className="flex gap-2">
+                <Button variant="ghost" onClick={() => setOpen(false)}>
+                  Close
+                </Button>
+                {stripeReady ? (
+                  <form action={startCheckoutAction}>
+                    <input type="hidden" name="slug" value={slug} />
+                    <Button type="submit">
+                      Buy ebook · ${price.toFixed(2)} {currency}
+                    </Button>
+                  </form>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
+}
