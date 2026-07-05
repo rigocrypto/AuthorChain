@@ -7,10 +7,12 @@ export function ReaderBackground() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
         style={{ backgroundImage: "url(/background1.png)" }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/55 via-background/80 to-background/95" />
+      {/* Even vertical scrim — lighter than before so the artwork clearly reads
+          through, while keeping the header and lower content legible. */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/60 to-background/85" />
     </div>
   );
 }
