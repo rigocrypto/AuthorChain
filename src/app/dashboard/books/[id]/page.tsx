@@ -22,6 +22,7 @@ import {
 import { registerProofAction } from "./actions";
 import { ManuscriptUploadForm } from "./manuscript-upload-form";
 import {
+  BookDetailsForm,
   CoverUploadForm,
   PublishingMetadataForm,
   GenerateBarcodeForm,
@@ -29,9 +30,6 @@ import {
 
 export const metadata: Metadata = { title: "Book details" };
 export const dynamic = "force-dynamic";
-
-const usd = (n: number) =>
-  n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 
 function formatBytes(n: number): string {
   if (n < 1024) return `${n} B`;
@@ -86,14 +84,10 @@ export default async function BookDetailPage({
       actions={<ButtonLink href="/dashboard/books" variant="ghost">← All books</ButtonLink>}
     >
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Book summary */}
+        {/* Book details */}
         <Card>
-          <CardTitle>Book</CardTitle>
+          <CardTitle>Book details</CardTitle>
           <dl className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted">Title</dt>
-              <dd className="text-right font-medium">{book.title}</dd>
-            </div>
             <div className="flex justify-between gap-4">
               <dt className="text-muted">Status</dt>
               <dd>
@@ -101,10 +95,6 @@ export default async function BookDetailPage({
                   {book.status}
                 </StatusBadge>
               </dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted">Price</dt>
-              <dd className="font-medium">{usd(book.price)}</dd>
             </div>
             <div>
               <dt className="text-muted">
@@ -118,6 +108,18 @@ export default async function BookDetailPage({
               <dd className="mt-1 break-all font-mono text-xs text-foreground">{proofHash}</dd>
             </div>
           </dl>
+
+          <BookDetailsForm
+            bookId={book.id}
+            defaults={{
+              title: book.title,
+              subtitle: book.subtitle,
+              description: book.description,
+              category: book.category,
+              price: book.price,
+            }}
+          />
+
           {book.status === "PUBLISHED" ? (
             <Link
               href={`/book/${book.slug}`}

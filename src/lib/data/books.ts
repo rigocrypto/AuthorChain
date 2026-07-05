@@ -248,6 +248,36 @@ export async function createBook(input: CreateBookInput): Promise<BookDTO> {
   return toDTO(book);
 }
 
+export type UpdateBookDetailsInput = {
+  title: string;
+  subtitle: string | null;
+  description: string;
+  category: string;
+  price: number;
+};
+
+/**
+ * Update a book's core details (scoped to the author's own book). The slug is
+ * intentionally left unchanged so public `/book/[slug]` links stay stable even
+ * when the title changes. Does not touch the manuscript or its on-chain proof.
+ */
+export async function updateBookDetails(
+  bookId: string,
+  authorId: string,
+  data: UpdateBookDetailsInput,
+): Promise<void> {
+  await prisma.book.updateMany({
+    where: { id: bookId, authorId },
+    data: {
+      title: data.title,
+      subtitle: data.subtitle,
+      description: data.description,
+      category: data.category,
+      price: new Prisma.Decimal(data.price),
+    },
+  });
+}
+
 export type PublishingMetadataInput = {
   isbn13: string | null;
   isbn10: string | null;

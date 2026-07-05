@@ -7,6 +7,7 @@ import {
   presignCoverUploadAction,
   finalizeCoverUploadAction,
   savePublishingMetadataAction,
+  updateBookDetailsAction,
   generateBarcodeAction,
   type PublishingState,
 } from "./actions";
@@ -107,6 +108,70 @@ export function CoverUploadForm({
     <CoverDirectUpload bookId={bookId} hasCover={hasCover} />
   ) : (
     <CoverProxyUpload bookId={bookId} hasCover={hasCover} />
+  );
+}
+
+export type BookDetailsDefaults = {
+  title: string;
+  subtitle: string | null;
+  description: string;
+  category: string;
+  price: number;
+};
+
+/** Edit a book's core catalog fields (title, subtitle, description, category, price). */
+export function BookDetailsForm({
+  bookId,
+  defaults,
+}: {
+  bookId: string;
+  defaults: BookDetailsDefaults;
+}) {
+  const [state, action, pending] = useActionState(updateBookDetailsAction, initial);
+  return (
+    <form action={action} className="mt-4 space-y-3">
+      <input type="hidden" name="bookId" value={bookId} />
+      <div>
+        <label className="mb-1 block text-xs text-muted">Title</label>
+        <input name="title" required defaultValue={defaults.title} className={field} />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs text-muted">Subtitle (optional)</label>
+        <input name="subtitle" defaultValue={defaults.subtitle ?? ""} className={field} />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs text-muted">Description</label>
+        <textarea
+          name="description"
+          required
+          rows={4}
+          defaultValue={defaults.description}
+          className={field}
+        />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs text-muted">Category</label>
+          <input name="category" defaultValue={defaults.category} className={field} />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Price (USD)</label>
+          <input
+            name="price"
+            type="number"
+            min="0"
+            step="0.01"
+            required
+            defaultValue={defaults.price}
+            className={field}
+          />
+        </div>
+      </div>
+      <Button type="submit" variant="secondary" disabled={pending}>
+        {pending ? "Saving…" : "Save details"}
+      </Button>
+      <Feedback state={state} />
+    </form>
   );
 }
 

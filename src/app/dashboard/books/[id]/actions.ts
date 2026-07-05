@@ -8,7 +8,11 @@ import {
   storageSupportsDirectUpload,
   buildUploadKey,
 } from "@/lib/storage";
-import { getAuthorBookById, updatePublishingMetadata } from "@/lib/data/books";
+import {
+  getAuthorBookById,
+  updatePublishingMetadata,
+  updateBookDetails,
+} from "@/lib/data/books";
 import {
   storeManuscriptForBook,
   finalizeManuscriptForBook,
@@ -75,6 +79,45 @@ export async function uploadCoverAction(
   if (!res.ok) return { error: res.error };
 
   revalidatePath(`/dashboard/books/${bookId}`);
+  return { ok: true };
+}
+
+/**
+ * Update a book's core details (title, subtitle, description, category, price).
+ * Allowed for REGISTERED books — these are catalog fields, separate from the
+ * on-chain manuscript proof. The slug is kept stable (see updateBookDetails).
+ */
+export async function updateBookDetailsAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const title = String(formData.get("title") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const category = String(formData.get("category") ?? "").trim() || "General";
+  const subtitle = String(formData.get("subtitle") ?? "").trim() || null;
+  const price = Number(formData.get("price"));
+
+  if (!title) return { error: "Title is required." };
+  if (!description) return { error: "Description is required." };
+  if (!Number.isFinite(price) || price < 0) return { error: "Enter a valid price." };
+
+  await updateBookDetails(bookId, author.id, {
+    title,
+    subtitle,
+    description,
+    category,
+    price,
+  });
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath("/dashboard/books");
   return { ok: true };
 }
 
