@@ -1,15 +1,12 @@
-import { ImageResponse } from "next/og";
 import { getPublicBookBySlug } from "@/lib/data/books";
-import {
-  OG_SIZE,
-  OG_CONTENT_TYPE,
-  bookOgElement,
-  fetchCoverDataUrl,
-} from "@/lib/og/book-card";
+import { OG_SIZE, bookOgElement, fetchCoverDataUrl } from "@/lib/og/book-card";
+import { OG_JPEG_CONTENT_TYPE, ogJpegResponse } from "@/lib/og/jpeg";
 
 export const alt = "Book on AuthorChain";
 export const size = OG_SIZE;
-export const contentType = OG_CONTENT_TYPE;
+// JPEG (not the default PNG) so the embedded cover card stays under WhatsApp's
+// ~300 KB og:image cap and previews reliably. See lib/og/jpeg.tsx.
+export const contentType = OG_JPEG_CONTENT_TYPE;
 
 /**
  * Dynamic 1200×630 social card for a public book. Public data only — cover is
@@ -25,15 +22,14 @@ export default async function Image({
 
   if (!book) {
     // Fall back to a branded card rather than erroring for missing/unpublished.
-    return new ImageResponse(
+    return ogJpegResponse(
       bookOgElement({ title: "AuthorChain", authorName: "Verified Web3 publishing" }),
-      { ...size },
     );
   }
 
   const coverDataUrl = book.hasCover ? await fetchCoverDataUrl(book.id) : null;
 
-  return new ImageResponse(
+  return ogJpegResponse(
     bookOgElement({
       title: book.title,
       subtitle: book.subtitle,
@@ -44,6 +40,5 @@ export default async function Image({
       proofVerified: book.proofVerified,
       coverDataUrl,
     }),
-    { ...size },
   );
 }
