@@ -12,6 +12,7 @@ import { getChainConfig, getExplorerTxUrl } from "@/lib/blockchain/registry";
 import { isStripeConfigured } from "@/lib/payments/stripe";
 import { startCheckoutAction } from "./actions";
 import { BookPreview } from "./book-preview";
+import { ShareBook } from "./share-book";
 
 export const dynamic = "force-dynamic";
 
@@ -27,10 +28,14 @@ export async function generateMetadata({
 
 export default async function PublicBookPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ ref?: string }>;
 }) {
   const { slug } = await params;
+  const { ref } = await searchParams;
+  const refCode = typeof ref === "string" ? ref : "";
   const book = await getPublicBookBySlug(slug);
   if (!book) notFound();
 
@@ -96,6 +101,7 @@ export default async function PublicBookPage({
             price={book.price}
             currency={book.currency}
             stripeReady={stripeReady}
+            refCode={refCode}
           />
         </div>
 
@@ -159,6 +165,7 @@ export default async function PublicBookPage({
               {stripeReady ? (
                 <form action={startCheckoutAction}>
                   <input type="hidden" name="slug" value={book.slug} />
+                  {refCode ? <input type="hidden" name="ref" value={refCode} /> : null}
                   <Button type="submit" className="w-full">
                     Buy with Card (Stripe)
                   </Button>
@@ -181,6 +188,9 @@ export default async function PublicBookPage({
               No crypto wallet needed. After purchase, read from your ReaderChain library.
             </p>
           </Card>
+
+          {/* Share */}
+          <ShareBook title={book.title} />
 
           {/* Book details */}
           {details.length ? (

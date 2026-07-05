@@ -103,6 +103,7 @@ model Author {
   royalties               Royalty[]
   agentOutputs            AgentOutput[]
   blockchainRegistrations BlockchainRegistration[]
+  referralLinks           BookReferralLink[]
 }
 
 model Book {
@@ -155,7 +156,29 @@ model Book {
   library                 ReaderLibrary[]
   agentOutputs            AgentOutput[]
   blockchainRegistrations BlockchainRegistration[]
+  referralLinks           BookReferralLink[]
 
+  @@index([authorId])
+}
+
+/** Shareable, tracked referral link for a book (analytics only — no payouts). */
+model BookReferralLink {
+  id            String   @id @default(cuid())
+  bookId        String
+  authorId      String
+  code          String   @unique
+  label         String?
+  isActive      Boolean  @default(true)
+  clickCount    Int      @default(0)
+  checkoutCount Int      @default(0)
+  saleCount     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
   @@index([authorId])
 }
 

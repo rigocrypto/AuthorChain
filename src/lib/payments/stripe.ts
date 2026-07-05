@@ -43,6 +43,9 @@ export type CheckoutInput = {
   amount: number;
   currency: string;
   coverUrl?: string | null;
+  /** Optional referral attribution (analytics only). */
+  referralCode?: string | null;
+  referralLinkId?: string | null;
 };
 
 /**
@@ -79,6 +82,8 @@ export async function createCheckoutSession(
       bookId: input.bookId,
       authorId: input.authorId,
       bookSlug: input.bookSlug,
+      ...(input.referralCode ? { referralCode: input.referralCode } : {}),
+      ...(input.referralLinkId ? { referralLinkId: input.referralLinkId } : {}),
     },
   });
 

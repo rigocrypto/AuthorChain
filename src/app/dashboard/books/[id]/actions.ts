@@ -15,6 +15,10 @@ import {
   updateBookExtendedDetails,
 } from "@/lib/data/books";
 import {
+  getOrCreateReferralLink,
+  setReferralActive,
+} from "@/lib/data/referrals";
+import {
   storeManuscriptForBook,
   finalizeManuscriptForBook,
   resolveManuscriptType,
@@ -560,6 +564,28 @@ export async function finalizeManuscriptUploadAction(
 
   revalidatePath(`/dashboard/books/${bookId}`);
   return { ok: true };
+}
+
+/** Create (or ensure) the book's referral link. Author-scoped. */
+export async function createReferralLinkAction(formData: FormData): Promise<void> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return;
+
+  await getOrCreateReferralLink(bookId, author.id);
+  revalidatePath(`/dashboard/books/${bookId}`);
+}
+
+/** Activate / deactivate a referral link. Author-scoped. */
+export async function toggleReferralLinkAction(formData: FormData): Promise<void> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  const linkId = String(formData.get("linkId") ?? "");
+  if (!bookId || !linkId) return;
+
+  const activate = String(formData.get("activate") ?? "") === "true";
+  await setReferralActive(linkId, author.id, activate);
+  revalidatePath(`/dashboard/books/${bookId}`);
 }
 
 export async function registerProofAction(formData: FormData): Promise<void> {

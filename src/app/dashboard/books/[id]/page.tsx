@@ -20,6 +20,8 @@ import {
   getExplorerAddressUrl,
 } from "@/lib/blockchain/registry";
 import { registerProofAction } from "./actions";
+import { ReferralCard } from "./referral-card";
+import { getReferralForBook } from "@/lib/data/referrals";
 import { BookActionButton } from "@/components/dashboard/book-actions";
 import {
   publishBookAction,
@@ -68,7 +70,7 @@ export default async function BookDetailPage({
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 
-  const [registration, manuscript, cover, barcode, preview, backCover] =
+  const [registration, manuscript, cover, barcode, preview, backCover, referral] =
     await Promise.all([
       getRegistrationForBook(id),
       getPrimaryBookFile(id),
@@ -76,7 +78,9 @@ export default async function BookDetailPage({
       getPrimaryAsset(id, "BARCODE"),
       getPrimaryAsset(id, "PREVIEW"),
       getPrimaryAsset(id, "BACK_COVER"),
+      getReferralForBook(id, author.id),
     ]);
+  const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const proofHash = bookRegistrationHash(book);
   const usesRealFileHash = Boolean(book.fileHash);
   const directUpload = storageSupportsDirectUpload();
@@ -460,6 +464,17 @@ export default async function BookDetailPage({
             Unpublish and archive never delete your manuscript, cover, on-chain proof,
             sales, or readers&apos; access — your history stays auditable.
           </p>
+        </Card>
+
+        {/* Share & referral link */}
+        <Card className="lg:col-span-2">
+          <CardTitle>Share &amp; Referral Link</CardTitle>
+          <p className="mt-1 text-sm text-muted">
+            {isPublic
+              ? "Share a trackable link to this book. It counts clicks, checkouts started, and completed sales."
+              : "Publish this book to activate its referral link. You can create the link now — it starts tracking once the book is live."}
+          </p>
+          <ReferralCard bookId={book.id} referral={referral} appBaseUrl={appBaseUrl} />
         </Card>
 
         {/* Proof of authorship */}

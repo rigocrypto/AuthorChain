@@ -23,6 +23,7 @@ export function BookPreview({
   price,
   currency,
   stripeReady,
+  refCode,
 }: {
   bookId: string;
   slug: string;
@@ -36,6 +37,7 @@ export function BookPreview({
   price: number;
   currency: string;
   stripeReady: boolean;
+  refCode?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -169,6 +171,7 @@ export function BookPreview({
                 {stripeReady ? (
                   <form action={startCheckoutAction}>
                     <input type="hidden" name="slug" value={slug} />
+                    {refCode ? <input type="hidden" name="ref" value={refCode} /> : null}
                     <Button type="submit">
                       Buy ebook · ${price.toFixed(2)} {currency}
                     </Button>

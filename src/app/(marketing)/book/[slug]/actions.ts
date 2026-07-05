@@ -1,7 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { getPublicBookBySlug } from "@/lib/data/books";
+import {
+  resolveReferralForCheckout,
+  incrementReferralCheckout,
+} from "@/lib/data/referrals";
 import { createCheckoutSession, isStripeConfigured } from "@/lib/payments/stripe";
 
 /**
@@ -22,6 +27,21 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
     redirect(`/book/${slug}?error=payments_unavailable`);
   }
 
+  // Referral attribution (analytics only; never blocks checkout). Prefer an
+  // explicit ?ref from the form, falling back to the /r/[code] cookie.
+  let referral: { linkId: string; code: string } | null = null;
+  try {
+    const refFromForm = String(formData.get("ref") ?? "").trim();
+    const refFromCookie = (await cookies()).get("authorchain_ref")?.value ?? "";
+    const refCode = refFromForm || refFromCookie;
+    if (refCode) {
+      referral = await resolveReferralForCheckout(refCode, book.id);
+      if (referral) await incrementReferralCheckout(referral.linkId);
+    }
+  } catch {
+    referral = null;
+  }
+
   // Stripe fetches the product image from a public URL — only send the cover's
   // controlled route when the app URL is publicly reachable (not localhost).
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
@@ -40,6 +60,8 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
     amount: book.price,
     currency: book.currency,
     coverUrl,
+    referralCode: referral?.code ?? null,
+    referralLinkId: referral?.linkId ?? null,
   });
 
   redirect(url);

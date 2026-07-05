@@ -1,6 +1,7 @@
 import type Stripe from "stripe";
 import { getStripe, isStripeConfigured } from "@/lib/payments/stripe";
 import { recordStripeSale } from "@/lib/data/sales";
+import { incrementReferralSale } from "@/lib/data/referrals";
 
 /**
  * Stripe webhook endpoint. Stripe POSTs events here; we verify the signature
@@ -67,6 +68,13 @@ export async function POST(request: Request): Promise<Response> {
       // idempotent, so a retry is safe.
       const message = err instanceof Error ? err.message : "fulfillment failed";
       return new Response(`Fulfillment error: ${message}`, { status: 500 });
+    }
+
+    // Referral attribution (analytics only). Best-effort AFTER fulfillment —
+    // never blocks or fails entitlement creation.
+    const referralLinkId = session.metadata?.referralLinkId;
+    if (referralLinkId) {
+      await incrementReferralSale(referralLinkId);
     }
   }
 
