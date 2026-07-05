@@ -27,6 +27,15 @@ export default async function ExplorePage() {
 
   return (
     <div>
+      {/* Ambient page background */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25"
+          style={{ backgroundImage: "url(/background1.png)" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
+      </div>
+
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
         <div
