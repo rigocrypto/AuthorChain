@@ -14,11 +14,20 @@ export function BookCard({ book }: { book: BookDTO }) {
       href={`/dashboard/books/${book.id}`}
       className="group block overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-primary/60"
     >
-      <div
-        className={`flex aspect-[16/10] items-end bg-gradient-to-br ${book.coverColor} p-4`}
-      >
-        <span className="text-lg font-semibold text-white drop-shadow">{book.title}</span>
-      </div>
+      {book.hasCover ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={`/api/assets/books/${book.id}/cover`}
+          alt={`${book.title} cover`}
+          className="aspect-[2/3] w-full border-b border-border object-cover"
+        />
+      ) : (
+        <div
+          className={`flex aspect-[2/3] w-full items-end bg-gradient-to-br ${book.coverColor} p-4`}
+        >
+          <span className="text-lg font-semibold text-white drop-shadow">{book.title}</span>
+        </div>
+      )}
       <div className="p-4">
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs text-muted">{book.category}</span>

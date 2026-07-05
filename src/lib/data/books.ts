@@ -22,6 +22,8 @@ export type BookDTO = {
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
   coverColor: string;
   coverUrl: string | null;
+  /** Whether a primary cover asset exists (served via /api/assets/books/[id]/cover). */
+  hasCover: boolean;
   /** sha-256 of the uploaded manuscript, if any (drives the real proof hash). */
   fileHash: string | null;
   // Publishing metadata (never includes storage keys/paths).
@@ -40,7 +42,12 @@ export type BookDTO = {
 
 type BookRow = Prisma.BookGetPayload<object>;
 
-function toDTO(book: BookRow, unitsSold = 0, earningsUsdc = 0): BookDTO {
+function toDTO(
+  book: BookRow,
+  unitsSold = 0,
+  earningsUsdc = 0,
+  hasCover = false,
+): BookDTO {
   return {
     id: book.id,
     authorId: book.authorId,
@@ -55,6 +62,7 @@ function toDTO(book: BookRow, unitsSold = 0, earningsUsdc = 0): BookDTO {
     status: book.status,
     coverColor: coverGradient(book.id),
     coverUrl: book.coverUrl,
+    hasCover,
     fileHash: book.fileHash,
     isbn13: book.isbn13,
     isbn10: book.isbn10,
@@ -94,12 +102,19 @@ export async function listAuthorBooks(authorId: string): Promise<BookDTO[]> {
     prisma.book.findMany({
       where: { authorId },
       orderBy: { createdAt: "desc" },
+      include: {
+        assets: {
+          where: { assetType: "COVER", isPrimary: true },
+          select: { id: true },
+          take: 1,
+        },
+      },
     }),
     salesByBook(authorId),
   ]);
   return books.map((b) => {
     const s = agg.get(b.id);
-    return toDTO(b, s?.units ?? 0, s?.revenue ?? 0);
+    return toDTO(b, s?.units ?? 0, s?.revenue ?? 0, b.assets.length > 0);
   });
 }
 
