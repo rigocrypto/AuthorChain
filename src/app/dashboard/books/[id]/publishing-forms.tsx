@@ -16,8 +16,17 @@ import {
   updateBookDetailsAction,
   updateBookExtendedDetailsAction,
   generateBarcodeAction,
+  savePrintSettingsAction,
   type PublishingState,
 } from "./actions";
+import {
+  TRIM_SIZE_LABELS,
+  INTERIOR_COLOR_LABELS,
+  PAPER_TYPE_LABELS,
+  BINDING_LABELS,
+  COVER_FINISH_LABELS,
+} from "@/lib/publishing/print";
+import type { PrintSettingsDTO } from "@/lib/data/print-settings";
 
 const initial: PublishingState = {};
 
@@ -548,6 +557,170 @@ export function GenerateBarcodeForm({
       {disabled ? (
         <p className="text-xs text-muted">Save a valid ISBN-13 to enable barcode generation.</p>
       ) : null}
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+/** Render `<option>`s from a label map keyed by enum value. */
+function enumOptions(labels: Record<string, string>) {
+  return Object.entries(labels).map(([value, label]) => (
+    <option key={value} value={value}>
+      {label}
+    </option>
+  ));
+}
+
+/**
+ * Edit a book's print edition settings (display/metadata only). The spine width
+ * is derived server-side from page count + paper type on save.
+ */
+export function PrintEditionForm({
+  bookId,
+  defaults,
+}: {
+  bookId: string;
+  defaults: PrintSettingsDTO | null;
+}) {
+  const [state, action, pending] = useActionState(savePrintSettingsAction, initial);
+  const v = (x: string | number | null | undefined) =>
+    x === null || x === undefined ? "" : String(x);
+  const d = defaults;
+  const [trimSize, setTrimSize] = useState(d?.trimSize ?? "US_TRADE_6X9");
+
+  return (
+    <form action={action} className="mt-4 space-y-4">
+      <input type="hidden" name="bookId" value={bookId} />
+
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          name="isAvailable"
+          defaultChecked={d?.isAvailable ?? false}
+          className="h-4 w-4 rounded border-border"
+        />
+        Show print edition as available on the public book page
+      </label>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs text-muted">Trim size</label>
+          <select
+            name="trimSize"
+            defaultValue={d?.trimSize ?? "US_TRADE_6X9"}
+            onChange={(e) => setTrimSize(e.target.value as typeof trimSize)}
+            className={field}
+          >
+            {enumOptions(TRIM_SIZE_LABELS)}
+          </select>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Interior color</label>
+          <select name="interiorColor" defaultValue={d?.interiorColor ?? "BLACK_AND_WHITE"} className={field}>
+            {enumOptions(INTERIOR_COLOR_LABELS)}
+          </select>
+        </div>
+      </div>
+
+      {trimSize === "CUSTOM" ? (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs text-muted">Custom width (in)</label>
+            <input name="trimWidthIn" type="number" min="0" step="0.01" defaultValue={v(d?.trimWidthIn)} className={field} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted">Custom height (in)</label>
+            <input name="trimHeightIn" type="number" min="0" step="0.01" defaultValue={v(d?.trimHeightIn)} className={field} />
+          </div>
+        </div>
+      ) : null}
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs text-muted">Paper</label>
+          <select name="paperType" defaultValue={d?.paperType ?? "WHITE"} className={field}>
+            {enumOptions(PAPER_TYPE_LABELS)}
+          </select>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Cover finish</label>
+          <select name="coverFinish" defaultValue={d?.coverFinish ?? "MATTE"} className={field}>
+            {enumOptions(COVER_FINISH_LABELS)}
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs text-muted">Binding</label>
+        <select name="binding" defaultValue={d?.binding ?? "PERFECT_BOUND"} className={field}>
+          {enumOptions(BINDING_LABELS)}
+        </select>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs text-muted">Print page count</label>
+          <input name="pageCount" type="number" min="1" defaultValue={v(d?.pageCount)} className={field} />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Spine width (auto)</label>
+          <input
+            readOnly
+            value={d?.spineWidthIn != null ? `${d.spineWidthIn.toFixed(3)} in` : "—"}
+            aria-label="Spine width (auto-calculated)"
+            className={`${field} text-muted`}
+          />
+        </div>
+      </div>
+      <p className="text-xs text-muted">
+        Spine width is estimated from page count + paper and recalculated on save.
+      </p>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs text-muted">Print ISBN-13 (optional)</label>
+          <input name="printIsbn13" defaultValue={v(d?.printIsbn13)} placeholder="978-…" className={field} />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Imprint (optional)</label>
+          <input name="imprintName" defaultValue={v(d?.imprintName)} className={field} />
+        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="sm:col-span-2">
+          <label className="mb-1 block text-xs text-muted">Print price (optional)</label>
+          <input name="price" type="number" min="0" step="0.01" defaultValue={v(d?.price)} className={field} />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Currency</label>
+          <input name="currency" defaultValue={d?.currency ?? "USD"} className={field} />
+        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs text-muted">Weight (oz, optional)</label>
+          <input name="weightOz" type="number" min="0" step="0.1" defaultValue={v(d?.weightOz)} className={field} />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Distributor (optional)</label>
+          <input name="distributor" defaultValue={v(d?.distributor)} placeholder="e.g. Global print network" className={field} />
+        </div>
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs text-muted">Availability note (optional)</label>
+        <input name="availabilityNote" defaultValue={v(d?.availabilityNote)} placeholder="Ships in 5–7 business days" className={field} />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs text-muted">Print notes (optional, public)</label>
+        <textarea name="printNotes" rows={2} defaultValue={v(d?.printNotes)} className={field} />
+      </div>
+
+      <Button type="submit" variant="secondary" disabled={pending}>
+        {pending ? "Saving…" : "Save print settings"}
+      </Button>
       <Feedback state={state} />
     </form>
   );

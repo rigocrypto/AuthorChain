@@ -1,7 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type { BookFormat } from "@prisma/client";
+import type {
+  BookFormat,
+  PrintTrimSize,
+  PrintInteriorColor,
+  PrintPaperType,
+  PrintBinding,
+  PrintCoverFinish,
+} from "@prisma/client";
 import { getCurrentAuthor } from "@/lib/auth/session";
 import {
   getStorage,
@@ -18,6 +25,7 @@ import {
   getOrCreateReferralLink,
   setReferralActive,
 } from "@/lib/data/referrals";
+import { upsertPrintSettings } from "@/lib/data/print-settings";
 import {
   storeManuscriptForBook,
   finalizeManuscriptForBook,
@@ -586,6 +594,116 @@ export async function toggleReferralLinkAction(formData: FormData): Promise<void
   const activate = String(formData.get("activate") ?? "") === "true";
   await setReferralActive(linkId, author.id, activate);
   revalidatePath(`/dashboard/books/${bookId}`);
+}
+
+const TRIM_SIZES: PrintTrimSize[] = [
+  "POCKET_4_25X6_87",
+  "DIGEST_5_5X8_5",
+  "US_TRADE_6X9",
+  "ROYAL_6_14X9_21",
+  "US_LETTER_8_5X11",
+  "SQUARE_8_5X8_5",
+  "CUSTOM",
+];
+const INTERIOR_COLORS: PrintInteriorColor[] = [
+  "BLACK_AND_WHITE",
+  "STANDARD_COLOR",
+  "PREMIUM_COLOR",
+];
+const PAPER_TYPES: PrintPaperType[] = ["WHITE", "CREAM", "COLOR"];
+const BINDINGS: PrintBinding[] = [
+  "PERFECT_BOUND",
+  "HARDCOVER_CASE_LAMINATE",
+  "HARDCOVER_DUST_JACKET",
+  "SADDLE_STITCH",
+  "COIL_WIRE_O",
+];
+const COVER_FINISHES: PrintCoverFinish[] = ["MATTE", "GLOSSY"];
+
+/**
+ * Save a book's print edition settings (display/metadata only). Author-scoped;
+ * derives the spine width server-side. Never touches the ebook price, proof, or
+ * manuscript.
+ */
+export async function savePrintSettingsAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const enumOr = <T extends string>(key: string, allowed: T[], fallback: T): T => {
+    const v = String(formData.get(key) ?? "");
+    return (allowed as string[]).includes(v) ? (v as T) : fallback;
+  };
+  const posInt = (key: string): number | null => {
+    const raw = String(formData.get(key) ?? "").trim();
+    if (!raw) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : null;
+  };
+  const posFloat = (key: string): number | null => {
+    const raw = String(formData.get(key) ?? "").trim();
+    if (!raw) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? n : null;
+  };
+  const str = (key: string, max: number): string | null => {
+    const v = String(formData.get(key) ?? "").trim();
+    return v ? v.slice(0, max) : null;
+  };
+
+  const trimSize = enumOr("trimSize", TRIM_SIZES, "US_TRADE_6X9");
+  const trimWidthIn = posFloat("trimWidthIn");
+  const trimHeightIn = posFloat("trimHeightIn");
+  if (trimSize === "CUSTOM" && (!trimWidthIn || !trimHeightIn)) {
+    return { error: "Enter positive width and height for a custom trim size." };
+  }
+
+  let printIsbn13: string | null = null;
+  const isbnRaw = String(formData.get("printIsbn13") ?? "").trim();
+  if (isbnRaw) {
+    const chk = checkIsbn13(isbnRaw);
+    if (!chk.ok) return { error: `Print ISBN-13: ${chk.error}` };
+    printIsbn13 = chk.isbn13;
+  }
+
+  const priceRaw = String(formData.get("price") ?? "").trim();
+  let price: number | null = null;
+  if (priceRaw) {
+    const n = Number(priceRaw);
+    if (!Number.isFinite(n) || n < 0) return { error: "Enter a valid print price." };
+    price = n;
+  }
+
+  const saved = await upsertPrintSettings(bookId, author.id, {
+    isAvailable: String(formData.get("isAvailable") ?? "") === "on",
+    trimSize,
+    trimWidthIn: trimSize === "CUSTOM" ? trimWidthIn : null,
+    trimHeightIn: trimSize === "CUSTOM" ? trimHeightIn : null,
+    interiorColor: enumOr("interiorColor", INTERIOR_COLORS, "BLACK_AND_WHITE"),
+    paperType: enumOr("paperType", PAPER_TYPES, "WHITE"),
+    binding: enumOr("binding", BINDINGS, "PERFECT_BOUND"),
+    coverFinish: enumOr("coverFinish", COVER_FINISHES, "MATTE"),
+    pageCount: posInt("pageCount"),
+    printIsbn13,
+    imprintName: str("imprintName", 200),
+    price,
+    currency: (str("currency", 8) ?? "USD").toUpperCase(),
+    weightOz: posFloat("weightOz"),
+    distributor: str("distributor", 200),
+    availabilityNote: str("availabilityNote", 500),
+    printNotes: str("printNotes", 1000),
+  });
+  if (!saved) return { error: "Book not found." };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
+  return { ok: true };
 }
 
 export async function registerProofAction(formData: FormData): Promise<void> {

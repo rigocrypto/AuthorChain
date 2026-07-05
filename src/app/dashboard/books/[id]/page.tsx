@@ -22,6 +22,7 @@ import {
 import { registerProofAction } from "./actions";
 import { ReferralCard } from "./referral-card";
 import { getReferralForBook } from "@/lib/data/referrals";
+import { getPrintSettings } from "@/lib/data/print-settings";
 import { BookActionButton } from "@/components/dashboard/book-actions";
 import {
   publishBookAction,
@@ -38,6 +39,7 @@ import {
   PreviewUploadForm,
   PublishingMetadataForm,
   GenerateBarcodeForm,
+  PrintEditionForm,
 } from "./publishing-forms";
 
 export const metadata: Metadata = { title: "Book details" };
@@ -70,7 +72,7 @@ export default async function BookDetailPage({
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 
-  const [registration, manuscript, cover, barcode, preview, backCover, referral] =
+  const [registration, manuscript, cover, barcode, preview, backCover, referral, printSettings] =
     await Promise.all([
       getRegistrationForBook(id),
       getPrimaryBookFile(id),
@@ -79,6 +81,7 @@ export default async function BookDetailPage({
       getPrimaryAsset(id, "PREVIEW"),
       getPrimaryAsset(id, "BACK_COVER"),
       getReferralForBook(id, author.id),
+      getPrintSettings(id, author.id),
     ]);
   const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const proofHash = bookRegistrationHash(book);
@@ -475,6 +478,17 @@ export default async function BookDetailPage({
               : "Publish this book to activate its referral link. You can create the link now — it starts tracking once the book is live."}
           </p>
           <ReferralCard bookId={book.id} referral={referral} appBaseUrl={appBaseUrl} />
+        </Card>
+
+        {/* Print edition settings */}
+        <Card className="lg:col-span-2">
+          <CardTitle>Print edition</CardTitle>
+          <p className="mt-1 text-sm text-muted">
+            Physical-edition specs (trim, paper, binding, finish) and display-only
+            pricing. These describe a print edition for your public page — AuthorChain
+            doesn&apos;t run print fulfillment yet, so nothing is ordered or charged here.
+          </p>
+          <PrintEditionForm bookId={book.id} defaults={printSettings} />
         </Card>
 
         {/* Proof of authorship */}

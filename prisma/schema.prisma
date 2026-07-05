@@ -86,6 +86,43 @@ enum LicenseType {
   STANDARD
 }
 
+// --- Print edition settings (display/metadata only — no real print-on-demand) ---
+
+enum PrintTrimSize {
+  POCKET_4_25X6_87
+  DIGEST_5_5X8_5
+  US_TRADE_6X9
+  ROYAL_6_14X9_21
+  US_LETTER_8_5X11
+  SQUARE_8_5X8_5
+  CUSTOM
+}
+
+enum PrintInteriorColor {
+  BLACK_AND_WHITE
+  STANDARD_COLOR
+  PREMIUM_COLOR
+}
+
+enum PrintPaperType {
+  WHITE
+  CREAM
+  COLOR
+}
+
+enum PrintBinding {
+  PERFECT_BOUND
+  HARDCOVER_CASE_LAMINATE
+  HARDCOVER_DUST_JACKET
+  SADDLE_STITCH
+  COIL_WIRE_O
+}
+
+enum PrintCoverFinish {
+  MATTE
+  GLOSSY
+}
+
 model Author {
   id            String   @id @default(cuid())
   name          String
@@ -104,6 +141,7 @@ model Author {
   agentOutputs            AgentOutput[]
   blockchainRegistrations BlockchainRegistration[]
   referralLinks           BookReferralLink[]
+  printSettings           BookPrintSettings[]
 }
 
 model Book {
@@ -157,6 +195,54 @@ model Book {
   agentOutputs            AgentOutput[]
   blockchainRegistrations BlockchainRegistration[]
   referralLinks           BookReferralLink[]
+  printSettings           BookPrintSettings?
+
+  @@index([authorId])
+}
+
+/**
+ * Per-book print edition settings. Display/metadata only — AuthorChain does not
+ * (yet) run real print-on-demand fulfillment. `isAvailable` gates whether the
+ * print details appear on the public book page. One row per book.
+ */
+model BookPrintSettings {
+  id       String  @id @default(cuid())
+  bookId   String  @unique
+  authorId String
+
+  // Whether the print edition is shown as available on the public page.
+  isAvailable Boolean @default(false)
+
+  // Physical format.
+  trimSize      PrintTrimSize      @default(US_TRADE_6X9)
+  trimWidthIn   Float? // used when trimSize = CUSTOM (else derived from preset)
+  trimHeightIn  Float?
+  interiorColor PrintInteriorColor @default(BLACK_AND_WHITE)
+  paperType     PrintPaperType     @default(WHITE)
+  binding       PrintBinding       @default(PERFECT_BOUND)
+  coverFinish   PrintCoverFinish   @default(MATTE)
+
+  // Page count drives the derived spine width (persisted for display).
+  pageCount    Int?
+  spineWidthIn Float?
+
+  // Print-edition identity + display-only pricing (separate from the ebook).
+  printIsbn13 String?
+  imprintName String?
+  price       Decimal? @db.Decimal(12, 2)
+  currency    String   @default("USD")
+
+  // Optional display metadata.
+  weightOz         Float?
+  distributor      String?
+  availabilityNote String?
+  printNotes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([authorId])
 }

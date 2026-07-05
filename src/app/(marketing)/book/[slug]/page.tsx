@@ -6,6 +6,14 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getPublicBookBySlug } from "@/lib/data/books";
+import { getPublicPrintSettings } from "@/lib/data/print-settings";
+import {
+  resolveTrimDimensions,
+  INTERIOR_COLOR_LABELS,
+  PAPER_TYPE_LABELS,
+  BINDING_LABELS,
+  COVER_FINISH_LABELS,
+} from "@/lib/publishing/print";
 import { ProofSeal } from "@/components/proof-seal";
 import { ReaderBackground } from "@/components/reader-background";
 import { getChainConfig, getExplorerTxUrl } from "@/lib/blockchain/registry";
@@ -41,6 +49,23 @@ export default async function PublicBookPage({
 
   const stripeReady = isStripeConfigured();
   const chain = getChainConfig();
+  const print = await getPublicPrintSettings(book.id);
+  const printTrim = print ? resolveTrimDimensions(print) : null;
+  const printDetails = print
+    ? ([
+        ["Binding", BINDING_LABELS[print.binding]],
+        printTrim ? ["Trim size", printTrim.label] : null,
+        ["Interior", INTERIOR_COLOR_LABELS[print.interiorColor]],
+        ["Paper", PAPER_TYPE_LABELS[print.paperType]],
+        ["Cover finish", COVER_FINISH_LABELS[print.coverFinish]],
+        print.pageCount ? ["Pages", String(print.pageCount)] : null,
+        print.spineWidthIn ? ["Spine width", `${print.spineWidthIn.toFixed(3)} in`] : null,
+        print.weightOz ? ["Weight", `${print.weightOz} oz`] : null,
+        print.printIsbn13 ? ["Print ISBN-13", print.printIsbn13] : null,
+        print.imprintName ? ["Imprint", print.imprintName] : null,
+        print.distributor ? ["Distribution", print.distributor] : null,
+      ].filter(Boolean) as [string, string][])
+    : [];
 
   const fmt = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
   const details = (
@@ -280,20 +305,64 @@ export default async function PublicBookPage({
             </section>
           ) : null}
 
-          {/* Print edition — coming soon */}
+          {/* Print edition */}
           <section className="rounded-2xl border border-border bg-surface p-6">
             <div className="flex items-center justify-between gap-2">
               <h2 className="font-semibold">Print edition</h2>
-              <StatusBadge tone="muted">Coming soon</StatusBadge>
+              {print ? (
+                <StatusBadge tone="accent">Available</StatusBadge>
+              ) : (
+                <StatusBadge tone="muted">Coming soon</StatusBadge>
+              )}
             </div>
-            <p className="mt-1 max-w-prose text-sm text-muted">
-              Paperback and hardcover editions with print-ready covers are coming to
-              AuthorChain — order a physical copy delivered to your door, straight from
-              an independent author.
-            </p>
-            <Button className="mt-4" variant="secondary" disabled>
-              Order print edition (coming soon)
-            </Button>
+
+            {print ? (
+              <>
+                <p className="mt-1 max-w-prose text-sm text-muted">
+                  A physical edition of this book is available.
+                  {print.availabilityNote ? ` ${print.availabilityNote}` : ""}
+                </p>
+                {print.price != null ? (
+                  <div className="mt-3 text-xl font-semibold">
+                    ${print.price.toFixed(2)} {print.currency}
+                  </div>
+                ) : null}
+                {printDetails.length ? (
+                  <dl className="mt-3 space-y-2 text-sm sm:max-w-md">
+                    {printDetails.map(([k, val]) => (
+                      <div key={k} className="flex justify-between gap-4">
+                        <dt className="text-muted">{k}</dt>
+                        <dd className={`text-right ${k === "Print ISBN-13" ? "font-mono text-xs" : ""}`}>
+                          {val}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : null}
+                {print.printNotes ? (
+                  <p className="mt-3 max-w-prose whitespace-pre-line text-sm text-muted">
+                    {print.printNotes}
+                  </p>
+                ) : null}
+                <Button className="mt-4" variant="secondary" disabled>
+                  Order print edition (coming soon)
+                </Button>
+                <p className="mt-2 text-xs text-muted">
+                  Print specifications shown for reference. Online print ordering is coming soon.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="mt-1 max-w-prose text-sm text-muted">
+                  Paperback and hardcover editions with print-ready covers are coming to
+                  AuthorChain — order a physical copy delivered to your door, straight from
+                  an independent author.
+                </p>
+                <Button className="mt-4" variant="secondary" disabled>
+                  Order print edition (coming soon)
+                </Button>
+              </>
+            )}
           </section>
         </div>
       </div>
