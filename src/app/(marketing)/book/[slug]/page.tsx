@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/page-header";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -34,6 +35,18 @@ export default async function PublicBookPage({
 
   return (
     <PageShell>
+      <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        <Link
+          href="/explore"
+          className="inline-flex items-center gap-1 text-muted transition-colors hover:text-foreground"
+        >
+          ← Back to ReaderChain
+        </Link>
+        <Link href="/reader/library" className="text-muted transition-colors hover:text-foreground">
+          My Library →
+        </Link>
+      </div>
+
       <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
         {/* Cover */}
         <div className="relative">
