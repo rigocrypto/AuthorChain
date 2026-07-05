@@ -24,6 +24,8 @@ export type BookDTO = {
   coverUrl: string | null;
   /** Whether a primary cover asset exists (served via /api/assets/books/[id]/cover). */
   hasCover: boolean;
+  /** Whether the book has a successful (REGISTERED) on-chain proof of authorship. */
+  proofVerified: boolean;
   /** sha-256 of the uploaded manuscript, if any (drives the real proof hash). */
   fileHash: string | null;
   // Publishing metadata (never includes storage keys/paths).
@@ -47,6 +49,7 @@ function toDTO(
   unitsSold = 0,
   earningsUsdc = 0,
   hasCover = false,
+  proofVerified = false,
 ): BookDTO {
   return {
     id: book.id,
@@ -63,6 +66,7 @@ function toDTO(
     coverColor: coverGradient(book.id),
     coverUrl: book.coverUrl,
     hasCover,
+    proofVerified,
     fileHash: book.fileHash,
     isbn13: book.isbn13,
     isbn10: book.isbn10,
@@ -108,13 +112,24 @@ export async function listAuthorBooks(authorId: string): Promise<BookDTO[]> {
           select: { id: true },
           take: 1,
         },
+        blockchainRegistrations: {
+          where: { status: "REGISTERED" },
+          select: { id: true },
+          take: 1,
+        },
       },
     }),
     salesByBook(authorId),
   ]);
   return books.map((b) => {
     const s = agg.get(b.id);
-    return toDTO(b, s?.units ?? 0, s?.revenue ?? 0, b.assets.length > 0);
+    return toDTO(
+      b,
+      s?.units ?? 0,
+      s?.revenue ?? 0,
+      b.assets.length > 0,
+      b.blockchainRegistrations.length > 0,
+    );
   });
 }
 
@@ -154,6 +169,11 @@ export async function getPublicBookBySlug(
         select: { id: true },
         take: 1,
       },
+      blockchainRegistrations: {
+        where: { status: "REGISTERED" },
+        select: { id: true },
+        take: 1,
+      },
     },
   });
   if (!book) return null;
@@ -161,6 +181,7 @@ export async function getPublicBookBySlug(
     ...toDTO(book),
     authorName: book.author.name,
     hasCover: book.assets.length > 0,
+    proofVerified: book.blockchainRegistrations.length > 0,
   };
 }
 

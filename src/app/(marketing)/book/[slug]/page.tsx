@@ -5,6 +5,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getPublicBookBySlug } from "@/lib/data/books";
+import { ProofSeal } from "@/components/proof-seal";
 import { isStripeConfigured } from "@/lib/payments/stripe";
 import { startCheckoutAction } from "./actions";
 
@@ -35,20 +36,29 @@ export default async function PublicBookPage({
     <PageShell>
       <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
         {/* Cover */}
-        {book.hasCover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={`/api/assets/books/${book.id}/cover`}
-            alt={`${book.title} cover`}
-            className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
-          />
-        ) : (
-          <div
-            className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${book.coverColor} p-5`}
-          >
-            <span className="text-2xl font-bold text-white drop-shadow">{book.title}</span>
-          </div>
-        )}
+        <div className="relative">
+          {book.hasCover ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={`/api/assets/books/${book.id}/cover`}
+              alt={`${book.title} cover`}
+              className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
+            />
+          ) : (
+            <div
+              className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${book.coverColor} p-5`}
+            >
+              <span className="text-2xl font-bold text-white drop-shadow">{book.title}</span>
+            </div>
+          )}
+          {book.proofVerified ? (
+            <ProofSeal
+              variant="full"
+              title="Verified on-chain proof of authorship"
+              className="absolute bottom-3 right-3 w-[38%] max-w-[128px] -rotate-6 drop-shadow-lg"
+            />
+          ) : null}
+        </div>
 
         {/* Details */}
         <div>

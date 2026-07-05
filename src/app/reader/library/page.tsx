@@ -4,6 +4,7 @@ import { PageShell } from "@/components/page-header";
 import { Card, CardTitle } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { ProofSeal } from "@/components/proof-seal";
 import { getCurrentReader } from "@/lib/auth/reader-session";
 import { listReaderLibrary } from "@/lib/data/reader";
 
@@ -63,20 +64,28 @@ export default async function ReaderLibraryPage() {
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((b) => (
             <Card key={b.bookId} className="flex flex-col">
-              {b.hasCover ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={`/api/assets/books/${b.bookId}/cover`}
-                  alt={`${b.title} cover`}
-                  className="aspect-[2/3] w-full rounded-lg border border-border object-cover"
-                />
-              ) : (
-                <div
-                  className={`flex aspect-[2/3] w-full items-end rounded-lg bg-gradient-to-br ${b.coverColor} p-3`}
-                >
-                  <span className="text-sm font-bold text-white drop-shadow">{b.title}</span>
-                </div>
-              )}
+              <div className="relative">
+                {b.hasCover ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={`/api/assets/books/${b.bookId}/cover`}
+                    alt={`${b.title} cover`}
+                    className="aspect-[2/3] w-full rounded-lg border border-border object-cover"
+                  />
+                ) : (
+                  <div
+                    className={`flex aspect-[2/3] w-full items-end rounded-lg bg-gradient-to-br ${b.coverColor} p-3`}
+                  >
+                    <span className="text-sm font-bold text-white drop-shadow">{b.title}</span>
+                  </div>
+                )}
+                {b.proofVerified ? (
+                  <ProofSeal
+                    variant="compact"
+                    className="absolute bottom-2 right-2 w-[28%] max-w-[60px] -rotate-6 drop-shadow-md"
+                  />
+                ) : null}
+              </div>
               <CardTitle>{b.title}</CardTitle>
               <p className="text-sm text-muted">by {b.authorName}</p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
