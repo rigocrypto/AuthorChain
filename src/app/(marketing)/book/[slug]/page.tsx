@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getPublicBookBySlug } from "@/lib/data/books";
 import { ProofSeal } from "@/components/proof-seal";
+import { ReaderBackground } from "@/components/reader-background";
 import { getChainConfig, getExplorerTxUrl } from "@/lib/blockchain/registry";
 import { isStripeConfigured } from "@/lib/payments/stripe";
 import { startCheckoutAction } from "./actions";
@@ -66,6 +67,7 @@ export default async function PublicBookPage({
 
   return (
     <PageShell>
+      <ReaderBackground />
       <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
         <Link
           href="/explore"

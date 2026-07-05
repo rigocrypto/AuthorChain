@@ -3,6 +3,7 @@ import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
+import { ReaderBackground } from "@/components/reader-background";
 import { listPublishedBooks } from "@/lib/data/books";
 
 export const metadata: Metadata = {
@@ -28,13 +29,7 @@ export default async function ExplorePage() {
   return (
     <div>
       {/* Ambient page background */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-25"
-          style={{ backgroundImage: "url(/background1.png)" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
-      </div>
+      <ReaderBackground />
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
