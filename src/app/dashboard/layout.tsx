@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { getOptionalAuthor } from "@/lib/auth/session";
 import { getPrivyUser } from "@/lib/auth/privy";
 
+// Private author area — never index. Titles/files stay out of search results.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({

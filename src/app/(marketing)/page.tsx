@@ -1,9 +1,24 @@
+import type { Metadata } from "next";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
 import { agents, previewAgents } from "@/lib/agents";
 import { listPublishedBooks } from "@/lib/data/books";
+import { organizationJsonLd, websiteJsonLd, jsonLdScript } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "AuthorChain — Publish, Prove, Sell, and Deliver Books",
+  description:
+    "Launch verified digital books with AI-powered publishing tools, on-chain manuscript proof, Stripe checkout, and ReaderChain library access.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "AuthorChain — Publish, Prove, Sell, and Deliver Books",
+    description:
+      "Launch verified digital books with AI-powered publishing tools, on-chain manuscript proof, Stripe checkout, and ReaderChain library access.",
+    url: "/",
+  },
+};
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +42,13 @@ export default async function Home() {
 
   return (
     <div>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript([organizationJsonLd(), websiteJsonLd()]),
+        }}
+      />
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div

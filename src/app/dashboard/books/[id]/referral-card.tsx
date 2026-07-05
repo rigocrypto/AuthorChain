@@ -19,7 +19,7 @@ export function ReferralCard({
   referral: ReferralLinkDTO | null;
   appBaseUrl: string;
 }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
 
   if (!referral) {
     return (
@@ -35,13 +35,14 @@ export function ReferralCard({
     );
   }
 
-  const url = `${appBaseUrl}/r/${referral.code}`;
+  const shareUrl = `${appBaseUrl}/share/${referral.code}`;
+  const trackUrl = `${appBaseUrl}/r/${referral.code}`;
 
-  async function copy() {
+  async function copy(value: string, key: string) {
     try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
+      await navigator.clipboard.writeText(value);
+      setCopied(key);
+      setTimeout(() => setCopied(null), 1500);
     } catch {
       /* clipboard may be blocked; the field is selectable as a fallback */
     }
@@ -49,17 +50,51 @@ export function ReferralCard({
 
   return (
     <div className="mt-3 space-y-4">
-      <div className="flex items-center gap-2">
-        <input
-          readOnly
-          value={url}
-          onFocus={(e) => e.currentTarget.select()}
-          aria-label="Referral link"
-          className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 font-mono text-xs text-foreground"
-        />
-        <Button type="button" variant="secondary" onClick={copy} className="whitespace-nowrap">
-          {copied ? "Copied ✓" : "Copy"}
-        </Button>
+      <div>
+        <label className="mb-1 block text-xs text-muted">
+          Promotional share link{" "}
+          <span className="text-muted/70">— best previews on social platforms</span>
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            readOnly
+            value={shareUrl}
+            onFocus={(e) => e.currentTarget.select()}
+            aria-label="Promotional share link"
+            className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 font-mono text-xs text-foreground"
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => copy(shareUrl, "share")}
+            className="whitespace-nowrap"
+          >
+            {copied === "share" ? "Copied ✓" : "Copy"}
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <label className="mb-1 block text-xs text-muted">
+          Direct tracking link <span className="text-muted/70">— fast redirect (advanced)</span>
+        </label>
+        <div className="flex items-center gap-2">
+          <input
+            readOnly
+            value={trackUrl}
+            onFocus={(e) => e.currentTarget.select()}
+            aria-label="Direct tracking link"
+            className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 font-mono text-xs text-foreground"
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => copy(trackUrl, "track")}
+            className="whitespace-nowrap"
+          >
+            {copied === "track" ? "Copied ✓" : "Copy"}
+          </Button>
+        </div>
       </div>
 
       <dl className="grid grid-cols-3 gap-3 text-center">

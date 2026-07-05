@@ -276,6 +276,17 @@ export async function listPublishedBooks(): Promise<PublishedBookDTO[]> {
   }));
 }
 
+/** Slug + last-modified for public published books — used by the sitemap. */
+export async function listPublishedBookRefs(): Promise<
+  { slug: string; updatedAt: Date }[]
+> {
+  return prisma.book.findMany({
+    where: { status: "PUBLISHED", archivedAt: null },
+    select: { slug: true, updatedAt: true },
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
 /** Generate a URL-safe, unique slug from a title. */
 export async function generateUniqueSlug(title: string): Promise<string> {
   const base =

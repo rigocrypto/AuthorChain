@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import type { BookReferralLink } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { getPublicBookBySlug, type PublicBookDTO } from "@/lib/data/books";
 
 /**
  * Book referral links — shareable, tracked links for a book. Analytics only:
@@ -109,6 +110,21 @@ export async function resolveActiveReferral(
   if (!link || !link.isActive) return null;
   if (link.book.status !== "PUBLISHED" || link.book.archivedAt) return null;
   return { linkId: link.id, slug: link.book.slug };
+}
+
+/**
+ * Resolve an active referral to its public book for the /share/[code] social
+ * landing page. Returns null unless the link is active AND the book is public
+ * (published + not archived) — never exposes drafts/archived/inactive books.
+ */
+export async function resolveShareLanding(
+  code: string,
+): Promise<{ code: string; book: PublicBookDTO } | null> {
+  const ref = await resolveActiveReferral(code);
+  if (!ref) return null;
+  const book = await getPublicBookBySlug(ref.slug);
+  if (!book) return null;
+  return { code, book };
 }
 
 /** Validate a referral code for checkout attribution against a specific book. */

@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { UserMenu } from "@/components/auth/user-menu";
 import { getPrivyUser } from "@/lib/auth/privy";
 
+// Private reader library/reading area — never index.
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function ReaderLayout({

@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { siteConfig, siteUrl } from "@/lib/seo";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,12 +15,41 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "AuthorChain — AI-powered Web3 publishing for authors",
-    template: "%s · AuthorChain",
+    template: "%s | AuthorChain",
   },
-  description:
-    "Upload books, generate AI marketing assets, sell with Stripe & USDC, and register proof of authorship on-chain.",
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
+  keywords: siteConfig.keywords,
+  authors: [{ name: siteConfig.name, url: siteUrl }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
+    title: "AuthorChain — AI-powered Web3 publishing for authors",
+    description: siteConfig.description,
+    url: siteUrl,
+    locale: "en_US",
+  },
+  twitter: {
+    card: siteConfig.twitterCard,
+    title: "AuthorChain — AI-powered Web3 publishing for authors",
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#7c5cff",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

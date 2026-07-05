@@ -5,11 +5,19 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
 import { ReaderBackground } from "@/components/reader-background";
 import { listPublishedBooks } from "@/lib/data/books";
+import { absoluteUrl, jsonLdScript } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "ReaderChain — Discover verified books",
+  title: "ReaderChain — Discover Verified Books",
   description:
-    "Discover verified books from independent authors. Buy directly and build your secure digital library.",
+    "Explore books from independent authors with verified on-chain authorship proof, secure previews, and reader library access.",
+  alternates: { canonical: "/explore" },
+  openGraph: {
+    title: "ReaderChain — Discover Verified Books",
+    description:
+      "Explore books from independent authors with verified on-chain authorship proof, secure previews, and reader library access.",
+    url: "/explore",
+  },
 };
 export const dynamic = "force-dynamic";
 
@@ -26,8 +34,30 @@ export default async function ExplorePage() {
   const books = await listPublishedBooks();
   const featured = books.filter((b) => b.proofVerified).slice(0, 4);
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "ReaderChain — Discover Verified Books",
+    url: absoluteUrl("/explore"),
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: books.length,
+      itemListElement: books.slice(0, 50).map((b, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: absoluteUrl(`/book/${b.slug}`),
+        name: b.title,
+      })),
+    },
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionJsonLd) }}
+      />
       {/* Ambient page background */}
       <ReaderBackground />
 

@@ -18,6 +18,7 @@ import { ProofSeal } from "@/components/proof-seal";
 import { ReaderBackground } from "@/components/reader-background";
 import { getChainConfig, getExplorerTxUrl } from "@/lib/blockchain/registry";
 import { isStripeConfigured } from "@/lib/payments/stripe";
+import { absoluteUrl, metaDescription, bookJsonLd, jsonLdScript } from "@/lib/seo";
 import { startCheckoutAction } from "./actions";
 import { BookPreview } from "./book-preview";
 import { ShareBook } from "./share-book";
@@ -31,7 +32,25 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const book = await getPublicBookBySlug(slug);
-  return { title: book ? book.title : "Book not found" };
+  if (!book) {
+    return { title: "Book not found", robots: { index: false, follow: false } };
+  }
+
+  const title = `${book.title} by ${book.authorName}`;
+  const description = metaDescription(
+    book.subtitle ? `${book.subtitle}. ${book.description}` : book.description,
+  );
+  const url = absoluteUrl(`/book/${book.slug}`);
+
+  // og:image / twitter:image are injected automatically from the colocated
+  // opengraph-image.tsx (Next serves it at a hashed URL) — don't set them here.
+  return {
+    title,
+    description,
+    alternates: { canonical: `/book/${book.slug}` },
+    openGraph: { type: "book", title, description, url },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }
 
 export default async function PublicBookPage({
@@ -97,6 +116,11 @@ export default async function PublicBookPage({
 
   return (
     <PageShell>
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(bookJsonLd(book)) }}
+      />
       <ReaderBackground />
       <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
         <Link
