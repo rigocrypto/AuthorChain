@@ -35,6 +35,19 @@ export type BookDTO = {
   publisherName: string | null;
   publicationDate: string | null;
   edition: string | null;
+  // Extended catalog metadata + credits (public storefront display).
+  pageCount: number | null;
+  readingTimeMinutes: number | null;
+  audience: string | null;
+  whatYouWillLearn: string | null;
+  topics: string | null;
+  acknowledgments: string | null;
+  collaborators: string | null;
+  contributors: string | null;
+  editorName: string | null;
+  coverDesignerName: string | null;
+  illustratorName: string | null;
+  translatorName: string | null;
   unitsSold: number;
   earningsUsdc: number;
   /** Soft-archive timestamp (ISO) or null. Archived = hidden from active list + public. */
@@ -76,6 +89,18 @@ function toDTO(
       ? book.publicationDate.toISOString()
       : null,
     edition: book.edition,
+    pageCount: book.pageCount,
+    readingTimeMinutes: book.readingTimeMinutes,
+    audience: book.audience,
+    whatYouWillLearn: book.whatYouWillLearn,
+    topics: book.topics,
+    acknowledgments: book.acknowledgments,
+    collaborators: book.collaborators,
+    contributors: book.contributors,
+    editorName: book.editorName,
+    coverDesignerName: book.coverDesignerName,
+    illustratorName: book.illustratorName,
+    translatorName: book.translatorName,
     unitsSold,
     earningsUsdc,
     archivedAt: book.archivedAt ? book.archivedAt.toISOString() : null,
@@ -324,6 +349,37 @@ export async function updateBookDetails(
       category: data.category,
       price: new Prisma.Decimal(data.price),
     },
+  });
+}
+
+export type UpdateBookExtendedDetailsInput = {
+  pageCount: number | null;
+  readingTimeMinutes: number | null;
+  audience: string | null;
+  whatYouWillLearn: string | null;
+  topics: string | null;
+  acknowledgments: string | null;
+  collaborators: string | null;
+  contributors: string | null;
+  editorName: string | null;
+  coverDesignerName: string | null;
+  illustratorName: string | null;
+  translatorName: string | null;
+};
+
+/**
+ * Update a book's extended catalog metadata + credits (author-scoped). Additive
+ * public storefront fields only — never touches slug, proof, manuscript, status,
+ * or price.
+ */
+export async function updateBookExtendedDetails(
+  bookId: string,
+  authorId: string,
+  data: UpdateBookExtendedDetailsInput,
+): Promise<void> {
+  await prisma.book.updateMany({
+    where: { id: bookId, authorId },
+    data,
   });
 }
 

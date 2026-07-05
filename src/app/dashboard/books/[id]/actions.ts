@@ -12,6 +12,7 @@ import {
   getAuthorBookById,
   updatePublishingMetadata,
   updateBookDetails,
+  updateBookExtendedDetails,
 } from "@/lib/data/books";
 import {
   storeManuscriptForBook,
@@ -260,6 +261,61 @@ export async function finalizePreviewUploadAction(
 
   const res = await finalizePreviewUpload(bookId, key, fileName);
   if (!res.ok) return { error: res.error };
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
+  return { ok: true };
+}
+
+/**
+ * Update extended catalog metadata + credits (page count, audience, credits,
+ * acknowledgments, …). Author-scoped; additive public fields only. Never touches
+ * slug, proof, manuscript, status, or price.
+ */
+export async function updateBookExtendedDetailsAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const str = (key: string, max: number): string | null => {
+    const v = String(formData.get(key) ?? "").trim();
+    return v ? v.slice(0, max) : null;
+  };
+  const posInt = (key: string): number | null => {
+    const raw = String(formData.get(key) ?? "").trim();
+    if (!raw) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? Math.floor(n) : null;
+  };
+
+  // Reject obviously-invalid numbers rather than silently dropping them.
+  for (const key of ["pageCount", "readingTimeMinutes"]) {
+    const raw = String(formData.get(key) ?? "").trim();
+    if (raw && !(Number(raw) > 0)) {
+      return { error: "Page count and reading time must be positive numbers." };
+    }
+  }
+
+  await updateBookExtendedDetails(bookId, author.id, {
+    pageCount: posInt("pageCount"),
+    readingTimeMinutes: posInt("readingTimeMinutes"),
+    audience: str("audience", 500),
+    whatYouWillLearn: str("whatYouWillLearn", 2000),
+    topics: str("topics", 500),
+    acknowledgments: str("acknowledgments", 2000),
+    collaborators: str("collaborators", 500),
+    contributors: str("contributors", 1000),
+    editorName: str("editorName", 200),
+    coverDesignerName: str("coverDesignerName", 200),
+    illustratorName: str("illustratorName", 200),
+    translatorName: str("translatorName", 200),
+  });
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath(`/book/${book.slug}`);

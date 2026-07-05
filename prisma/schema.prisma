@@ -131,6 +131,20 @@ model Book {
   edition         String?
   bookFormat      BookFormat?
 
+  // Extended catalog metadata + credits (all optional; public storefront display).
+  pageCount          Int?
+  readingTimeMinutes Int?
+  audience           String?
+  whatYouWillLearn   String?
+  topics             String?
+  acknowledgments    String?
+  collaborators      String?
+  contributors       String?
+  editorName         String?
+  coverDesignerName  String?
+  illustratorName    String?
+  translatorName     String?
+
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 

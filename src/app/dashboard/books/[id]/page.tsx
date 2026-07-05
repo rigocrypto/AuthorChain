@@ -30,6 +30,7 @@ import {
 import { ManuscriptUploadForm } from "./manuscript-upload-form";
 import {
   BookDetailsForm,
+  BookExtendedDetailsForm,
   CoverUploadForm,
   BackCoverUploadForm,
   PreviewUploadForm,
@@ -368,6 +369,32 @@ export default async function BookDetailPage({
             <p className="mt-4 text-sm text-muted">No barcode generated yet.</p>
           )}
           <GenerateBarcodeForm bookId={book.id} disabled={!hasValidIsbn} />
+        </Card>
+
+        {/* Extended catalog metadata + credits */}
+        <Card className="lg:col-span-2">
+          <CardTitle>Book details &amp; credits</CardTitle>
+          <p className="mt-1 text-sm text-muted">
+            Optional catalog metadata and credits shown on your public book page.
+            Empty fields are hidden from readers.
+          </p>
+          <BookExtendedDetailsForm
+            bookId={book.id}
+            defaults={{
+              pageCount: book.pageCount,
+              readingTimeMinutes: book.readingTimeMinutes,
+              audience: book.audience,
+              whatYouWillLearn: book.whatYouWillLearn,
+              topics: book.topics,
+              collaborators: book.collaborators,
+              contributors: book.contributors,
+              editorName: book.editorName,
+              coverDesignerName: book.coverDesignerName,
+              illustratorName: book.illustratorName,
+              translatorName: book.translatorName,
+              acknowledgments: book.acknowledgments,
+            }}
+          />
         </Card>
 
         {/* Book visibility / publishing controls */}

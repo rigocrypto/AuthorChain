@@ -14,6 +14,7 @@ import {
   finalizePreviewUploadAction,
   savePublishingMetadataAction,
   updateBookDetailsAction,
+  updateBookExtendedDetailsAction,
   generateBarcodeAction,
   type PublishingState,
 } from "./actions";
@@ -343,6 +344,105 @@ export function BookDetailsForm({
       </div>
       <Button type="submit" variant="secondary" disabled={pending}>
         {pending ? "Saving…" : "Save details"}
+      </Button>
+      <Feedback state={state} />
+    </form>
+  );
+}
+
+export type BookExtendedDefaults = {
+  pageCount: number | null;
+  readingTimeMinutes: number | null;
+  audience: string | null;
+  whatYouWillLearn: string | null;
+  topics: string | null;
+  collaborators: string | null;
+  contributors: string | null;
+  editorName: string | null;
+  coverDesignerName: string | null;
+  illustratorName: string | null;
+  translatorName: string | null;
+  acknowledgments: string | null;
+};
+
+/** Edit extended catalog metadata + credits (all optional, public storefront). */
+export function BookExtendedDetailsForm({
+  bookId,
+  defaults,
+}: {
+  bookId: string;
+  defaults: BookExtendedDefaults;
+}) {
+  const [state, action, pending] = useActionState(
+    updateBookExtendedDetailsAction,
+    initial,
+  );
+  const v = (x: string | number | null) => (x === null ? "" : String(x));
+
+  return (
+    <form action={action} className="mt-4 space-y-4">
+      <input type="hidden" name="bookId" value={bookId} />
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs text-muted">Page count</label>
+          <input name="pageCount" type="number" min="1" defaultValue={v(defaults.pageCount)} className={field} />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">Reading time (minutes)</label>
+          <input name="readingTimeMinutes" type="number" min="1" defaultValue={v(defaults.readingTimeMinutes)} className={field} />
+        </div>
+      </div>
+      <div>
+        <label className="mb-1 block text-xs text-muted">Audience</label>
+        <input name="audience" defaultValue={v(defaults.audience)} placeholder="For entrepreneurs, students, and creators" className={field} />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs text-muted">What readers will learn</label>
+        <textarea name="whatYouWillLearn" rows={3} defaultValue={v(defaults.whatYouWillLearn)} className={field} />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs text-muted">Topics / keywords (comma-separated)</label>
+        <input name="topics" defaultValue={v(defaults.topics)} placeholder="AI, prompting, productivity" className={field} />
+      </div>
+
+      <div className="border-t border-border pt-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Credits</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs text-muted">Editor</label>
+            <input name="editorName" defaultValue={v(defaults.editorName)} className={field} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted">Cover designer</label>
+            <input name="coverDesignerName" defaultValue={v(defaults.coverDesignerName)} className={field} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted">Illustrator</label>
+            <input name="illustratorName" defaultValue={v(defaults.illustratorName)} className={field} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted">Translator</label>
+            <input name="translatorName" defaultValue={v(defaults.translatorName)} className={field} />
+          </div>
+        </div>
+        <div className="mt-3">
+          <label className="mb-1 block text-xs text-muted">Collaborators</label>
+          <input name="collaborators" defaultValue={v(defaults.collaborators)} placeholder="Comma-separated names" className={field} />
+        </div>
+        <div className="mt-3">
+          <label className="mb-1 block text-xs text-muted">Contributors</label>
+          <input name="contributors" defaultValue={v(defaults.contributors)} placeholder="Comma-separated names" className={field} />
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-4">
+        <label className="mb-1 block text-xs text-muted">Thanks / acknowledgments</label>
+        <textarea name="acknowledgments" rows={3} defaultValue={v(defaults.acknowledgments)} className={field} />
+      </div>
+
+      <Button type="submit" variant="secondary" disabled={pending}>
+        {pending ? "Saving…" : "Save details & credits"}
       </Button>
       <Feedback state={state} />
     </form>

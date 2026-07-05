@@ -35,8 +35,34 @@ export default async function PublicBookPage({
 
   const stripeReady = isStripeConfigured();
   const chain = getChainConfig();
-  const hasMeta =
-    book.isbn13 || book.bookFormat || book.publisherName || book.publicationDate;
+
+  const fmt = (s: string) => s.charAt(0) + s.slice(1).toLowerCase();
+  const details = (
+    [
+      book.bookFormat ? ["Format", fmt(book.bookFormat)] : null,
+      ["Language", book.language],
+      book.pageCount ? ["Pages", String(book.pageCount)] : null,
+      book.readingTimeMinutes ? ["Reading time", `${book.readingTimeMinutes} min`] : null,
+      book.edition ? ["Edition", book.edition] : null,
+      book.publisherName ? ["Publisher", book.publisherName] : null,
+      book.publicationDate ? ["Published", book.publicationDate.slice(0, 10)] : null,
+      book.isbn13 ? ["ISBN-13", book.isbn13] : null,
+    ].filter(Boolean) as [string, string][]
+  );
+  const credits = (
+    [
+      ["Author", book.authorName],
+      book.editorName ? ["Editor", book.editorName] : null,
+      book.coverDesignerName ? ["Cover designer", book.coverDesignerName] : null,
+      book.illustratorName ? ["Illustrator", book.illustratorName] : null,
+      book.translatorName ? ["Translator", book.translatorName] : null,
+      book.collaborators ? ["Collaborators", book.collaborators] : null,
+      book.contributors ? ["Contributors", book.contributors] : null,
+    ].filter(Boolean) as [string, string][]
+  );
+  const topics = book.topics
+    ? book.topics.split(",").map((t) => t.trim()).filter(Boolean)
+    : [];
 
   return (
     <PageShell>
@@ -89,38 +115,35 @@ export default async function PublicBookPage({
           </div>
 
           {/* About */}
-          <section>
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
-              About this book
-            </h2>
-            <p className="mt-2 max-w-prose text-muted">{book.description}</p>
-            {hasMeta ? (
-              <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:max-w-md">
-                {book.isbn13 ? (
-                  <>
-                    <dt className="text-muted">ISBN-13</dt>
-                    <dd className="font-mono text-xs">{book.isbn13}</dd>
-                  </>
-                ) : null}
-                {book.bookFormat ? (
-                  <>
-                    <dt className="text-muted">Format</dt>
-                    <dd>{book.bookFormat.charAt(0) + book.bookFormat.slice(1).toLowerCase()}</dd>
-                  </>
-                ) : null}
-                {book.publisherName ? (
-                  <>
-                    <dt className="text-muted">Publisher</dt>
-                    <dd>{book.publisherName}</dd>
-                  </>
-                ) : null}
-                {book.publicationDate ? (
-                  <>
-                    <dt className="text-muted">Published</dt>
-                    <dd>{book.publicationDate.slice(0, 10)}</dd>
-                  </>
-                ) : null}
-              </dl>
+          <section className="space-y-5">
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
+                About this book
+              </h2>
+              <p className="mt-2 max-w-prose text-muted">{book.description}</p>
+            </div>
+            {book.audience ? (
+              <div>
+                <h3 className="text-sm font-semibold">Who this book is for</h3>
+                <p className="mt-1 max-w-prose text-sm text-muted">{book.audience}</p>
+              </div>
+            ) : null}
+            {book.whatYouWillLearn ? (
+              <div>
+                <h3 className="text-sm font-semibold">What you&apos;ll learn</h3>
+                <p className="mt-1 max-w-prose whitespace-pre-line text-sm text-muted">
+                  {book.whatYouWillLearn}
+                </p>
+              </div>
+            ) : null}
+            {topics.length ? (
+              <div className="flex flex-wrap gap-2">
+                {topics.map((t) => (
+                  <StatusBadge key={t} tone="muted">
+                    {t}
+                  </StatusBadge>
+                ))}
+              </div>
             ) : null}
           </section>
 
@@ -156,6 +179,52 @@ export default async function PublicBookPage({
               No crypto wallet needed. After purchase, read from your ReaderChain library.
             </p>
           </Card>
+
+          {/* Book details */}
+          {details.length ? (
+            <section>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Book details
+              </h2>
+              <dl className="mt-3 space-y-2 text-sm sm:max-w-md">
+                {details.map(([k, val]) => (
+                  <div key={k} className="flex justify-between gap-4">
+                    <dt className="text-muted">{k}</dt>
+                    <dd className={`text-right ${k === "ISBN-13" ? "font-mono text-xs" : ""}`}>
+                      {val}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ) : null}
+
+          {/* Credits */}
+          <section>
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
+              Credits
+            </h2>
+            <dl className="mt-3 space-y-2 text-sm sm:max-w-md">
+              {credits.map(([k, val]) => (
+                <div key={k} className="flex justify-between gap-4">
+                  <dt className="text-muted">{k}</dt>
+                  <dd className="text-right">{val}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          {/* Acknowledgments */}
+          {book.acknowledgments ? (
+            <section>
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
+                Thanks &amp; acknowledgments
+              </h2>
+              <p className="mt-2 max-w-prose whitespace-pre-line text-sm text-muted">
+                {book.acknowledgments}
+              </p>
+            </section>
+          ) : null}
 
           {/* Verified proof */}
           {book.proofVerified ? (
