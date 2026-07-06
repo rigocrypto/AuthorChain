@@ -1,4 +1,5 @@
 import { UserMenu } from "@/components/auth/user-menu";
+import { MobileDashboardNav } from "@/components/dashboard/mobile-dashboard-nav";
 
 export function DashboardHeader({
   title,
@@ -12,8 +13,11 @@ export function DashboardHeader({
   walletAddress?: string | null;
 }) {
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur">
-      <h1 className="text-lg font-semibold">{title}</h1>
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/80 px-4 backdrop-blur sm:px-6">
+      <div className="flex min-w-0 items-center gap-2">
+        <MobileDashboardNav />
+        <h1 className="truncate text-lg font-semibold">{title}</h1>
+      </div>
       <UserMenu
         name={authorName}
         email={email}
