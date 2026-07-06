@@ -63,7 +63,7 @@ export function organizationJsonLd() {
     name: siteConfig.name,
     url: siteConfig.url,
     description: siteConfig.description,
-    logo: absoluteUrl("/icon"),
+    logo: absoluteUrl("/brand/authorchain-icon-512.png"),
     slogan: siteConfig.tagline,
   };
 }
