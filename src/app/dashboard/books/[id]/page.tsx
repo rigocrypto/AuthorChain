@@ -15,7 +15,6 @@ import { isValidIsbn13 } from "@/lib/publishing/isbn";
 import { bookRegistrationHash } from "@/lib/blockchain/book-hash";
 import {
   isRegistryConfigured,
-  getChainConfig,
   getExplorerTxUrl,
   getExplorerAddressUrl,
 } from "@/lib/blockchain/registry";
@@ -91,7 +90,6 @@ export default async function BookDetailPage({
   const isPublic = book.status === "PUBLISHED" && !archived;
   const registryReady = isRegistryConfigured();
   const hasWallet = Boolean(author.walletAddress);
-  const cfg = getChainConfig();
   const isRegistered = registration?.status === "REGISTERED";
   const hasValidIsbn = Boolean(book.isbn13 && isValidIsbn13(book.isbn13));
   // Cache-bust asset previews when the underlying file changes (hash in query).
@@ -570,7 +568,7 @@ export default async function BookDetailPage({
                   </Button>
                   <p className="mt-2 text-xs text-warning">
                     {!registryReady
-                      ? `Blockchain registry not configured. Set NEXT_PUBLIC_REGISTRY_ADDRESS and DEPLOYER_PRIVATE_KEY (${cfg.network}).`
+                      ? "Blockchain proof registration is not fully configured. Please contact support."
                       : "Add a wallet address to your author profile to register on-chain."}
                   </p>
                 </>
@@ -578,6 +576,12 @@ export default async function BookDetailPage({
             </div>
           )}
         </Card>
+      </div>
+
+      <div className="mt-8">
+        <ButtonLink href="/dashboard/books" variant="ghost">
+          ← Back to My Books
+        </ButtonLink>
       </div>
     </DashboardPage>
   );

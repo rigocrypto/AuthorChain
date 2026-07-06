@@ -10,10 +10,16 @@ import {
   archiveBook,
   restoreBook,
 } from "@/lib/data/books";
-import { storeManuscriptForBook, resolveManuscriptType } from "@/lib/data/book-files";
 
 export type CreateBookState = { error?: string };
 
+/**
+ * Create a draft book from metadata only, then send the author to the book's
+ * manage page to upload the manuscript. The manuscript is intentionally NOT
+ * accepted here: posting a large file through a Server Action exceeds the
+ * platform request-body limit on hosted deploys and fails the whole request.
+ * The manage page uploads it via the presigned direct-to-storage flow instead.
+ */
 export async function createBookAction(
   _prev: CreateBookState,
   formData: FormData,
@@ -33,31 +39,26 @@ export async function createBookAction(
     return { error: "Enter a valid price." };
   }
 
-  // Optional manuscript upload — validate the type before creating the book so
-  // we don't leave an orphaned draft for an obviously-wrong file.
-  const file = formData.get("file");
-  const hasFile = file instanceof File && file.size > 0;
-  if (hasFile && !resolveManuscriptType(file.name)) {
-    return { error: "Unsupported file type. Upload a PDF or EPUB." };
-  }
-
-  const book = await createBook({
-    authorId: author.id,
-    title,
-    subtitle: subtitle || undefined,
-    description,
-    category,
-    language,
-    price,
-  });
-
-  if (hasFile) {
-    const res = await storeManuscriptForBook(book.id, file);
-    if (!res.ok) return { error: res.error };
+  let book;
+  try {
+    book = await createBook({
+      authorId: author.id,
+      title,
+      subtitle: subtitle || undefined,
+      description,
+      category,
+      language,
+      price,
+    });
+  } catch {
+    return { error: "Could not save your book. Please try again." };
   }
 
   revalidatePath("/dashboard/books");
-  redirect("/dashboard/books");
+  // Land on the manage page so the author uploads the manuscript there via the
+  // presigned direct-to-storage flow. redirect() must stay outside the try above
+  // (it signals via a thrown control-flow error).
+  redirect(`/dashboard/books/${book.id}`);
 }
 
 export async function publishBookAction(formData: FormData): Promise<void> {

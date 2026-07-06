@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { createBookAction, type CreateBookState } from "@/app/dashboard/actions";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 
 const field =
   "w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-primary/60 focus:outline-none";
@@ -56,19 +56,11 @@ export function UploadBookForm() {
             placeholder="9.99"
           />
         </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Manuscript file</label>
-          <input
-            name="file"
-            type="file"
-            accept=".pdf,.epub,application/pdf,application/epub+zip"
-            className={field}
-          />
-          <p className="mt-1 text-xs text-muted">
-            Optional. PDF or EPUB (max 25MB). Stored privately — its SHA-256 hash
-            becomes your on-chain proof of authorship. You can also add it later.
-          </p>
-        </div>
+        <p className="rounded-lg border border-border bg-surface-2 px-3 py-2 text-xs text-muted">
+          Next step: after saving, you&apos;ll upload your manuscript (PDF or EPUB)
+          on the book&apos;s page. It&apos;s stored privately — only its SHA-256 hash
+          becomes your on-chain proof of authorship.
+        </p>
 
         {state.error ? (
           <p className="rounded-lg bg-warning/15 px-3 py-2 text-sm text-warning">
@@ -76,9 +68,14 @@ export function UploadBookForm() {
           </p>
         ) : null}
 
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : "Save as draft"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="submit" disabled={pending}>
+            {pending ? "Saving…" : "Save & continue"}
+          </Button>
+          <ButtonLink href="/dashboard/books" variant="ghost">
+            Cancel
+          </ButtonLink>
+        </div>
       </form>
     </Card>
   );
