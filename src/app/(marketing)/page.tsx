@@ -3,6 +3,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
+import { ReaderBackground } from "@/components/reader-background";
 import { agents, previewAgents } from "@/lib/agents";
 import { listPublishedBooks } from "@/lib/data/books";
 import { organizationJsonLd, websiteJsonLd, jsonLdScript } from "@/lib/seo";
@@ -42,6 +43,7 @@ export default async function Home() {
 
   return (
     <div>
+      <ReaderBackground src="/background.webp" />
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
