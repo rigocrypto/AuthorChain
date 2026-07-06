@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ShareMenu } from "@/components/share-menu";
 
 /**
  * Reader-facing "Share this book" controls. Shares the public book page URL
@@ -14,7 +15,10 @@ export function ShareBook({ title }: { title: string }) {
 
   useEffect(() => {
     // Resolve the absolute URL client-side so it works on any host and keeps
-    // any ?ref query already present in the address bar.
+    // any ?ref query already present in the address bar. Done in an effect (not
+    // during render) so server and first client render match — no hydration
+    // mismatch from reading window.location.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrl(window.location.href);
   }, []);
 
@@ -29,28 +33,6 @@ export function ShareBook({ title }: { title: string }) {
   }
 
   const shareUrl = url || "";
-  const text = `${title} — on AuthorChain`;
-  const enc = encodeURIComponent;
-  const socials: { label: string; href: string }[] = shareUrl
-    ? [
-        {
-          label: "LinkedIn",
-          href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(shareUrl)}`,
-        },
-        {
-          label: "X",
-          href: `https://twitter.com/intent/tweet?text=${enc(text)}&url=${enc(shareUrl)}`,
-        },
-        {
-          label: "WhatsApp",
-          href: `https://wa.me/?text=${enc(`${text} ${shareUrl}`)}`,
-        },
-        {
-          label: "Email",
-          href: `mailto:?subject=${enc(title)}&body=${enc(`${text}\n${shareUrl}`)}`,
-        },
-      ]
-    : [];
 
   return (
     <section>
@@ -68,22 +50,10 @@ export function ShareBook({ title }: { title: string }) {
         <Button type="button" variant="secondary" onClick={copy} className="whitespace-nowrap">
           {copied ? "Copied ✓" : "Copy link"}
         </Button>
+        {shareUrl ? (
+          <ShareMenu url={shareUrl} title={title} text={`${title} — on AuthorChain`} />
+        ) : null}
       </div>
-      {socials.length ? (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {socials.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg border border-border px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
-            >
-              {s.label}
-            </a>
-          ))}
-        </div>
-      ) : null}
     </section>
   );
 }

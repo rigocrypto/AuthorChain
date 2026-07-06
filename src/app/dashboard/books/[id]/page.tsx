@@ -475,7 +475,12 @@ export default async function BookDetailPage({
               ? "Share a trackable link to this book. It counts clicks, checkouts started, and completed sales."
               : "Publish this book to activate its referral link. You can create the link now — it starts tracking once the book is live."}
           </p>
-          <ReferralCard bookId={book.id} referral={referral} appBaseUrl={appBaseUrl} />
+          <ReferralCard
+            bookId={book.id}
+            bookTitle={book.title}
+            referral={referral}
+            appBaseUrl={appBaseUrl}
+          />
         </Card>
 
         {/* Print edition settings */}

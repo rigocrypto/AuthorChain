@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { ShareMenu } from "@/components/share-menu";
 import type { ReferralLinkDTO } from "@/lib/data/referrals";
 import { createReferralLinkAction, toggleReferralLinkAction } from "./actions";
 
@@ -12,10 +13,12 @@ import { createReferralLinkAction, toggleReferralLinkAction } from "./actions";
  */
 export function ReferralCard({
   bookId,
+  bookTitle,
   referral,
   appBaseUrl,
 }: {
   bookId: string;
+  bookTitle: string;
   referral: ReferralLinkDTO | null;
   appBaseUrl: string;
 }) {
@@ -71,6 +74,11 @@ export function ReferralCard({
           >
             {copied === "share" ? "Copied ✓" : "Copy"}
           </Button>
+          <ShareMenu
+            url={shareUrl}
+            title={bookTitle}
+            text={`${bookTitle} — on AuthorChain`}
+          />
         </div>
       </div>
 
