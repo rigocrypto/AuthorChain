@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n/provider";
 
 type Variant = "primary" | "secondary" | "ghost";
 
@@ -16,7 +17,7 @@ export function ShareMenu({
   url,
   title,
   text,
-  label = "Share",
+  label,
   variant = "primary",
   className = "",
 }: {
@@ -27,6 +28,7 @@ export function ShareMenu({
   variant?: Variant;
   className?: string;
 }) {
+  const { dict } = useI18n();
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -119,7 +121,7 @@ export function ShareMenu({
           <circle cx="18" cy="19" r="3" />
           <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
         </svg>
-        {label}
+        {label ?? dict.common.share}
       </Button>
 
       {open ? (
@@ -146,7 +148,7 @@ export function ShareMenu({
             onClick={copyLink}
             className="block w-full border-t border-border px-4 py-2.5 text-left text-sm text-muted transition-colors hover:bg-surface-2 hover:text-foreground"
           >
-            {copied ? "Copied ✓" : "Copy link"}
+            {copied ? dict.common.copied : dict.common.copyLink}
           </button>
         </div>
       ) : null}

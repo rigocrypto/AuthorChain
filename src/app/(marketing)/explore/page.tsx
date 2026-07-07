@@ -6,19 +6,21 @@ import { PublishedBookCard } from "@/components/published-book-card";
 import { ReaderBackground } from "@/components/reader-background";
 import { listPublishedBooks } from "@/lib/data/books";
 import { absoluteUrl, jsonLdScript } from "@/lib/seo";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export const metadata: Metadata = {
-  title: "ReaderChain — Discover Verified Books",
-  description:
-    "Explore books from independent authors with verified on-chain authorship proof, secure previews, and reader library access.",
-  alternates: { canonical: "/explore" },
-  openGraph: {
-    title: "ReaderChain — Discover Verified Books",
-    description:
-      "Explore books from independent authors with verified on-chain authorship proof, secure previews, and reader library access.",
-    url: "/explore",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { dict } = await getDictionary();
+  return {
+    title: dict.explore.metaTitle,
+    description: dict.explore.metaDescription,
+    alternates: { canonical: "/explore" },
+    openGraph: {
+      title: dict.explore.metaTitle,
+      description: dict.explore.metaDescription,
+      url: "/explore",
+    },
+  };
+}
 export const dynamic = "force-dynamic";
 
 const comingSoon = [
@@ -31,6 +33,8 @@ const comingSoon = [
 ];
 
 export default async function ExplorePage() {
+  const { dict } = await getDictionary();
+  const t = dict.explore;
   const books = await listPublishedBooks();
   const featured = books.filter((b) => b.proofVerified).slice(0, 4);
 
@@ -69,18 +73,15 @@ export default async function ExplorePage() {
         />
         <div className="relative mx-auto max-w-6xl px-4 py-16 text-center">
           <span className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
-            ReaderChain · Verified books from independent authors
+            {t.heroBadge}
           </span>
           <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-            <span className="ac-gradient-text">Discover verified books</span>
+            <span className="ac-gradient-text">{t.heroTitle}</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted">
-            Buy directly from independent authors, access your secure digital library,
-            and support creators building the future of publishing.
-          </p>
+          <p className="mx-auto mt-5 max-w-2xl text-lg text-muted">{t.heroSubtitle}</p>
           <div className="mt-8 flex items-center justify-center gap-3">
             <ButtonLink href="/reader/library" variant="secondary">
-              My Library
+              {t.myLibrary}
             </ButtonLink>
           </div>
         </div>
@@ -90,12 +91,10 @@ export default async function ExplorePage() {
         /* Empty state */
         <section className="mx-auto max-w-6xl px-4 py-20">
           <Card className="mx-auto max-w-lg text-center">
-            <CardTitle>ReaderChain is getting ready</CardTitle>
-            <CardDescription>
-              New verified books will appear here soon.
-            </CardDescription>
+            <CardTitle>{t.emptyTitle}</CardTitle>
+            <CardDescription>{t.emptyDesc}</CardDescription>
             <div className="mt-6 flex justify-center">
-              <ButtonLink href="/dashboard">Visit AuthorChain Studio</ButtonLink>
+              <ButtonLink href="/dashboard">{t.visitStudio}</ButtonLink>
             </div>
           </Card>
         </section>
@@ -105,12 +104,10 @@ export default async function ExplorePage() {
           {featured.length > 0 ? (
             <section className="mx-auto max-w-6xl px-4 py-14">
               <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-semibold">Featured verified books</h2>
-                <StatusBadge tone="accent">✓ Proof of authorship</StatusBadge>
+                <h2 className="text-2xl font-semibold">{t.featuredTitle}</h2>
+                <StatusBadge tone="accent">{t.featuredBadge}</StatusBadge>
               </div>
-              <p className="mt-1 text-muted">
-                Books with an on-chain proof of authorship on Base.
-              </p>
+              <p className="mt-1 text-muted">{t.featuredSubtitle}</p>
               <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {featured.map((b) => (
                   <PublishedBookCard key={b.id} book={b} />
@@ -121,7 +118,7 @@ export default async function ExplorePage() {
 
           {/* Full catalog */}
           <section className="mx-auto max-w-6xl px-4 pb-16">
-            <h2 className="text-2xl font-semibold">All books</h2>
+            <h2 className="text-2xl font-semibold">{t.allBooks}</h2>
             <p className="mt-1 text-muted">
               {books.length} verified book{books.length === 1 ? "" : "s"} available.
             </p>
@@ -137,8 +134,8 @@ export default async function ExplorePage() {
       {/* Coming soon reader features */}
       <section className="border-t border-border bg-surface/40">
         <div className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="text-2xl font-semibold">Coming soon to ReaderChain</h2>
-          <p className="mt-1 text-muted">The reader experience is just getting started.</p>
+          <h2 className="text-2xl font-semibold">{t.comingSoonTitle}</h2>
+          <p className="mt-1 text-muted">{t.comingSoonSubtitle}</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {comingSoon.map((f) => (
               <Card key={f.t}>

@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { PageShell } from "@/components/page-header";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useI18n } from "@/i18n/provider";
 
 function shortAddress(a?: string | null): string | null {
   if (!a) return null;
@@ -14,6 +16,7 @@ function shortAddress(a?: string | null): string | null {
 
 function LoginInner() {
   const { ready, authenticated, login, logout, user } = usePrivy();
+  const { dict } = useI18n();
   const router = useRouter();
   const params = useSearchParams();
   const redirectParam = params.get("redirect");
@@ -26,7 +29,7 @@ function LoginInner() {
   if (!ready) {
     return (
       <Card className="mx-auto mt-10 max-w-md text-center">
-        <CardTitle>Loading…</CardTitle>
+        <CardTitle>{dict.login.loading}</CardTitle>
       </Card>
     );
   }
@@ -35,7 +38,7 @@ function LoginInner() {
     if (redirectParam) {
       return (
         <Card className="mx-auto mt-10 max-w-md text-center">
-          <CardTitle>Signing you in…</CardTitle>
+          <CardTitle>{dict.login.signingIn}</CardTitle>
         </Card>
       );
     }
@@ -44,7 +47,7 @@ function LoginInner() {
     const addr = shortAddress(user?.wallet?.address ?? null);
     return (
       <Card className="mx-auto mt-10 max-w-md text-center">
-        <CardTitle>You are already signed in</CardTitle>
+        <CardTitle>{dict.login.alreadyTitle}</CardTitle>
         <CardDescription>
           {email ? <span className="block">{email}</span> : null}
           {addr ? (
@@ -52,9 +55,9 @@ function LoginInner() {
           ) : null}
         </CardDescription>
         <div className="mt-6 flex flex-col gap-2">
-          <ButtonLink href="/dashboard">Go to author dashboard →</ButtonLink>
+          <ButtonLink href="/dashboard">{dict.login.goDashboard}</ButtonLink>
           <ButtonLink href="/reader/library" variant="secondary">
-            Go to reader library →
+            {dict.login.goLibrary}
           </ButtonLink>
           <Button
             variant="ghost"
@@ -63,7 +66,7 @@ function LoginInner() {
               router.refresh();
             }}
           >
-            Sign out
+            {dict.common.logout}
           </Button>
         </div>
       </Card>
@@ -72,15 +75,11 @@ function LoginInner() {
 
   return (
     <Card className="mx-auto mt-10 max-w-md text-center">
-      <CardTitle>Sign in to AuthorChain</CardTitle>
-      <CardDescription>
-        Log in with your email — no crypto wallet required. Buyers should use the
-        same email they purchased with. A secure wallet is created for you
-        automatically.
-      </CardDescription>
+      <CardTitle>{dict.login.signInTitle}</CardTitle>
+      <CardDescription>{dict.login.signInDesc}</CardDescription>
       <div className="mt-6">
         <Button onClick={() => login()} className="w-full">
-          Continue with email
+          {dict.login.continueEmail}
         </Button>
       </div>
     </Card>
@@ -88,24 +87,24 @@ function LoginInner() {
 }
 
 export default function LoginPage() {
+  const { dict } = useI18n();
   const configured = Boolean(process.env.NEXT_PUBLIC_PRIVY_APP_ID);
 
   return (
     <PageShell>
+      <div className="mb-2 flex justify-end">
+        <LanguageSwitcher />
+      </div>
       {configured ? (
         <Suspense fallback={null}>
           <LoginInner />
         </Suspense>
       ) : (
         <Card className="mx-auto mt-10 max-w-md text-center">
-          <CardTitle>Sign-in not configured</CardTitle>
-          <CardDescription>
-            Authentication isn&apos;t set up in this environment. Set
-            <code> NEXT_PUBLIC_PRIVY_APP_ID</code> and <code>PRIVY_APP_SECRET</code>
-            to enable login.
-          </CardDescription>
+          <CardTitle>{dict.login.notConfiguredTitle}</CardTitle>
+          <CardDescription>{dict.login.notConfiguredDesc}</CardDescription>
           <div className="mt-6">
-            <ButtonLink href="/">Back to home</ButtonLink>
+            <ButtonLink href="/">{dict.login.backHome}</ButtonLink>
           </div>
         </Card>
       )}

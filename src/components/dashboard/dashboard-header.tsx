@@ -1,5 +1,6 @@
 import { UserMenu } from "@/components/auth/user-menu";
 import { MobileDashboardNav } from "@/components/dashboard/mobile-dashboard-nav";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function DashboardHeader({
   title,
@@ -18,12 +19,15 @@ export function DashboardHeader({
         <MobileDashboardNav />
         <h1 className="truncate text-lg font-semibold">{title}</h1>
       </div>
-      <UserMenu
-        name={authorName}
-        email={email}
-        walletAddress={walletAddress}
-        role="Author"
-      />
+      <div className="flex items-center gap-2">
+        <LanguageSwitcher className="hidden md:block" />
+        <UserMenu
+          name={authorName}
+          email={email}
+          walletAddress={walletAddress}
+          role="Author"
+        />
+      </div>
     </header>
   );
 }

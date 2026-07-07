@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ShareMenu } from "@/components/share-menu";
+import { useI18n } from "@/i18n/provider";
 
 /**
  * Reader-facing "Share this book" controls. Shares the public book page URL
@@ -10,6 +11,7 @@ import { ShareMenu } from "@/components/share-menu";
  * author's private referral link — it's a plain share of the storefront page.
  */
 export function ShareBook({ title }: { title: string }) {
+  const { dict } = useI18n();
   const [url, setUrl] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -37,18 +39,18 @@ export function ShareBook({ title }: { title: string }) {
   return (
     <section>
       <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
-        Share this book
+        {dict.book.shareTitle}
       </h2>
       <div className="mt-3 flex items-center gap-2 sm:max-w-md">
         <input
           readOnly
           value={shareUrl}
           onFocus={(e) => e.currentTarget.select()}
-          aria-label="Book link"
+          aria-label={dict.book.bookLink}
           className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-xs text-foreground"
         />
         <Button type="button" variant="secondary" onClick={copy} className="whitespace-nowrap">
-          {copied ? "Copied ✓" : "Copy link"}
+          {copied ? dict.common.copied : dict.common.copyLink}
         </Button>
         {shareUrl ? (
           <ShareMenu url={shareUrl} title={title} text={`${title} — on AuthorChain`} />

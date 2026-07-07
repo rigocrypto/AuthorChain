@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { ReaderBackground } from "@/components/reader-background";
 import { resolveShareLanding } from "@/lib/data/referrals";
 import { absoluteUrl, metaDescription } from "@/lib/seo";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,8 @@ export async function generateMetadata({
   const { code } = await params;
   const landing = await resolveShareLanding(code);
   if (!landing) {
-    return { title: "Share link", robots: { index: false, follow: false } };
+    const { dict } = await getDictionary();
+    return { title: dict.share.shareLink, robots: { index: false, follow: false } };
   }
   const { book } = landing;
   const title = `${book.title} by ${book.authorName}`;
@@ -55,6 +57,7 @@ export default async function SharePage({
   params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
+  const { dict } = await getDictionary();
   const landing = await resolveShareLanding(code);
   // Invalid / inactive / draft / archived → no exposure, send to the storefront.
   if (!landing) redirect("/explore");
@@ -89,7 +92,7 @@ export default async function SharePage({
               <div className="flex flex-wrap items-center gap-2">
                 <StatusBadge tone="accent">{book.category}</StatusBadge>
                 {book.proofVerified ? (
-                  <StatusBadge tone="accent">✓ Verified proof</StatusBadge>
+                  <StatusBadge tone="accent">{dict.common.verifiedProof}</StatusBadge>
                 ) : null}
               </div>
               <h1 className="mt-2 text-2xl font-bold tracking-tight">{book.title}</h1>
@@ -104,7 +107,7 @@ export default async function SharePage({
                   ${book.price.toFixed(2)} {book.currency}
                 </div>
                 <ButtonLink href={bookHref} variant="primary">
-                  Open book →
+                  {dict.common.openBook}
                 </ButtonLink>
               </div>
             </div>
@@ -112,9 +115,9 @@ export default async function SharePage({
         </div>
 
         <p className="mt-4 text-center text-xs text-muted">
-          Shared from{" "}
+          {dict.share.sharedFrom}{" "}
           <Link href="/explore" className="text-accent hover:underline">
-            ReaderChain by AuthorChain
+            {dict.share.readerchainBy}
           </Link>
         </p>
       </div>

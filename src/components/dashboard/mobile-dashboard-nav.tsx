@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { dashboardNav } from "@/lib/nav";
 import { Logo } from "@/components/logo";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useI18n } from "@/i18n/provider";
 
 /**
  * Mobile-only navigation for AuthorChain Studio. The desktop <Sidebar> is
@@ -19,6 +21,7 @@ import { Logo } from "@/components/logo";
  */
 export function MobileDashboardNav() {
   const pathname = usePathname();
+  const { dict } = useI18n();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -80,7 +83,7 @@ export function MobileDashboardNav() {
           <div className="flex flex-col justify-center">
             <Logo href="/dashboard" />
             <span className="mt-0.5 text-[11px] uppercase tracking-wide text-muted">
-              AuthorChain Studio
+              {dict.nav.studio}
             </span>
           </div>
           <button
@@ -97,14 +100,15 @@ export function MobileDashboardNav() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-          {dashboardNav.map((item) =>
-            item.soon ? (
+          {dashboardNav.map((item) => {
+            const label = item.key ? dict.nav[item.key] : item.label;
+            return item.soon ? (
               <span
                 key={item.href}
                 className="flex cursor-default items-center justify-between rounded-lg px-3 py-2.5 text-sm text-muted/60"
-                title="Coming soon"
+                title={dict.common.comingSoon}
               >
-                {item.label}
+                {label}
                 <span className="rounded bg-surface-2 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-muted">
                   Soon
                 </span>
@@ -121,19 +125,20 @@ export function MobileDashboardNav() {
                     : "text-muted hover:bg-surface-2 hover:text-foreground"
                 }`}
               >
-                {item.label}
+                {label}
               </Link>
-            ),
-          )}
+            );
+          })}
         </nav>
 
-        <div className="border-t border-border p-3 text-sm text-muted">
+        <div className="space-y-3 border-t border-border p-3 text-sm text-muted">
+          <LanguageSwitcher />
           <Link
             href="/"
             onClick={() => setOpen(false)}
             className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-surface-2 hover:text-foreground"
           >
-            ← Back to site
+            {dict.nav.backToSite}
           </Link>
         </div>
       </div>
