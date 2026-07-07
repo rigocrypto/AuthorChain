@@ -14,15 +14,16 @@ import {
   archiveBookAction,
   restoreBookAction,
 } from "@/app/dashboard/actions";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export const metadata: Metadata = { title: "My books" };
 export const dynamic = "force-dynamic";
 
 const TABS = [
-  { key: "active", label: "Active" },
-  { key: "draft", label: "Drafts" },
-  { key: "published", label: "Published" },
-  { key: "archived", label: "Archived" },
+  { key: "active" },
+  { key: "draft" },
+  { key: "published" },
+  { key: "archived" },
 ] as const;
 type TabKey = (typeof TABS)[number]["key"];
 
@@ -50,6 +51,15 @@ export default async function MyBooksPage({
   const author = await getOptionalAuthor();
   if (!author) return null;
 
+  const { dict } = await getDictionary();
+  const d = dict.dashboard;
+  const tabLabel: Record<TabKey, string> = {
+    active: d.tabActive,
+    draft: d.tabDrafts,
+    published: d.tabPublished,
+    archived: d.tabArchived,
+  };
+
   const { tab: tabParam } = await searchParams;
   const tab: TabKey =
     TABS.find((t) => t.key === tabParam)?.key ?? "active";
@@ -65,25 +75,29 @@ export default async function MyBooksPage({
 
   return (
     <DashboardPage
-      title="My books"
-      actions={<ButtonLink href="/dashboard/upload">Upload book</ButtonLink>}
+      title={d.titleMyBooks}
+      actions={<ButtonLink href="/dashboard/upload">{d.uploadBook}</ButtonLink>}
     >
       {/* Filter tabs */}
       <div className="mb-6 flex flex-wrap gap-2">
-        {TABS.map((t) => {
-          const active = t.key === tab;
+        {TABS.map((tabItem) => {
+          const active = tabItem.key === tab;
           return (
             <Link
-              key={t.key}
-              href={t.key === "active" ? "/dashboard/books" : `/dashboard/books?tab=${t.key}`}
+              key={tabItem.key}
+              href={
+                tabItem.key === "active"
+                  ? "/dashboard/books"
+                  : `/dashboard/books?tab=${tabItem.key}`
+              }
               className={`rounded-lg border px-3 py-1.5 text-sm transition-colors ${
                 active
                   ? "border-primary/60 bg-surface-2 text-foreground"
                   : "border-border text-muted hover:text-foreground"
               }`}
             >
-              {t.label}
-              <span className="ml-1.5 text-xs text-muted">{counts[t.key]}</span>
+              {tabLabel[tabItem.key]}
+              <span className="ml-1.5 text-xs text-muted">{counts[tabItem.key]}</span>
             </Link>
           );
         })}
@@ -91,19 +105,17 @@ export default async function MyBooksPage({
 
       {books.length === 0 ? (
         <Card className="text-center">
-          <p className="text-foreground">You haven&apos;t added any books yet.</p>
-          <p className="mt-1 text-sm text-muted">
-            Upload your first manuscript to start generating marketing and selling.
-          </p>
+          <p className="text-foreground">{d.noBooksYet}</p>
+          <p className="mt-1 text-sm text-muted">{d.noBooksYetDesc}</p>
           <div className="mt-4 flex justify-center">
             <ButtonLink href="/dashboard/upload" variant="secondary">
-              Upload your first book
+              {d.uploadFirstBook}
             </ButtonLink>
           </div>
         </Card>
       ) : shown.length === 0 ? (
         <Card className="text-center">
-          <p className="text-sm text-muted">No {tab} books.</p>
+          <p className="text-sm text-muted">{d.noBooksInView}</p>
         </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -115,7 +127,7 @@ export default async function MyBooksPage({
                   <BookCard book={book} />
                   {archived ? (
                     <span className="absolute right-2 top-2">
-                      <StatusBadge tone="muted">Archived</StatusBadge>
+                      <StatusBadge tone="muted">{d.archivedBadge}</StatusBadge>
                     </span>
                   ) : null}
                 </div>
@@ -124,7 +136,7 @@ export default async function MyBooksPage({
                   href={`/dashboard/books/${book.id}`}
                   className="block text-center text-sm text-accent hover:underline"
                 >
-                  Manage &amp; register proof →
+                  {d.manageRegister}
                 </Link>
 
                 {/* Visibility actions */}
@@ -133,7 +145,7 @@ export default async function MyBooksPage({
                     <BookActionButton
                       action={restoreBookAction}
                       bookId={book.id}
-                      label="Restore"
+                      label={d.restore}
                       className="flex-1"
                     />
                   ) : (
@@ -142,23 +154,23 @@ export default async function MyBooksPage({
                         <BookActionButton
                           action={publishBookAction}
                           bookId={book.id}
-                          label="Publish"
+                          label={d.publish}
                           className="flex-1"
                         />
                       ) : (
                         <BookActionButton
                           action={unpublishBookAction}
                           bookId={book.id}
-                          label="Unpublish"
-                          confirmText="Unpublish this book? It will be removed from ReaderChain and the public storefront."
+                          label={d.unpublish}
+                          confirmText={d.confirmUnpublish}
                           className="flex-1"
                         />
                       )}
                       <BookActionButton
                         action={archiveBookAction}
                         bookId={book.id}
-                        label="Archive"
-                        confirmText="Archive this book? It will be hidden from your active dashboard list and from public pages. Files, proof, and sales are kept."
+                        label={d.archive}
+                        confirmText={d.confirmArchive}
                         variant="ghost"
                         className="flex-1"
                       />
@@ -171,7 +183,7 @@ export default async function MyBooksPage({
                     href={`/book/${book.slug}`}
                     className="block text-center text-xs text-muted hover:text-foreground"
                   >
-                    View public page →
+                    {d.viewPublicPage}
                   </Link>
                 ) : null}
               </div>

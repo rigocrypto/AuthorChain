@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOptionalAuthor } from "@/lib/auth/session";
 import { getRecentSales, getRoyaltySummary } from "@/lib/data/stats";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export const metadata: Metadata = { title: "Sales & royalties" };
 export const dynamic = "force-dynamic";
@@ -23,22 +24,22 @@ export default async function SalesPage() {
   const author = await getOptionalAuthor();
   if (!author) return null;
 
+  const { dict } = await getDictionary();
+  const t = dict.dashboard;
   const [summary, sales] = await Promise.all([
     getRoyaltySummary(author.id),
     getRecentSales(author.id, 50),
   ]);
 
   const cards = [
-    { label: "Total revenue", value: usd(summary.grossSales) },
-    { label: "Paid royalties", value: usd(summary.royaltiesEarned) },
-    { label: "Pending payouts", value: usd(summary.pendingPayouts) },
+    { label: t.totalRevenue, value: usd(summary.grossSales) },
+    { label: t.paidRoyalties, value: usd(summary.royaltiesEarned) },
+    { label: t.pendingPayouts, value: usd(summary.pendingPayouts) },
   ];
 
   return (
-    <DashboardPage title="Sales & royalties">
-      <p className="mb-6 max-w-2xl text-sm text-muted">
-        Transparent tracking of every sale and payout across card and USDC.
-      </p>
+    <DashboardPage title={t.titleSales}>
+      <p className="mb-6 max-w-2xl text-sm text-muted">{t.salesIntro}</p>
 
       <div className="grid gap-4 sm:grid-cols-3">
         {cards.map((s) => (
@@ -50,21 +51,21 @@ export default async function SalesPage() {
       </div>
 
       <Card className="mt-6">
-        <h2 className="mb-4 font-semibold">Transactions</h2>
+        <h2 className="mb-4 font-semibold">{t.transactions}</h2>
         {sales.length === 0 ? (
-          <p className="text-sm text-muted">No sales yet. Your transactions will appear here.</p>
+          <p className="text-sm text-muted">{t.noSalesYetDesc}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="text-left text-xs uppercase tracking-wide text-muted">
                 <tr>
-                  <th className="pb-2">Book</th>
-                  <th className="pb-2">Buyer</th>
-                  <th className="pb-2">Amount</th>
-                  <th className="pb-2">Provider</th>
-                  <th className="pb-2">Status</th>
-                  <th className="pb-2">Access</th>
-                  <th className="pb-2">Date</th>
+                  <th className="pb-2">{t.colBook}</th>
+                  <th className="pb-2">{t.colBuyer}</th>
+                  <th className="pb-2">{t.colAmount}</th>
+                  <th className="pb-2">{t.colProvider}</th>
+                  <th className="pb-2">{t.colStatus}</th>
+                  <th className="pb-2">{t.colAccess}</th>
+                  <th className="pb-2">{t.colDate}</th>
                 </tr>
               </thead>
               <tbody>

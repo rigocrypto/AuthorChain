@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { getOptionalAuthor } from "@/lib/auth/session";
 import { getDashboardStats, getRecentSales } from "@/lib/data/stats";
 import { getTopBook } from "@/lib/data/books";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export const metadata: Metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
@@ -23,6 +24,8 @@ export default async function DashboardPageRoute() {
   const author = await getOptionalAuthor();
   if (!author) return null;
 
+  const { dict } = await getDictionary();
+  const t = dict.dashboard;
   const [stats, sales, topBook] = await Promise.all([
     getDashboardStats(author.id),
     getRecentSales(author.id, 5),
@@ -30,16 +33,16 @@ export default async function DashboardPageRoute() {
   ]);
 
   const statCards = [
-    { label: "Total Sales", value: usd(stats.totalSalesUsd) },
-    { label: "Earnings (USDC)", value: num(stats.earningsUsdc) },
-    { label: "Books Sold", value: num(stats.booksSold) },
-    { label: "Active Readers", value: num(stats.activeReaders) },
+    { label: t.totalSales, value: usd(stats.totalSalesUsd) },
+    { label: t.earningsUsdc, value: num(stats.earningsUsdc) },
+    { label: t.booksSold, value: num(stats.booksSold) },
+    { label: t.activeReaders, value: num(stats.activeReaders) },
   ];
 
   return (
     <DashboardPage
-      title="Dashboard"
-      actions={<ButtonLink href="/dashboard/upload">Upload book</ButtonLink>}
+      title={t.titleDashboard}
+      actions={<ButtonLink href="/dashboard/upload">{t.uploadBook}</ButtonLink>}
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((s) => (
@@ -53,23 +56,23 @@ export default async function DashboardPageRoute() {
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-semibold">Recent sales</h2>
+            <h2 className="font-semibold">{t.recentSales}</h2>
             <Link href="/dashboard/sales" className="text-sm text-accent hover:underline">
-              View all sales →
+              {t.viewAllSales}
             </Link>
           </div>
           {sales.length === 0 ? (
-            <p className="text-sm text-muted">No sales yet.</p>
+            <p className="text-sm text-muted">{t.noSalesYet}</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="text-left text-xs uppercase tracking-wide text-muted">
                   <tr>
-                    <th className="pb-2">Book</th>
-                    <th className="pb-2">Buyer</th>
-                    <th className="pb-2">Amount</th>
-                    <th className="pb-2">Status</th>
-                    <th className="pb-2">Date</th>
+                    <th className="pb-2">{t.colBook}</th>
+                    <th className="pb-2">{t.colBuyer}</th>
+                    <th className="pb-2">{t.colAmount}</th>
+                    <th className="pb-2">{t.colStatus}</th>
+                    <th className="pb-2">{t.colDate}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -94,7 +97,7 @@ export default async function DashboardPageRoute() {
 
         <div className="space-y-4">
           <Card>
-            <h2 className="mb-3 font-semibold">Top book</h2>
+            <h2 className="mb-3 font-semibold">{t.topBook}</h2>
             {topBook ? (
               <div className="flex gap-3">
                 <div
@@ -102,45 +105,42 @@ export default async function DashboardPageRoute() {
                 />
                 <div className="text-sm">
                   <div className="font-medium">{topBook.title}</div>
-                  <div className="text-muted">by {author.name}</div>
+                  <div className="text-muted">
+                    {dict.book.by} {author.name}
+                  </div>
                   <div className="mt-2 text-muted">
-                    {topBook.unitsSold} sold · {topBook.earningsUsdc.toFixed(0)} USDC
+                    {topBook.unitsSold} {t.sold} · {topBook.earningsUsdc.toFixed(0)} USDC
                   </div>
                   <Link
                     href={`/book/${topBook.slug}`}
                     className="mt-1 inline-block text-accent hover:underline"
                   >
-                    View details →
+                    {t.viewDetails}
                   </Link>
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted">Publish a book to see your top seller.</p>
+              <p className="text-sm text-muted">{t.publishToSeeTop}</p>
             )}
           </Card>
 
           <Card>
-            <h2 className="mb-3 font-semibold">AI agent activity</h2>
-            <p className="text-sm text-muted">
-              Run the AI agents to generate marketing assets for your books.
-            </p>
+            <h2 className="mb-3 font-semibold">{t.aiActivity}</h2>
+            <p className="text-sm text-muted">{t.aiActivityDesc}</p>
             <Link
               href="/dashboard/agents"
               className="mt-2 inline-block text-sm text-accent hover:underline"
             >
-              Open AI tools →
+              {t.openAiTools}
             </Link>
           </Card>
 
           <Card>
             <div className="flex items-center justify-between gap-2">
-              <h2 className="font-semibold">Collector Editions</h2>
+              <h2 className="font-semibold">{t.collectorEditions}</h2>
               <StatusBadge tone="muted">Soon</StatusBadge>
             </div>
-            <p className="mt-2 text-sm text-muted">
-              Tokenized Collector Editions are coming soon — launch limited digital
-              editions and premium book collections backed by verified proof-of-authorship.
-            </p>
+            <p className="mt-2 text-sm text-muted">{t.collectorEditionsDesc}</p>
           </Card>
         </div>
       </div>

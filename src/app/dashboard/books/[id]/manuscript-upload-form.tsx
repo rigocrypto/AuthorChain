@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n/provider";
 import {
   uploadManuscriptAction,
   presignManuscriptUploadAction,
@@ -16,6 +17,8 @@ const initial: UploadManuscriptState = {};
  * when the active storage driver does not support presigned direct uploads.
  */
 function ManuscriptProxyUpload({ bookId, hasFile }: { bookId: string; hasFile: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(uploadManuscriptAction, initial);
 
   return (
@@ -25,15 +28,14 @@ function ManuscriptProxyUpload({ bookId, hasFile }: { bookId: string; hasFile: b
         name="file"
         type="file"
         accept=".pdf,.epub,application/pdf,application/epub+zip"
+        aria-label={d.manuscript}
         className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-surface file:px-2 file:py-1 file:text-xs file:text-foreground"
       />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasFile ? "Replace manuscript" : "Upload manuscript"}
+        {pending ? d.uploading : hasFile ? d.replaceManuscript : d.uploadManuscript}
       </Button>
       {state.error ? <p className="text-xs text-warning">{state.error}</p> : null}
-      {state.ok ? (
-        <p className="text-xs text-success">Manuscript saved. Hash updated.</p>
-      ) : null}
+      {state.ok ? <p className="text-xs text-success">{d.manuscriptSaved}</p> : null}
     </form>
   );
 }
@@ -44,6 +46,8 @@ function ManuscriptProxyUpload({ bookId, hasFile }: { bookId: string; hasFile: b
  * large manuscripts off the server request-body path.
  */
 function ManuscriptDirectUpload({ bookId, hasFile }: { bookId: string; hasFile: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, setState] = useState<UploadManuscriptState>(initial);
   const [pending, setPending] = useState(false);
 
@@ -53,7 +57,7 @@ function ManuscriptDirectUpload({ bookId, hasFile }: { bookId: string; hasFile: 
     const input = form.elements.namedItem("file") as HTMLInputElement | null;
     const file = input?.files?.[0];
     if (!file) {
-      setState({ error: "Choose a PDF or EPUB file to upload." });
+      setState({ error: dict.errors.chooseManuscript });
       return;
     }
 
@@ -67,7 +71,7 @@ function ManuscriptDirectUpload({ bookId, hasFile }: { bookId: string; hasFile: 
       }
       const put = await fetch(pre.uploadUrl, { method: "PUT", body: file });
       if (!put.ok) {
-        setState({ error: "Upload to storage failed. Please try again." });
+        setState({ error: dict.errors.uploadToStorageFailed });
         return;
       }
       const fin = await finalizeManuscriptUploadAction(bookId, pre.key, file.name);
@@ -78,7 +82,7 @@ function ManuscriptDirectUpload({ bookId, hasFile }: { bookId: string; hasFile: 
       form.reset();
       setState({ ok: true });
     } catch {
-      setState({ error: "Upload failed. Please try again." });
+      setState({ error: dict.errors.uploadFailed });
     } finally {
       setPending(false);
     }
@@ -90,15 +94,14 @@ function ManuscriptDirectUpload({ bookId, hasFile }: { bookId: string; hasFile: 
         name="file"
         type="file"
         accept=".pdf,.epub,application/pdf,application/epub+zip"
+        aria-label={d.manuscript}
         className="w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground file:mr-3 file:rounded file:border-0 file:bg-surface file:px-2 file:py-1 file:text-xs file:text-foreground"
       />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasFile ? "Replace manuscript" : "Upload manuscript"}
+        {pending ? d.uploading : hasFile ? d.replaceManuscript : d.uploadManuscript}
       </Button>
       {state.error ? <p className="text-xs text-warning">{state.error}</p> : null}
-      {state.ok ? (
-        <p className="text-xs text-success">Manuscript saved. Hash updated.</p>
-      ) : null}
+      {state.ok ? <p className="text-xs text-success">{d.manuscriptSaved}</p> : null}
     </form>
   );
 }

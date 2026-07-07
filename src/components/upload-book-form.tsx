@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { createBookAction, type CreateBookState } from "@/app/dashboard/actions";
 import { Card } from "@/components/ui/card";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { useI18n } from "@/i18n/provider";
 
 const field =
   "w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-primary/60 focus:outline-none";
@@ -11,41 +12,43 @@ const field =
 const initial: CreateBookState = {};
 
 export function UploadBookForm() {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, formAction, pending] = useActionState(createBookAction, initial);
 
   return (
     <Card>
       <form action={formAction} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium">Title</label>
+          <label className="mb-1 block text-sm font-medium">{d.fTitle}</label>
           <input name="title" required className={field} placeholder="The Last Block" />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">Subtitle</label>
-          <input name="subtitle" className={field} placeholder="Optional" />
+          <label className="mb-1 block text-sm font-medium">{d.fSubtitle}</label>
+          <input name="subtitle" className={field} placeholder={dict.dashboard.optional} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">Description</label>
+          <label className="mb-1 block text-sm font-medium">{d.fDescription}</label>
           <textarea
             name="description"
             required
+            aria-label={d.fDescription}
             className={field}
             rows={4}
-            placeholder="What is your book about?"
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">Category</label>
+            <label className="mb-1 block text-sm font-medium">{d.fCategory}</label>
             <input name="category" className={field} placeholder="Sci-Fi" />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">Language</label>
+            <label className="mb-1 block text-sm font-medium">{dict.book.language}</label>
             <input name="language" className={field} placeholder="English" defaultValue="English" />
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">Price (USD)</label>
+          <label className="mb-1 block text-sm font-medium">{d.fPrice}</label>
           <input
             name="price"
             type="number"
@@ -57,9 +60,7 @@ export function UploadBookForm() {
           />
         </div>
         <p className="rounded-lg border border-border bg-surface-2 px-3 py-2 text-xs text-muted">
-          Next step: after saving, you&apos;ll upload your manuscript (PDF or EPUB)
-          on the book&apos;s page. It&apos;s stored privately — only its SHA-256 hash
-          becomes your on-chain proof of authorship.
+          {d.nextStepManuscript}
         </p>
 
         {state.error ? (
@@ -70,10 +71,10 @@ export function UploadBookForm() {
 
         <div className="flex flex-wrap items-center gap-3">
           <Button type="submit" disabled={pending}>
-            {pending ? "Saving…" : "Save & continue"}
+            {pending ? d.saving : d.saveContinue}
           </Button>
           <ButtonLink href="/dashboard/books" variant="ghost">
-            Cancel
+            {dict.common.cancel}
           </ButtonLink>
         </div>
       </form>

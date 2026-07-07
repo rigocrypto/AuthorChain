@@ -27,6 +27,7 @@ import {
   COVER_FINISH_LABELS,
 } from "@/lib/publishing/print";
 import type { PrintSettingsDTO } from "@/lib/data/print-settings";
+import { useI18n } from "@/i18n/provider";
 
 const initial: PublishingState = {};
 
@@ -34,9 +35,10 @@ const field =
   "w-full rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-primary/60 focus:outline-none";
 
 function Feedback({ state }: { state: PublishingState }) {
+  const { dict } = useI18n();
   if (state.error)
     return <p className="text-xs text-warning">{state.error}</p>;
-  if (state.ok) return <p className="text-xs text-success">Saved.</p>;
+  if (state.ok) return <p className="text-xs text-success">{dict.dashboard.saved}</p>;
   return null;
 }
 
@@ -45,13 +47,15 @@ const coverInputClass = `${field} file:mr-3 file:rounded file:border-0 file:bg-s
 
 /** Local / server-proxied cover upload (posts through the server action). */
 function CoverProxyUpload({ bookId, hasCover }: { bookId: string; hasCover: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(uploadCoverAction, initial);
   return (
     <form action={action} className="mt-4 space-y-2">
       <input type="hidden" name="bookId" value={bookId} />
-      <input name="file" type="file" accept={coverAccept} className={coverInputClass} />
+      <input name="file" type="file" accept={coverAccept} aria-label={d.frontCover} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasCover ? "Replace cover" : "Upload cover"}
+        {pending ? d.uploading : hasCover ? d.replaceCover : d.uploadCover}
       </Button>
       <Feedback state={state} />
     </form>
@@ -60,6 +64,8 @@ function CoverProxyUpload({ bookId, hasCover }: { bookId: string; hasCover: bool
 
 /** Presigned direct-to-R2 cover upload: presign → PUT → finalize. */
 function CoverDirectUpload({ bookId, hasCover }: { bookId: string; hasCover: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, setState] = useState<PublishingState>(initial);
   const [pending, setPending] = useState(false);
 
@@ -69,7 +75,7 @@ function CoverDirectUpload({ bookId, hasCover }: { bookId: string; hasCover: boo
     const input = form.elements.namedItem("file") as HTMLInputElement | null;
     const file = input?.files?.[0];
     if (!file) {
-      setState({ error: "Choose an image file (JPG, PNG, or WEBP)." });
+      setState({ error: dict.errors.chooseImage });
       return;
     }
 
@@ -83,7 +89,7 @@ function CoverDirectUpload({ bookId, hasCover }: { bookId: string; hasCover: boo
       }
       const put = await fetch(pre.uploadUrl, { method: "PUT", body: file });
       if (!put.ok) {
-        setState({ error: "Upload to storage failed. Please try again." });
+        setState({ error: dict.errors.uploadToStorageFailed });
         return;
       }
       const fin = await finalizeCoverUploadAction(bookId, pre.key, file.name);
@@ -94,7 +100,7 @@ function CoverDirectUpload({ bookId, hasCover }: { bookId: string; hasCover: boo
       form.reset();
       setState({ ok: true });
     } catch {
-      setState({ error: "Upload failed. Please try again." });
+      setState({ error: dict.errors.uploadFailed });
     } finally {
       setPending(false);
     }
@@ -102,9 +108,9 @@ function CoverDirectUpload({ bookId, hasCover }: { bookId: string; hasCover: boo
 
   return (
     <form onSubmit={onSubmit} className="mt-4 space-y-2">
-      <input name="file" type="file" accept={coverAccept} className={coverInputClass} />
+      <input name="file" type="file" accept={coverAccept} aria-label={d.frontCover} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasCover ? "Replace cover" : "Upload cover"}
+        {pending ? d.uploading : hasCover ? d.replaceCover : d.uploadCover}
       </Button>
       <Feedback state={state} />
     </form>
@@ -129,13 +135,15 @@ export function CoverUploadForm({
 
 /** Local / server-proxied back-cover image upload. */
 function BackCoverProxyUpload({ bookId, hasBackCover }: { bookId: string; hasBackCover: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(uploadBackCoverAction, initial);
   return (
     <form action={action} className="mt-4 space-y-2">
       <input type="hidden" name="bookId" value={bookId} />
-      <input name="file" type="file" accept={coverAccept} className={coverInputClass} />
+      <input name="file" type="file" accept={coverAccept} aria-label={d.backCover} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasBackCover ? "Replace back cover" : "Upload back cover"}
+        {pending ? d.uploading : hasBackCover ? d.replaceBackCover : d.uploadBackCover}
       </Button>
       <Feedback state={state} />
     </form>
@@ -144,6 +152,8 @@ function BackCoverProxyUpload({ bookId, hasBackCover }: { bookId: string; hasBac
 
 /** Presigned direct-to-R2 back-cover upload: presign → PUT → finalize. */
 function BackCoverDirectUpload({ bookId, hasBackCover }: { bookId: string; hasBackCover: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, setState] = useState<PublishingState>(initial);
   const [pending, setPending] = useState(false);
 
@@ -153,7 +163,7 @@ function BackCoverDirectUpload({ bookId, hasBackCover }: { bookId: string; hasBa
     const input = form.elements.namedItem("file") as HTMLInputElement | null;
     const file = input?.files?.[0];
     if (!file) {
-      setState({ error: "Choose an image file (JPG, PNG, or WEBP)." });
+      setState({ error: dict.errors.chooseImage });
       return;
     }
     setPending(true);
@@ -166,7 +176,7 @@ function BackCoverDirectUpload({ bookId, hasBackCover }: { bookId: string; hasBa
       }
       const put = await fetch(pre.uploadUrl, { method: "PUT", body: file });
       if (!put.ok) {
-        setState({ error: "Upload to storage failed. Please try again." });
+        setState({ error: dict.errors.uploadToStorageFailed });
         return;
       }
       const fin = await finalizeBackCoverUploadAction(bookId, pre.key, file.name);
@@ -177,7 +187,7 @@ function BackCoverDirectUpload({ bookId, hasBackCover }: { bookId: string; hasBa
       form.reset();
       setState({ ok: true });
     } catch {
-      setState({ error: "Upload failed. Please try again." });
+      setState({ error: dict.errors.uploadFailed });
     } finally {
       setPending(false);
     }
@@ -185,9 +195,9 @@ function BackCoverDirectUpload({ bookId, hasBackCover }: { bookId: string; hasBa
 
   return (
     <form onSubmit={onSubmit} className="mt-4 space-y-2">
-      <input name="file" type="file" accept={coverAccept} className={coverInputClass} />
+      <input name="file" type="file" accept={coverAccept} aria-label={d.backCover} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasBackCover ? "Replace back cover" : "Upload back cover"}
+        {pending ? d.uploading : hasBackCover ? d.replaceBackCover : d.uploadBackCover}
       </Button>
       <Feedback state={state} />
     </form>
@@ -214,13 +224,15 @@ const previewAccept = ".pdf,application/pdf";
 
 /** Local / server-proxied reader-preview PDF upload. */
 function PreviewProxyUpload({ bookId, hasPreview }: { bookId: string; hasPreview: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(uploadPreviewAction, initial);
   return (
     <form action={action} className="mt-4 space-y-2">
       <input type="hidden" name="bookId" value={bookId} />
-      <input name="file" type="file" accept={previewAccept} className={coverInputClass} />
+      <input name="file" type="file" accept={previewAccept} aria-label={d.readerPreview} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasPreview ? "Replace preview" : "Upload preview"}
+        {pending ? d.uploading : hasPreview ? d.replacePreview : d.uploadPreview}
       </Button>
       <Feedback state={state} />
     </form>
@@ -229,6 +241,8 @@ function PreviewProxyUpload({ bookId, hasPreview }: { bookId: string; hasPreview
 
 /** Presigned direct-to-R2 reader-preview PDF upload: presign → PUT → finalize. */
 function PreviewDirectUpload({ bookId, hasPreview }: { bookId: string; hasPreview: boolean }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, setState] = useState<PublishingState>(initial);
   const [pending, setPending] = useState(false);
 
@@ -238,7 +252,7 @@ function PreviewDirectUpload({ bookId, hasPreview }: { bookId: string; hasPrevie
     const input = form.elements.namedItem("file") as HTMLInputElement | null;
     const file = input?.files?.[0];
     if (!file) {
-      setState({ error: "Choose a PDF preview file." });
+      setState({ error: dict.errors.choosePreview });
       return;
     }
     setPending(true);
@@ -251,7 +265,7 @@ function PreviewDirectUpload({ bookId, hasPreview }: { bookId: string; hasPrevie
       }
       const put = await fetch(pre.uploadUrl, { method: "PUT", body: file });
       if (!put.ok) {
-        setState({ error: "Upload to storage failed. Please try again." });
+        setState({ error: dict.errors.uploadToStorageFailed });
         return;
       }
       const fin = await finalizePreviewUploadAction(bookId, pre.key, file.name);
@@ -262,7 +276,7 @@ function PreviewDirectUpload({ bookId, hasPreview }: { bookId: string; hasPrevie
       form.reset();
       setState({ ok: true });
     } catch {
-      setState({ error: "Upload failed. Please try again." });
+      setState({ error: dict.errors.uploadFailed });
     } finally {
       setPending(false);
     }
@@ -270,9 +284,9 @@ function PreviewDirectUpload({ bookId, hasPreview }: { bookId: string; hasPrevie
 
   return (
     <form onSubmit={onSubmit} className="mt-4 space-y-2">
-      <input name="file" type="file" accept={previewAccept} className={coverInputClass} />
+      <input name="file" type="file" accept={previewAccept} aria-label={d.readerPreview} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
-        {pending ? "Uploading…" : hasPreview ? "Replace preview" : "Upload preview"}
+        {pending ? d.uploading : hasPreview ? d.replacePreview : d.uploadPreview}
       </Button>
       <Feedback state={state} />
     </form>
@@ -311,35 +325,38 @@ export function BookDetailsForm({
   bookId: string;
   defaults: BookDetailsDefaults;
 }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(updateBookDetailsAction, initial);
   return (
     <form action={action} className="mt-4 space-y-3">
       <input type="hidden" name="bookId" value={bookId} />
       <div>
-        <label className="mb-1 block text-xs text-muted">Title</label>
+        <label className="mb-1 block text-xs text-muted">{d.fTitle}</label>
         <input name="title" required defaultValue={defaults.title} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">Subtitle (optional)</label>
+        <label className="mb-1 block text-xs text-muted">{d.fSubtitleOptional}</label>
         <input name="subtitle" defaultValue={defaults.subtitle ?? ""} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">Description</label>
+        <label className="mb-1 block text-xs text-muted">{d.fDescription}</label>
         <textarea
           name="description"
           required
           rows={4}
+          aria-label={d.fDescription}
           defaultValue={defaults.description}
           className={field}
         />
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Category</label>
+          <label className="mb-1 block text-xs text-muted">{d.fCategory}</label>
           <input name="category" defaultValue={defaults.category} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Price (USD)</label>
+          <label className="mb-1 block text-xs text-muted">{d.fPrice}</label>
           <input
             name="price"
             type="number"
@@ -352,7 +369,7 @@ export function BookDetailsForm({
         </div>
       </div>
       <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Saving…" : "Save details"}
+        {pending ? d.saving : d.saveDetails}
       </Button>
       <Feedback state={state} />
     </form>
@@ -382,6 +399,8 @@ export function BookExtendedDetailsForm({
   bookId: string;
   defaults: BookExtendedDefaults;
 }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(
     updateBookExtendedDetailsAction,
     initial,
@@ -451,7 +470,7 @@ export function BookExtendedDetailsForm({
       </div>
 
       <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Saving…" : "Save details & credits"}
+        {pending ? d.saving : d.saveDetailsCredits}
       </Button>
       <Feedback state={state} />
     </form>
@@ -474,6 +493,8 @@ export function PublishingMetadataForm({
   bookId: string;
   defaults: PublishingDefaults;
 }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(
     savePublishingMetadataAction,
     initial,
@@ -533,7 +554,7 @@ export function PublishingMetadataForm({
         />
       </div>
       <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Saving…" : "Save publishing metadata"}
+        {pending ? d.saving : d.savePublishingMetadata}
       </Button>
       <Feedback state={state} />
     </form>
@@ -547,15 +568,17 @@ export function GenerateBarcodeForm({
   bookId: string;
   disabled: boolean;
 }) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
   const [state, action, pending] = useActionState(generateBarcodeAction, initial);
   return (
     <form action={action} className="mt-4 space-y-2">
       <input type="hidden" name="bookId" value={bookId} />
       <Button type="submit" variant="secondary" disabled={pending || disabled}>
-        {pending ? "Generating…" : "Generate ISBN barcode"}
+        {pending ? d.saving : d.generateBarcode}
       </Button>
       {disabled ? (
-        <p className="text-xs text-muted">Save a valid ISBN-13 to enable barcode generation.</p>
+        <p className="text-xs text-muted">{d.barcodeNeedsIsbn}</p>
       ) : null}
       <Feedback state={state} />
     </form>
@@ -582,6 +605,8 @@ export function PrintEditionForm({
   bookId: string;
   defaults: PrintSettingsDTO | null;
 }) {
+  const { dict } = useI18n();
+  const L = dict.dashboard;
   const [state, action, pending] = useActionState(savePrintSettingsAction, initial);
   const v = (x: string | number | null | undefined) =>
     x === null || x === undefined ? "" : String(x);
@@ -599,7 +624,7 @@ export function PrintEditionForm({
           defaultChecked={d?.isAvailable ?? false}
           className="h-4 w-4 rounded border-border"
         />
-        Show print edition as available on the public book page
+        {L.printAvailableToggle}
       </label>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -719,7 +744,7 @@ export function PrintEditionForm({
       </div>
 
       <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Saving…" : "Save print settings"}
+        {pending ? L.saving : L.savePrintSettings}
       </Button>
       <Feedback state={state} />
     </form>

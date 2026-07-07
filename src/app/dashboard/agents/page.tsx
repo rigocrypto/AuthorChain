@@ -8,6 +8,7 @@ import { getOptionalAuthor } from "@/lib/auth/session";
 import { listAuthorBooks } from "@/lib/data/books";
 import { listAgentOutputs } from "@/lib/data/agent-outputs";
 import { getAgentMeta, previewAgents, isLiveConfigured } from "@/lib/agents";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export const metadata: Metadata = { title: "AI agents" };
 export const dynamic = "force-dynamic";
@@ -18,6 +19,8 @@ export default async function AgentsPage() {
   const author = await getOptionalAuthor();
   if (!author) return null;
 
+  const { dict } = await getDictionary();
+  const t = dict.dashboard;
   const [books, history] = await Promise.all([
     listAuthorBooks(author.id),
     listAgentOutputs(author.id, 10),
@@ -34,14 +37,11 @@ export default async function AgentsPage() {
   const live = isLiveConfigured();
 
   return (
-    <DashboardPage title="AI agents">
+    <DashboardPage title={t.titleAgents}>
       <div className="mb-6 flex flex-wrap items-center gap-3">
-        <p className="max-w-2xl text-sm text-muted">
-          Generate marketing and community assets from your books. Outputs are saved to
-          your account.
-        </p>
+        <p className="max-w-2xl text-sm text-muted">{t.agentsIntro}</p>
         <StatusBadge tone={live ? "success" : "warning"}>
-          {live ? "Live provider configured" : "Mock mode (no API key)"}
+          {live ? t.liveConfigured : t.mockMode}
         </StatusBadge>
       </div>
 
@@ -49,12 +49,10 @@ export default async function AgentsPage() {
 
       {/* Previous outputs */}
       <section className="mt-10">
-        <h2 className="mb-3 text-lg font-semibold">Previous outputs</h2>
+        <h2 className="mb-3 text-lg font-semibold">{t.previousOutputs}</h2>
         {history.length === 0 ? (
           <Card>
-            <p className="text-sm text-muted">
-              No outputs yet. Generate something above and it will appear here.
-            </p>
+            <p className="text-sm text-muted">{t.noOutputsYet}</p>
           </Card>
         ) : (
           <div className="space-y-3">
@@ -74,7 +72,7 @@ export default async function AgentsPage() {
                 </div>
                 <details className="mt-2">
                   <summary className="cursor-pointer text-sm text-accent">
-                    View {h.assets.length} assets
+                    {t.viewAssets} ({h.assets.length})
                   </summary>
                   <div className="mt-2 space-y-2">
                     {h.assets.map((a) => (
@@ -95,7 +93,7 @@ export default async function AgentsPage() {
 
       {/* Phase-2 previews */}
       <section className="mt-10">
-        <h2 className="mb-3 text-lg font-semibold">Coming in Phase 2</h2>
+        <h2 className="mb-3 text-lg font-semibold">{t.comingPhase2}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {previewAgents.map((a) => (
             <AgentCard

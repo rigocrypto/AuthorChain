@@ -22,6 +22,7 @@ import { registerProofAction } from "./actions";
 import { ReferralCard } from "./referral-card";
 import { getReferralForBook } from "@/lib/data/referrals";
 import { getPrintSettings } from "@/lib/data/print-settings";
+import { getDictionary } from "@/i18n/get-dictionary";
 import { BookActionButton } from "@/components/dashboard/book-actions";
 import {
   publishBookAction,
@@ -71,6 +72,9 @@ export default async function BookDetailPage({
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 
+  const { dict } = await getDictionary();
+  const d = dict.dashboard;
+
   const [registration, manuscript, cover, barcode, preview, backCover, referral, printSettings] =
     await Promise.all([
       getRegistrationForBook(id),
@@ -104,15 +108,15 @@ export default async function BookDetailPage({
   return (
     <DashboardPage
       title={book.title}
-      actions={<ButtonLink href="/dashboard/books" variant="ghost">← All books</ButtonLink>}
+      actions={<ButtonLink href="/dashboard/books" variant="ghost">{dict.nav.allBooks}</ButtonLink>}
     >
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Book details */}
         <Card>
-          <CardTitle>Book details</CardTitle>
+          <CardTitle>{d.titleBookDetails}</CardTitle>
           <dl className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between gap-4">
-              <dt className="text-muted">Status</dt>
+              <dt className="text-muted">{d.colStatus}</dt>
               <dd>
                 <StatusBadge tone={book.status === "PUBLISHED" ? "success" : "muted"}>
                   {book.status}
@@ -121,11 +125,11 @@ export default async function BookDetailPage({
             </div>
             <div>
               <dt className="text-muted">
-                Proof hash{" "}
+                {d.proofHash}{" "}
                 {usesRealFileHash ? (
-                  <StatusBadge tone="success">real file</StatusBadge>
+                  <StatusBadge tone="success">{d.realFile}</StatusBadge>
                 ) : (
-                  <StatusBadge tone="warning">MVP metadata</StatusBadge>
+                  <StatusBadge tone="warning">{d.mvpMetadata}</StatusBadge>
                 )}
               </dt>
               <dd className="mt-1 break-all font-mono text-xs text-foreground">{proofHash}</dd>
@@ -148,32 +152,32 @@ export default async function BookDetailPage({
               href={`/book/${book.slug}`}
               className="mt-4 inline-block text-sm text-accent hover:underline"
             >
-              View public page →
+              {d.viewPublicPage}
             </Link>
           ) : null}
         </Card>
 
         {/* Manuscript */}
         <Card>
-          <CardTitle>Manuscript</CardTitle>
+          <CardTitle>{d.manuscript}</CardTitle>
           {manuscript ? (
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">File</dt>
+                <dt className="text-muted">{d.fileName}</dt>
                 <dd className="text-right font-medium">{manuscript.fileName}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">Type</dt>
+                <dt className="text-muted">{dict.book.format}</dt>
                 <dd>
                   <StatusBadge tone="muted">{manuscript.fileLabel}</StatusBadge>
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">Size</dt>
+                <dt className="text-muted">{d.fileSize}</dt>
                 <dd className="font-medium">{formatBytes(manuscript.fileSize)}</dd>
               </div>
               <div className="flex justify-between gap-4">
-                <dt className="text-muted">Storage</dt>
+                <dt className="text-muted">{d.storage}</dt>
                 <dd>
                   <StatusBadge tone="muted">{manuscript.storageProvider}</StatusBadge>
                 </dd>
@@ -186,10 +190,7 @@ export default async function BookDetailPage({
               </div>
             </dl>
           ) : (
-            <p className="mt-2 text-sm text-muted">
-              No manuscript uploaded yet. Upload a PDF or EPUB to generate a real
-              file hash for on-chain proof.
-            </p>
+            <p className="mt-2 text-sm text-muted">{d.noManuscript}</p>
           )}
 
           {isRegistered ? (
@@ -213,7 +214,7 @@ export default async function BookDetailPage({
 
         {/* Cover */}
         <Card>
-          <CardTitle>Cover</CardTitle>
+          <CardTitle>{d.coverSection}</CardTitle>
           {coverSrc ? (
             <div className="mt-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -246,9 +247,9 @@ export default async function BookDetailPage({
             from the protected manuscript.
           </p>
 
-          {/* Back cover */}
+          {/* Back cover heading */}
           <div className="mt-6 border-t border-border pt-4">
-            <p className="text-sm font-medium">Back cover</p>
+            <p className="text-sm font-medium">{d.backCover}</p>
             {backCoverSrc ? (
               <div className="mt-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -278,7 +279,7 @@ export default async function BookDetailPage({
 
         {/* Reader preview */}
         <Card>
-          <CardTitle>Reader preview</CardTitle>
+          <CardTitle>{d.readerPreview}</CardTitle>
           {preview ? (
             <div className="mt-3 space-y-1 text-sm">
               <div className="flex flex-wrap items-center gap-2">
@@ -469,7 +470,7 @@ export default async function BookDetailPage({
 
         {/* Share & referral link */}
         <Card className="lg:col-span-2">
-          <CardTitle>Share &amp; Referral Link</CardTitle>
+          <CardTitle>{d.shareReferral}</CardTitle>
           <p className="mt-1 text-sm text-muted">
             {isPublic
               ? "Share a trackable link to this book. It counts clicks, checkouts started, and completed sales."
@@ -485,7 +486,7 @@ export default async function BookDetailPage({
 
         {/* Print edition settings */}
         <Card className="lg:col-span-2">
-          <CardTitle>Print edition</CardTitle>
+          <CardTitle>{d.printEdition}</CardTitle>
           <p className="mt-1 text-sm text-muted">
             Physical-edition specs (trim, paper, binding, finish) and display-only
             pricing. These describe a print edition for your public page — AuthorChain
@@ -507,23 +508,20 @@ export default async function BookDetailPage({
             {statusBadge(registration?.status)}
             <span className="text-muted">· Proof source:</span>
             {usesRealFileHash ? (
-              <StatusBadge tone="success">real manuscript file (SHA-256)</StatusBadge>
+              <StatusBadge tone="success">{d.usesRealHashNote}</StatusBadge>
             ) : (
-              <StatusBadge tone="warning">MVP metadata fallback</StatusBadge>
+              <StatusBadge tone="warning">{d.mvpMetadata}</StatusBadge>
             )}
           </div>
           {!usesRealFileHash && !isRegistered ? (
-            <p className="mt-2 text-xs text-muted">
-              Upload a manuscript above to register the real file hash instead of
-              the metadata fallback.
-            </p>
+            <p className="mt-2 text-xs text-muted">{d.usesMetadataNote}</p>
           ) : null}
 
           {isRegistered ? (
             <dl className="mt-4 space-y-3 text-sm">
               {registration?.contractAddress ? (
                 <div>
-                  <dt className="text-muted">Contract</dt>
+                  <dt className="text-muted">{d.proofContract}</dt>
                   <dd className="mt-1 break-all font-mono text-xs">
                     <a
                       href={getExplorerAddressUrl(registration.contractAddress)}
@@ -538,7 +536,7 @@ export default async function BookDetailPage({
               ) : null}
               {registration?.transactionHash ? (
                 <div>
-                  <dt className="text-muted">Transaction</dt>
+                  <dt className="text-muted">{d.proofTransaction}</dt>
                   <dd className="mt-1 break-all font-mono text-xs">
                     <a
                       href={getExplorerTxUrl(registration.transactionHash)}
@@ -558,23 +556,19 @@ export default async function BookDetailPage({
                 <form action={registerProofAction}>
                   <input type="hidden" name="bookId" value={book.id} />
                   <Button type="submit" className="w-full">
-                    Register Proof of Authorship
+                    {d.registerProof}
                   </Button>
                   {registration?.status === "FAILED" ? (
-                    <p className="mt-2 text-xs text-warning">
-                      The last attempt failed. You can try again.
-                    </p>
+                    <p className="mt-2 text-xs text-warning">{d.proofLastFailed}</p>
                   ) : null}
                 </form>
               ) : (
                 <>
                   <Button className="w-full" disabled>
-                    Register Proof of Authorship
+                    {d.registerProof}
                   </Button>
                   <p className="mt-2 text-xs text-warning">
-                    {!registryReady
-                      ? "Blockchain proof registration is not fully configured. Please contact support."
-                      : "Add a wallet address to your author profile to register on-chain."}
+                    {!registryReady ? d.proofNotConfigured : d.proofAddWallet}
                   </p>
                 </>
               )}
@@ -585,7 +579,7 @@ export default async function BookDetailPage({
 
       <div className="mt-8">
         <ButtonLink href="/dashboard/books" variant="ghost">
-          ← Back to My Books
+          {dict.nav.backToMyBooks}
         </ButtonLink>
       </div>
     </DashboardPage>

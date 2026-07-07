@@ -10,6 +10,7 @@ import {
   archiveBook,
   restoreBook,
 } from "@/lib/data/books";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export type CreateBookState = { error?: string };
 
@@ -33,10 +34,11 @@ export async function createBookAction(
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const price = Number(formData.get("price"));
 
-  if (!title) return { error: "Title is required." };
-  if (!description) return { error: "Description is required." };
+  const { dict } = await getDictionary();
+  if (!title) return { error: dict.errors.titleRequired };
+  if (!description) return { error: dict.errors.descriptionRequired };
   if (!Number.isFinite(price) || price < 0) {
-    return { error: "Enter a valid price." };
+    return { error: dict.errors.validPrice };
   }
 
   let book;
@@ -51,7 +53,7 @@ export async function createBookAction(
       price,
     });
   } catch {
-    return { error: "Could not save your book. Please try again." };
+    return { error: dict.errors.couldNotSaveBook };
   }
 
   revalidatePath("/dashboard/books");
