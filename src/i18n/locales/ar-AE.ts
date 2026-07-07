@@ -324,6 +324,7 @@ const arAE: Dictionary = {
     spineWidthAuto: "عرض الكعب (تلقائي)",
     spineNote: "يُقدَّر عرض الكعب من عدد الصفحات ونوع الورق ويُعاد حسابه عند الحفظ.",
     printPrice: "سعر الطباعة (اختياري)",
+    currency: "العملة",
     savePrintSettings: "حفظ إعدادات الطباعة",
     optional: "اختياري",
     customWidth: "عرض مخصّص (بوصة)",

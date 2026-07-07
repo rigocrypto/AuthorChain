@@ -413,60 +413,60 @@ export function BookExtendedDetailsForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Page count</label>
+          <label className="mb-1 block text-xs text-muted">{dict.book.pages}</label>
           <input name="pageCount" type="number" min="1" defaultValue={v(defaults.pageCount)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Reading time (minutes)</label>
+          <label className="mb-1 block text-xs text-muted">{d.readingTimeMin}</label>
           <input name="readingTimeMinutes" type="number" min="1" defaultValue={v(defaults.readingTimeMinutes)} className={field} />
         </div>
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">Audience</label>
-        <input name="audience" defaultValue={v(defaults.audience)} placeholder="For entrepreneurs, students, and creators" className={field} />
+        <label className="mb-1 block text-xs text-muted">{d.audience}</label>
+        <input name="audience" aria-label={d.audience} defaultValue={v(defaults.audience)} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">What readers will learn</label>
-        <textarea name="whatYouWillLearn" rows={3} defaultValue={v(defaults.whatYouWillLearn)} className={field} />
+        <label className="mb-1 block text-xs text-muted">{d.whatLearn}</label>
+        <textarea name="whatYouWillLearn" rows={3} aria-label={d.whatLearn} defaultValue={v(defaults.whatYouWillLearn)} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">Topics / keywords (comma-separated)</label>
-        <input name="topics" defaultValue={v(defaults.topics)} placeholder="AI, prompting, productivity" className={field} />
+        <label className="mb-1 block text-xs text-muted">{d.topics}</label>
+        <input name="topics" aria-label={d.topics} defaultValue={v(defaults.topics)} className={field} />
       </div>
 
       <div className="border-t border-border pt-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted">Credits</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted">{d.creditsSection}</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs text-muted">Editor</label>
+            <label className="mb-1 block text-xs text-muted">{dict.book.editor}</label>
             <input name="editorName" defaultValue={v(defaults.editorName)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">Cover designer</label>
+            <label className="mb-1 block text-xs text-muted">{dict.book.coverDesigner}</label>
             <input name="coverDesignerName" defaultValue={v(defaults.coverDesignerName)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">Illustrator</label>
+            <label className="mb-1 block text-xs text-muted">{dict.book.illustrator}</label>
             <input name="illustratorName" defaultValue={v(defaults.illustratorName)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">Translator</label>
+            <label className="mb-1 block text-xs text-muted">{dict.book.translator}</label>
             <input name="translatorName" defaultValue={v(defaults.translatorName)} className={field} />
           </div>
         </div>
         <div className="mt-3">
-          <label className="mb-1 block text-xs text-muted">Collaborators</label>
-          <input name="collaborators" defaultValue={v(defaults.collaborators)} placeholder="Comma-separated names" className={field} />
+          <label className="mb-1 block text-xs text-muted">{dict.book.collaborators}</label>
+          <input name="collaborators" aria-label={dict.book.collaborators} defaultValue={v(defaults.collaborators)} className={field} />
         </div>
         <div className="mt-3">
-          <label className="mb-1 block text-xs text-muted">Contributors</label>
-          <input name="contributors" defaultValue={v(defaults.contributors)} placeholder="Comma-separated names" className={field} />
+          <label className="mb-1 block text-xs text-muted">{dict.book.contributors}</label>
+          <input name="contributors" aria-label={dict.book.contributors} defaultValue={v(defaults.contributors)} className={field} />
         </div>
       </div>
 
       <div className="border-t border-border pt-4">
-        <label className="mb-1 block text-xs text-muted">Thanks / acknowledgments</label>
-        <textarea name="acknowledgments" rows={3} defaultValue={v(defaults.acknowledgments)} className={field} />
+        <label className="mb-1 block text-xs text-muted">{d.thanksAck}</label>
+        <textarea name="acknowledgments" rows={3} aria-label={d.thanksAck} defaultValue={v(defaults.acknowledgments)} className={field} />
       </div>
 
       <Button type="submit" variant="secondary" disabled={pending}>
@@ -506,7 +506,7 @@ export function PublishingMetadataForm({
     <form action={action} className="mt-4 space-y-3">
       <input type="hidden" name="bookId" value={bookId} />
       <div>
-        <label className="mb-1 block text-xs text-muted">ISBN-13</label>
+        <label className="mb-1 block text-xs text-muted">{dict.book.isbn13}</label>
         <input
           name="isbn13"
           defaultValue={defaults.isbn13 ?? ""}
@@ -516,12 +516,12 @@ export function PublishingMetadataForm({
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">ISBN-10 (optional)</label>
-          <input name="isbn10" defaultValue={defaults.isbn10 ?? ""} className={field} />
+          <label className="mb-1 block text-xs text-muted">{d.isbn10}</label>
+          <input name="isbn10" aria-label={d.isbn10} defaultValue={defaults.isbn10 ?? ""} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Format</label>
-          <select name="bookFormat" defaultValue={defaults.bookFormat ?? ""} className={field}>
+          <label className="mb-1 block text-xs text-muted">{dict.book.format}</label>
+          <select name="bookFormat" aria-label={dict.book.format} defaultValue={defaults.bookFormat ?? ""} className={field}>
             <option value="">—</option>
             <option value="EBOOK">Ebook</option>
             <option value="PAPERBACK">Paperback</option>
@@ -532,20 +532,21 @@ export function PublishingMetadataForm({
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Publisher</label>
+          <label className="mb-1 block text-xs text-muted">{dict.book.publisher}</label>
           <input
             name="publisherName"
+            aria-label={dict.book.publisher}
             defaultValue={defaults.publisherName ?? ""}
             className={field}
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Publication date</label>
-          <input name="publicationDate" type="date" defaultValue={dateValue} className={field} />
+          <label className="mb-1 block text-xs text-muted">{d.publicationDate}</label>
+          <input name="publicationDate" type="date" aria-label={d.publicationDate} defaultValue={dateValue} className={field} />
         </div>
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">Edition</label>
+        <label className="mb-1 block text-xs text-muted">{dict.book.edition}</label>
         <input
           name="edition"
           defaultValue={defaults.edition ?? ""}
@@ -629,9 +630,10 @@ export function PrintEditionForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Trim size</label>
+          <label className="mb-1 block text-xs text-muted">{dict.book.trimSize}</label>
           <select
             name="trimSize"
+            aria-label={dict.book.trimSize}
             defaultValue={d?.trimSize ?? "US_TRADE_6X9"}
             onChange={(e) => setTrimSize(e.target.value as typeof trimSize)}
             className={field}
@@ -640,8 +642,8 @@ export function PrintEditionForm({
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Interior color</label>
-          <select name="interiorColor" defaultValue={d?.interiorColor ?? "BLACK_AND_WHITE"} className={field}>
+          <label className="mb-1 block text-xs text-muted">{L.fInteriorColor}</label>
+          <select name="interiorColor" aria-label={L.fInteriorColor} defaultValue={d?.interiorColor ?? "BLACK_AND_WHITE"} className={field}>
             {enumOptions(INTERIOR_COLOR_LABELS)}
           </select>
         </div>
@@ -650,97 +652,95 @@ export function PrintEditionForm({
       {trimSize === "CUSTOM" ? (
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs text-muted">Custom width (in)</label>
-            <input name="trimWidthIn" type="number" min="0" step="0.01" defaultValue={v(d?.trimWidthIn)} className={field} />
+            <label className="mb-1 block text-xs text-muted">{L.customWidth}</label>
+            <input name="trimWidthIn" type="number" min="0" step="0.01" aria-label={L.customWidth} defaultValue={v(d?.trimWidthIn)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">Custom height (in)</label>
-            <input name="trimHeightIn" type="number" min="0" step="0.01" defaultValue={v(d?.trimHeightIn)} className={field} />
+            <label className="mb-1 block text-xs text-muted">{L.customHeight}</label>
+            <input name="trimHeightIn" type="number" min="0" step="0.01" aria-label={L.customHeight} defaultValue={v(d?.trimHeightIn)} className={field} />
           </div>
         </div>
       ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Paper</label>
-          <select name="paperType" defaultValue={d?.paperType ?? "WHITE"} className={field}>
+          <label className="mb-1 block text-xs text-muted">{L.fPaperType}</label>
+          <select name="paperType" aria-label={L.fPaperType} defaultValue={d?.paperType ?? "WHITE"} className={field}>
             {enumOptions(PAPER_TYPE_LABELS)}
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Cover finish</label>
-          <select name="coverFinish" defaultValue={d?.coverFinish ?? "MATTE"} className={field}>
+          <label className="mb-1 block text-xs text-muted">{dict.book.coverFinish}</label>
+          <select name="coverFinish" aria-label={dict.book.coverFinish} defaultValue={d?.coverFinish ?? "MATTE"} className={field}>
             {enumOptions(COVER_FINISH_LABELS)}
           </select>
         </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs text-muted">Binding</label>
-        <select name="binding" defaultValue={d?.binding ?? "PERFECT_BOUND"} className={field}>
+        <label className="mb-1 block text-xs text-muted">{dict.book.binding}</label>
+        <select name="binding" aria-label={dict.book.binding} defaultValue={d?.binding ?? "PERFECT_BOUND"} className={field}>
           {enumOptions(BINDING_LABELS)}
         </select>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Print page count</label>
-          <input name="pageCount" type="number" min="1" defaultValue={v(d?.pageCount)} className={field} />
+          <label className="mb-1 block text-xs text-muted">{L.printPageCount}</label>
+          <input name="pageCount" type="number" min="1" aria-label={L.printPageCount} defaultValue={v(d?.pageCount)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Spine width (auto)</label>
+          <label className="mb-1 block text-xs text-muted">{L.spineWidthAuto}</label>
           <input
             readOnly
             value={d?.spineWidthIn != null ? `${d.spineWidthIn.toFixed(3)} in` : "—"}
-            aria-label="Spine width (auto-calculated)"
+            aria-label={L.spineWidthAuto}
             className={`${field} text-muted`}
           />
         </div>
       </div>
-      <p className="text-xs text-muted">
-        Spine width is estimated from page count + paper and recalculated on save.
-      </p>
+      <p className="text-xs text-muted">{L.spineNote}</p>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Print ISBN-13 (optional)</label>
+          <label className="mb-1 block text-xs text-muted">{dict.book.printIsbn13}</label>
           <input name="printIsbn13" defaultValue={v(d?.printIsbn13)} placeholder="978-…" className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Imprint (optional)</label>
-          <input name="imprintName" defaultValue={v(d?.imprintName)} className={field} />
+          <label className="mb-1 block text-xs text-muted">{dict.book.imprint}</label>
+          <input name="imprintName" aria-label={dict.book.imprint} defaultValue={v(d?.imprintName)} className={field} />
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs text-muted">Print price (optional)</label>
-          <input name="price" type="number" min="0" step="0.01" defaultValue={v(d?.price)} className={field} />
+          <label className="mb-1 block text-xs text-muted">{L.printPrice}</label>
+          <input name="price" type="number" min="0" step="0.01" aria-label={L.printPrice} defaultValue={v(d?.price)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Currency</label>
-          <input name="currency" defaultValue={d?.currency ?? "USD"} className={field} />
+          <label className="mb-1 block text-xs text-muted">{L.currency}</label>
+          <input name="currency" aria-label={L.currency} defaultValue={d?.currency ?? "USD"} className={field} />
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">Weight (oz, optional)</label>
-          <input name="weightOz" type="number" min="0" step="0.1" defaultValue={v(d?.weightOz)} className={field} />
+          <label className="mb-1 block text-xs text-muted">{L.fWeightOz}</label>
+          <input name="weightOz" type="number" min="0" step="0.1" aria-label={L.fWeightOz} defaultValue={v(d?.weightOz)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">Distributor (optional)</label>
+          <label className="mb-1 block text-xs text-muted">{L.fDistributor}</label>
           <input name="distributor" defaultValue={v(d?.distributor)} placeholder="e.g. Global print network" className={field} />
         </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs text-muted">Availability note (optional)</label>
+        <label className="mb-1 block text-xs text-muted">{L.availabilityNote}</label>
         <input name="availabilityNote" defaultValue={v(d?.availabilityNote)} placeholder="Ships in 5–7 business days" className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">Print notes (optional, public)</label>
-        <textarea name="printNotes" rows={2} defaultValue={v(d?.printNotes)} className={field} />
+        <label className="mb-1 block text-xs text-muted">{L.printNotes}</label>
+        <textarea name="printNotes" rows={2} aria-label={L.printNotes} defaultValue={v(d?.printNotes)} className={field} />
       </div>
 
       <Button type="submit" variant="secondary" disabled={pending}>

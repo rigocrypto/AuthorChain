@@ -324,6 +324,7 @@ const es: Dictionary = {
     spineWidthAuto: "Ancho del lomo (automático)",
     spineNote: "El ancho del lomo se estima a partir del número de páginas y el papel, y se recalcula al guardar.",
     printPrice: "Precio de impresión (opcional)",
+    currency: "Moneda",
     savePrintSettings: "Guardar ajustes de impresión",
     optional: "opcional",
     customWidth: "Ancho personalizado (pulg.)",

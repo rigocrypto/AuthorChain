@@ -334,6 +334,7 @@ const en = {
     spineWidthAuto: "Spine width (auto)",
     spineNote: "Spine width is estimated from page count + paper and recalculated on save.",
     printPrice: "Print price (optional)",
+    currency: "Currency",
     savePrintSettings: "Save print settings",
     optional: "optional",
     customWidth: "Custom width (in)",

@@ -323,6 +323,7 @@ const fr: Dictionary = {
     spineWidthAuto: "Largeur du dos (auto)",
     spineNote: "La largeur du dos est estimée à partir du nombre de pages et du papier, et recalculée à l'enregistrement.",
     printPrice: "Prix d'impression (facultatif)",
+    currency: "Devise",
     savePrintSettings: "Enregistrer les paramètres d'impression",
     optional: "facultatif",
     customWidth: "Largeur personnalisée (po)",

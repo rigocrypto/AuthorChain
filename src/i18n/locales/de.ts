@@ -323,6 +323,7 @@ const de: Dictionary = {
     spineWidthAuto: "Rückenbreite (auto)",
     spineNote: "Die Rückenbreite wird aus Seitenzahl und Papier geschätzt und beim Speichern neu berechnet.",
     printPrice: "Druckpreis (optional)",
+    currency: "Währung",
     savePrintSettings: "Druckeinstellungen speichern",
     optional: "optional",
     customWidth: "Benutzerdefinierte Breite (Zoll)",

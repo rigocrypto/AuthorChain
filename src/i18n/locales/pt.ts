@@ -323,6 +323,7 @@ const pt: Dictionary = {
     spineWidthAuto: "Largura da lombada (auto)",
     spineNote: "A largura da lombada é estimada pelo número de páginas e pelo papel, e recalculada ao salvar.",
     printPrice: "Preço de impressão (opcional)",
+    currency: "Moeda",
     savePrintSettings: "Salvar configurações de impressão",
     optional: "opcional",
     customWidth: "Largura personalizada (pol)",

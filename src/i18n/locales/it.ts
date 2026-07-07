@@ -323,6 +323,7 @@ const it: Dictionary = {
     spineWidthAuto: "Larghezza dorso (auto)",
     spineNote: "La larghezza del dorso è stimata dal numero di pagine e dalla carta, e viene ricalcolata al salvataggio.",
     printPrice: "Prezzo di stampa (opzionale)",
+    currency: "Valuta",
     savePrintSettings: "Salva impostazioni di stampa",
     optional: "opzionale",
     customWidth: "Larghezza personalizzata (in)",
