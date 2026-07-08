@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { getOptionalAuthor } from "@/lib/auth/session";
 import { storageSupportsDirectUpload } from "@/lib/storage";
 import { getAuthorBookById } from "@/lib/data/books";
+import { listBookTranslations } from "@/lib/data/book-translations";
 import { getRegistrationForBook } from "@/lib/data/registrations";
 import { getPrimaryBookFile } from "@/lib/data/book-files";
 import { getPrimaryAsset } from "@/lib/data/book-assets";
@@ -33,6 +34,7 @@ import {
 import { ManuscriptUploadForm } from "./manuscript-upload-form";
 import {
   BookDetailsForm,
+  BookTranslationForm,
   BookExtendedDetailsForm,
   CoverUploadForm,
   BackCoverUploadForm,
@@ -72,10 +74,10 @@ export default async function BookDetailPage({
   const book = await getAuthorBookById(id, author.id);
   if (!book) notFound();
 
-  const { dict } = await getDictionary();
+  const { dict, locale } = await getDictionary();
   const d = dict.dashboard;
 
-  const [registration, manuscript, cover, barcode, preview, backCover, referral, printSettings] =
+  const [registration, manuscript, cover, barcode, preview, backCover, referral, printSettings, translations] =
     await Promise.all([
       getRegistrationForBook(id),
       getPrimaryBookFile(id),
@@ -85,6 +87,7 @@ export default async function BookDetailPage({
       getPrimaryAsset(id, "BACK_COVER"),
       getReferralForBook(id, author.id),
       getPrintSettings(id, author.id),
+      listBookTranslations(id),
     ]);
   const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const proofHash = bookRegistrationHash(book);
@@ -145,6 +148,12 @@ export default async function BookDetailPage({
               category: book.category,
               price: book.price,
             }}
+          />
+
+          <BookTranslationForm
+            bookId={book.id}
+            translations={translations}
+            currentLocale={locale as "en" | "es" | "fr" | "it" | "pt" | "de" | "ru" | "ar-AE"}
           />
 
           {book.status === "PUBLISHED" ? (

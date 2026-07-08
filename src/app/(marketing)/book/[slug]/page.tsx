@@ -6,6 +6,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getPublicBookBySlug } from "@/lib/data/books";
+import { resolveLocalizedBookMetadata } from "@/lib/data/book-translations";
 import { getPublicPrintSettings } from "@/lib/data/print-settings";
 import {
   resolveTrimDimensions,
@@ -19,7 +20,7 @@ import { ReaderBackground } from "@/components/reader-background";
 import { getChainConfig, getExplorerTxUrl } from "@/lib/blockchain/registry";
 import { isStripeConfigured } from "@/lib/payments/stripe";
 import { absoluteUrl, metaDescription, bookJsonLd, jsonLdScript } from "@/lib/seo";
-import { getDictionary } from "@/i18n/get-dictionary";
+import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { startCheckoutAction } from "./actions";
 import { BookPreview } from "./book-preview";
 import { ShareBook } from "./share-book";
@@ -32,15 +33,20 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const book = await getPublicBookBySlug(slug);
+  const locale = await getLocale();
+  const book = await getPublicBookBySlug(slug, locale);
   if (!book) {
     const { dict } = await getDictionary();
     return { title: dict.book.notFound, robots: { index: false, follow: false } };
   }
 
-  const title = `${book.title} by ${book.authorName}`;
+  const localized = resolveLocalizedBookMetadata(
+    { title: book.title, subtitle: book.subtitle, description: book.description },
+    book.translation,
+  );
+  const title = `${localized.title} by ${book.authorName}`;
   const description = metaDescription(
-    book.subtitle ? `${book.subtitle}. ${book.description}` : book.description,
+    localized.subtitle ? `${localized.subtitle}. ${localized.description}` : localized.description,
   );
   const url = absoluteUrl(`/book/${book.slug}`);
 
@@ -65,11 +71,16 @@ export default async function PublicBookPage({
   const { slug } = await params;
   const { ref } = await searchParams;
   const refCode = typeof ref === "string" ? ref : "";
-  const book = await getPublicBookBySlug(slug);
+  const locale = await getLocale();
+  const book = await getPublicBookBySlug(slug, locale);
   if (!book) notFound();
 
   const { dict } = await getDictionary();
   const L = dict.book;
+  const metadata = resolveLocalizedBookMetadata(
+    { title: book.title, subtitle: book.subtitle, description: book.description },
+    book.translation,
+  );
   const stripeReady = isStripeConfigured();
   const chain = getChainConfig();
   const print = await getPublicPrintSettings(book.id);
@@ -123,7 +134,16 @@ export default async function PublicBookPage({
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(bookJsonLd(book)) }}
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            bookJsonLd({
+              ...book,
+              title: metadata.title,
+              subtitle: metadata.subtitle,
+              description: metadata.description ?? "",
+            }),
+          ),
+        }}
       />
       <ReaderBackground />
       <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
@@ -144,7 +164,7 @@ export default async function PublicBookPage({
           <BookPreview
             bookId={book.id}
             slug={book.slug}
-            title={book.title}
+            title={metadata.title}
             authorName={book.authorName}
             hasCover={book.hasCover}
             coverColor={book.coverColor}
@@ -168,9 +188,9 @@ export default async function PublicBookPage({
                 <StatusBadge tone="accent">{dict.common.verifiedProof}</StatusBadge>
               ) : null}
             </div>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight">{book.title}</h1>
-            {book.subtitle ? (
-              <p className="mt-1 text-lg text-muted">{book.subtitle}</p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight">{metadata.title}</h1>
+            {metadata.subtitle ? (
+              <p className="mt-1 text-lg text-muted">{metadata.subtitle}</p>
             ) : null}
             <p className="mt-1 text-sm text-muted">
               {L.by} {book.authorName}
@@ -183,7 +203,7 @@ export default async function PublicBookPage({
               <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
                 {L.about}
               </h2>
-              <p className="mt-2 max-w-prose text-muted">{book.description}</p>
+              <p className="mt-2 max-w-prose text-muted">{metadata.description}</p>
             </div>
             {book.audience ? (
               <div>
@@ -241,7 +261,7 @@ export default async function PublicBookPage({
           </Card>
 
           {/* Share */}
-          <ShareBook title={book.title} />
+          <ShareBook title={metadata.title} />
 
           {/* Book details */}
           {details.length ? (

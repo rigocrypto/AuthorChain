@@ -2,6 +2,8 @@ import { Prisma } from "@prisma/client";
 import type { BookFormat } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { coverGradient } from "@/lib/cover";
+import type { Locale } from "@/i18n/config";
+import { getBookTranslation } from "@/lib/data/book-translations";
 
 /**
  * Data-access layer for books. Returns plain serializable DTOs (numbers + ISO
@@ -186,10 +188,17 @@ export type PublicBookDTO = BookDTO & {
   hasBackCover: boolean;
   /** On-chain proof transaction hash, if registered (for a public explorer link). */
   proofTxHash: string | null;
+  translation: {
+    locale: Locale;
+    title: string;
+    subtitle: string | null;
+    description: string | null;
+  } | null;
 };
 
 export async function getPublicBookBySlug(
   slug: string,
+  locale: Locale = "en",
 ): Promise<PublicBookDTO | null> {
   const book = await prisma.book.findFirst({
     where: { slug, status: "PUBLISHED", archivedAt: null },
@@ -209,6 +218,7 @@ export async function getPublicBookBySlug(
   });
   if (!book) return null;
   const reg = book.blockchainRegistrations[0];
+  const translation = await getBookTranslation(book.id, locale);
   return {
     ...toDTO(book),
     authorName: book.author.name,
@@ -217,6 +227,14 @@ export async function getPublicBookBySlug(
     hasBackCover: book.assets.some((a) => a.assetType === "BACK_COVER"),
     proofVerified: Boolean(reg),
     proofTxHash: reg?.transactionHash ?? null,
+    translation: translation
+      ? {
+          locale: translation.locale,
+          title: translation.title,
+          subtitle: translation.subtitle,
+          description: translation.description,
+        }
+      : null,
   };
 }
 

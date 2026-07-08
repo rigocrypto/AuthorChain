@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { ReaderBackground } from "@/components/reader-background";
 import { resolveShareLanding } from "@/lib/data/referrals";
 import { absoluteUrl, metaDescription } from "@/lib/seo";
-import { getDictionary } from "@/i18n/get-dictionary";
+import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +23,8 @@ export async function generateMetadata({
   params: Promise<{ code: string }>;
 }): Promise<Metadata> {
   const { code } = await params;
-  const landing = await resolveShareLanding(code);
+  const locale = await getLocale();
+  const landing = await resolveShareLanding(code, locale);
   if (!landing) {
     const { dict } = await getDictionary();
     return { title: dict.share.shareLink, robots: { index: false, follow: false } };
@@ -57,12 +58,18 @@ export default async function SharePage({
   params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
+  const locale = await getLocale();
   const { dict } = await getDictionary();
-  const landing = await resolveShareLanding(code);
+  const landing = await resolveShareLanding(code, locale);
   // Invalid / inactive / draft / archived → no exposure, send to the storefront.
   if (!landing) redirect("/explore");
 
   const { book } = landing;
+  const metadata = {
+    title: book.translation?.title ?? book.title,
+    subtitle: book.translation?.subtitle ?? book.subtitle,
+    description: book.translation?.description ?? book.description,
+  };
   const bookHref = `/book/${book.slug}?ref=${encodeURIComponent(code)}`;
 
   return (
@@ -76,14 +83,14 @@ export default async function SharePage({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={`/api/assets/books/${book.id}/cover`}
-                  alt={`${book.title} cover`}
+                  alt={`${metadata.title} cover`}
                   className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
                 />
               ) : (
                 <div
                   className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${book.coverColor} p-4`}
                 >
-                  <span className="text-lg font-bold text-white drop-shadow">{book.title}</span>
+                  <span className="text-lg font-bold text-white drop-shadow">{metadata.title}</span>
                 </div>
               )}
             </div>
@@ -95,12 +102,12 @@ export default async function SharePage({
                   <StatusBadge tone="accent">{dict.common.verifiedProof}</StatusBadge>
                 ) : null}
               </div>
-              <h1 className="mt-2 text-2xl font-bold tracking-tight">{book.title}</h1>
-              {book.subtitle ? (
-                <p className="mt-1 text-muted">{book.subtitle}</p>
+              <h1 className="mt-2 text-2xl font-bold tracking-tight">{metadata.title}</h1>
+              {metadata.subtitle ? (
+                <p className="mt-1 text-muted">{metadata.subtitle}</p>
               ) : null}
               <p className="mt-1 text-sm text-muted">by {book.authorName}</p>
-              <p className="mt-3 line-clamp-4 text-sm text-muted">{book.description}</p>
+              <p className="mt-3 line-clamp-4 text-sm text-muted">{metadata.description}</p>
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <div className="text-xl font-semibold">

@@ -110,6 +110,12 @@ const en = {
     whoFor: "Who this book is for",
     whatLearn: "What you'll learn",
     buyTitle: "Buy this book",
+    buyThisBook: "Buy this book",
+    backToBookPage: "Back to book page",
+    closePreview: "Close preview",
+    readerPreview: "Reader preview",
+    previewFirstPages: "Preview first pages",
+    previewBook: "Preview book",
     buyCard: "Buy with Card (Stripe)",
     buyCardUnavailable: "Card payments are not available yet. Check back soon.",
     buyUsdc: "Pay with USDC (Base)",
@@ -342,6 +348,15 @@ const en = {
 
     // Details / metadata forms
     saveDetails: "Save details",
+    translatedPublicMetadata: "Translated public metadata",
+    translatedPublicMetadataNote:
+      "These translations appear on the public book page when visitors select this language. If left empty, AuthorChain shows the original book details.",
+    translationLocale: "Language",
+    translationTitle: "Translated title",
+    translationSubtitle: "Translated subtitle",
+    translationDescription: "Translated description",
+    saveTranslation: "Save translation",
+    removeTranslation: "Remove translation",
     saveDetailsCredits: "Save details & credits",
     savePublishingMetadata: "Save publishing metadata",
     generateBarcode: "Generate ISBN barcode",

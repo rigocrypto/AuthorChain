@@ -3,6 +3,8 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { getPublicBookBySlug } from "@/lib/data/books";
+import { getLocale } from "@/i18n/get-dictionary";
+import { resolveLocalizedBookMetadata } from "@/lib/data/book-translations";
 import {
   resolveReferralForCheckout,
   incrementReferralCheckout,
@@ -17,8 +19,9 @@ import { createCheckoutSession, isStripeConfigured } from "@/lib/payments/stripe
 export async function startCheckoutAction(formData: FormData): Promise<void> {
   const slug = String(formData.get("slug") ?? "");
 
+  const locale = await getLocale();
   // getPublicBookBySlug already filters to PUBLISHED books only.
-  const book = await getPublicBookBySlug(slug);
+  const book = await getPublicBookBySlug(slug, locale);
   if (!book) {
     redirect(`/book/${slug}?error=unavailable`);
   }
@@ -51,12 +54,17 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
       ? `${appUrl}/api/assets/books/${book.id}/cover`
       : null;
 
+  const localized = resolveLocalizedBookMetadata(
+    { title: book.title, subtitle: book.subtitle, description: book.description },
+    book.translation,
+  );
+
   const { url } = await createCheckoutSession({
     bookId: book.id,
     authorId: book.authorId,
     bookSlug: book.slug,
-    title: book.title,
-    description: book.description,
+    title: localized.title,
+    description: localized.description ?? localized.title,
     amount: book.price,
     currency: book.currency,
     coverUrl,

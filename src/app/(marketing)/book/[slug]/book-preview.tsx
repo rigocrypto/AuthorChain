@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ProofSeal } from "@/components/proof-seal";
+import { useI18n } from "@/i18n/provider";
 import { startCheckoutAction } from "./actions";
 
 /**
@@ -39,6 +40,8 @@ export function BookPreview({
   stripeReady: boolean;
   refCode?: string;
 }) {
+  const { dict } = useI18n();
+  const L = dict.book;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -83,7 +86,7 @@ export function BookPreview({
           </span>
           <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 opacity-0 transition group-hover:bg-black/35 group-hover:opacity-100">
             <span className="rounded-lg bg-white/90 px-3 py-1.5 text-sm font-semibold text-black shadow">
-              Preview book
+              {L.previewBook ?? L.readerPreview}
             </span>
           </span>
         </button>
@@ -96,7 +99,7 @@ export function BookPreview({
       </div>
 
       <Button variant="secondary" className="mt-3 w-full" onClick={() => setOpen(true)}>
-        Preview first pages
+        {L.previewFirstPages}
       </Button>
 
       {open ? (
@@ -121,7 +124,7 @@ export function BookPreview({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Close preview"
+                aria-label={L.closePreview}
                 className="rounded-lg px-2 py-1 text-lg text-muted hover:bg-surface-2 hover:text-foreground"
               >
                 ✕
@@ -166,14 +169,14 @@ export function BookPreview({
               </span>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setOpen(false)}>
-                  Close
+                  {L.backToBookPage}
                 </Button>
                 {stripeReady ? (
                   <form action={startCheckoutAction}>
                     <input type="hidden" name="slug" value={slug} />
                     {refCode ? <input type="hidden" name="ref" value={refCode} /> : null}
                     <Button type="submit">
-                      Buy ebook · ${price.toFixed(2)} {currency}
+                      {L.buyThisBook} · ${price.toFixed(2)} {currency}
                     </Button>
                   </form>
                 ) : null}

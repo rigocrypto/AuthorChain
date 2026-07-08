@@ -1,4 +1,5 @@
 import { resolveShareLanding } from "@/lib/data/referrals";
+import { getLocale } from "@/i18n/get-dictionary";
 import { OG_SIZE, bookOgElement, fetchCoverDataUrl } from "@/lib/og/book-card";
 import { OG_JPEG_CONTENT_TYPE, ogJpegResponse } from "@/lib/og/jpeg";
 
@@ -15,7 +16,8 @@ export default async function Image({
   params: Promise<{ code: string }>;
 }) {
   const { code } = await params;
-  const landing = await resolveShareLanding(code);
+  const locale = await getLocale();
+  const landing = await resolveShareLanding(code, locale);
 
   if (!landing) {
     return ogJpegResponse(

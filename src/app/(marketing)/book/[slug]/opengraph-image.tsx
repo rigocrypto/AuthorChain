@@ -1,4 +1,5 @@
 import { getPublicBookBySlug } from "@/lib/data/books";
+import { getLocale } from "@/i18n/get-dictionary";
 import { OG_SIZE, bookOgElement, fetchCoverDataUrl } from "@/lib/og/book-card";
 import { OG_JPEG_CONTENT_TYPE, ogJpegResponse } from "@/lib/og/jpeg";
 
@@ -18,7 +19,8 @@ export default async function Image({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const book = await getPublicBookBySlug(slug);
+  const locale = await getLocale();
+  const book = await getPublicBookBySlug(slug, locale);
 
   if (!book) {
     // Fall back to a branded card rather than erroring for missing/unpublished.

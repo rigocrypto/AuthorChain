@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   uploadCoverAction,
@@ -15,6 +15,8 @@ import {
   savePublishingMetadataAction,
   updateBookDetailsAction,
   updateBookExtendedDetailsAction,
+  saveBookTranslationAction,
+  removeBookTranslationAction,
   generateBarcodeAction,
   savePrintSettingsAction,
   type PublishingState,
@@ -27,7 +29,9 @@ import {
   COVER_FINISH_LABELS,
 } from "@/lib/publishing/print";
 import type { PrintSettingsDTO } from "@/lib/data/print-settings";
+import { locales, localeNames, type Locale } from "@/i18n/config";
 import { useI18n } from "@/i18n/provider";
+import type { BookTranslationDTO } from "@/lib/data/book-translations";
 
 const initial: PublishingState = {};
 
@@ -373,6 +377,118 @@ export function BookDetailsForm({
       </Button>
       <Feedback state={state} />
     </form>
+  );
+}
+
+export function BookTranslationForm({
+  bookId,
+  translations,
+  currentLocale,
+}: {
+  bookId: string;
+  translations: BookTranslationDTO[];
+  currentLocale: Locale;
+}) {
+  const { dict } = useI18n();
+  const d = dict.dashboard;
+  const [locale, setLocale] = useState<Locale>(currentLocale);
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [description, setDescription] = useState("");
+  const existing = translations.find((t) => t.locale === locale) ?? null;
+  const [saveState, saveAction, savePending] = useActionState(saveBookTranslationAction, initial);
+  const [removeState, removeAction, removePending] = useActionState(
+    removeBookTranslationAction,
+    initial,
+  );
+
+  // Load the existing translation into the fields whenever the selected locale
+  // (or the saved translations) changes — resetting a form to match the current
+  // selection is a legitimate effect sync, not a render-time mutation.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    const nextExisting = translations.find((t) => t.locale === locale) ?? null;
+    setTitle(nextExisting?.title ?? "");
+    setSubtitle(nextExisting?.subtitle ?? "");
+    setDescription(nextExisting?.description ?? "");
+  }, [locale, translations]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  const handleLocaleChange = (nextLocale: Locale) => {
+    setLocale(nextLocale);
+  };
+
+  return (
+    <div className="mt-4 space-y-4 rounded-xl border border-border/70 bg-surface-2/60 p-4">
+      <div>
+        <h3 className="text-sm font-semibold">{d.translatedPublicMetadata}</h3>
+        <p className="mt-1 text-xs text-muted">{d.translatedPublicMetadataNote}</p>
+      </div>
+
+      <form action={saveAction} className="space-y-3">
+        <input type="hidden" name="bookId" value={bookId} />
+        <div>
+          <label className="mb-1 block text-xs text-muted">{d.translationLocale}</label>
+          <select
+            name="locale"
+            value={locale}
+            onChange={(e) => handleLocaleChange(e.target.value as Locale)}
+            className={field}
+          >
+            {locales.map((loc) => (
+              <option key={loc} value={loc}>
+                {localeNames[loc]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">{d.translationTitle}</label>
+          <input
+            name="title"
+            required
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className={field}
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">{d.translationSubtitle}</label>
+          <input
+            name="subtitle"
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            className={field}
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted">{d.translationDescription}</label>
+          <textarea
+            name="description"
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className={field}
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button type="submit" variant="secondary" disabled={savePending}>
+            {savePending ? d.saving : d.saveTranslation}
+          </Button>
+        </div>
+        <Feedback state={saveState} />
+      </form>
+      {existing ? (
+        <form action={removeAction} className="inline-flex">
+          <input type="hidden" name="bookId" value={bookId} />
+          <input type="hidden" name="locale" value={locale} />
+          <Button type="submit" variant="ghost" disabled={removePending}>
+            {removePending ? d.saving : d.removeTranslation}
+          </Button>
+          <Feedback state={removeState} />
+        </form>
+      ) : null}
+    </div>
   );
 }
 

@@ -196,8 +196,26 @@ model Book {
   blockchainRegistrations BlockchainRegistration[]
   referralLinks           BookReferralLink[]
   printSettings           BookPrintSettings?
+  translations            BookTranslation[]
 
   @@index([authorId])
+}
+
+model BookTranslation {
+  id          String   @id @default(cuid())
+  bookId      String
+  locale      String
+  title       String
+  subtitle    String?
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, locale])
+  @@index([locale])
 }
 
 /**

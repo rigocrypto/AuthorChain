@@ -22,6 +22,11 @@ import {
   updateBookExtendedDetails,
 } from "@/lib/data/books";
 import {
+  deleteBookTranslation,
+  upsertBookTranslation,
+} from "@/lib/data/book-translations";
+import { locales, type Locale } from "@/i18n/config";
+import {
   getOrCreateReferralLink,
   setReferralActive,
 } from "@/lib/data/referrals";
@@ -328,6 +333,63 @@ export async function updateBookExtendedDetailsAction(
     illustratorName: str("illustratorName", 200),
     translatorName: str("translatorName", 200),
   });
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
+  return { ok: true };
+}
+
+export async function saveBookTranslationAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  if (!bookId) return { error: "Missing book." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  const locale = String(formData.get("locale") ?? "").trim();
+  const title = String(formData.get("title") ?? "").trim();
+  const subtitle = String(formData.get("subtitle") ?? "").trim() || null;
+  const description = String(formData.get("description") ?? "").trim() || null;
+
+  if (!locale || !locales.includes(locale as Locale)) {
+    return { error: "Select a supported locale." };
+  }
+  if (!title) {
+    return { error: "Translated title is required when saving a translation." };
+  }
+
+  try {
+    await upsertBookTranslation(bookId, locale, title, subtitle, description);
+  } catch {
+    return { error: "Could not save the translation." };
+  }
+
+  revalidatePath(`/dashboard/books/${bookId}`);
+  revalidatePath(`/book/${book.slug}`);
+  return { ok: true };
+}
+
+export async function removeBookTranslationAction(
+  _prev: PublishingState,
+  formData: FormData,
+): Promise<PublishingState> {
+  const author = await getCurrentAuthor();
+  const bookId = String(formData.get("bookId") ?? "");
+  const locale = String(formData.get("locale") ?? "").trim();
+  if (!bookId || !locale) return { error: "Missing translation." };
+
+  const book = await getAuthorBookById(bookId, author.id);
+  if (!book) return { error: "Book not found." };
+
+  if (!locales.includes(locale as Locale)) {
+    return { error: "Select a supported locale." };
+  }
+
+  await deleteBookTranslation(bookId, locale);
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath(`/book/${book.slug}`);

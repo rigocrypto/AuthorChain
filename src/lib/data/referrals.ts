@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import type { BookReferralLink } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { getPublicBookBySlug, type PublicBookDTO } from "@/lib/data/books";
+import type { Locale } from "@/i18n/config";
 
 /**
  * Book referral links — shareable, tracked links for a book. Analytics only:
@@ -119,10 +120,11 @@ export async function resolveActiveReferral(
  */
 export async function resolveShareLanding(
   code: string,
+  locale: Locale = "en",
 ): Promise<{ code: string; book: PublicBookDTO } | null> {
   const ref = await resolveActiveReferral(code);
   if (!ref) return null;
-  const book = await getPublicBookBySlug(ref.slug);
+  const book = await getPublicBookBySlug(ref.slug, locale);
   if (!book) return null;
   return { code, book };
 }
