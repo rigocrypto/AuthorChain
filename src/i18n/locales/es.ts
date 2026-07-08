@@ -35,11 +35,11 @@ const es: Dictionary = {
   home: {
     metaTitle: "AuthorChain — Publica, Prueba, Vende y Entrega libros",
     metaDescription:
-      "Lanza libros digitales verificados con herramientas de publicación con IA, prueba de manuscrito en la cadena, pago con Stripe y acceso a la biblioteca ReaderChain.",
-    badge: "Publicación IA + Web3 · Verificado en la cadena · Impulsado por creadores",
+      "Registra prueba de autoría en blockchain, prepara un manuscrito listo para publicar y vende libros digitales verificados directamente — con herramientas asistidas por IA y acceso a la biblioteca ReaderChain.",
+    badge: "Prueba de autoría · Verificado en la cadena · Hecho para autores independientes",
     heroTitle: "Publica. Posee. Gana. Crece.",
     heroSubtitle:
-      "AuthorChain es el ecosistema de publicación IA + Web3 donde los autores crean, prueban, publican y ganan — y los lectores descubren, compran, coleccionan y disfrutan libros verificados.",
+      "AuthorChain es la plataforma de publicación Web3 donde los autores prueban que su obra es suya en blockchain, preparan un manuscrito listo para publicar y venden directamente — mientras los lectores descubren, compran y disfrutan libros verificados.",
     readerBadge: "ReaderChain",
     readerTitle: "Para lectores y coleccionistas",
     readerDesc:
@@ -49,7 +49,7 @@ const es: Dictionary = {
     authorBadge: "AuthorChain Studio",
     authorTitle: "Para autores y creadores",
     authorDesc:
-      "Crea con IA, prueba la autoría en la cadena, vende con Stripe, controla tus regalías y haz crecer tu audiencia.",
+      "Registra prueba de autoría en blockchain, prepara un manuscrito listo para publicar, vende directamente con Stripe y haz crecer tu audiencia con herramientas asistidas por IA.",
     enterStudio: "Entrar a AuthorChain Studio",
     startPublishing: "Empezar a publicar",
     featuredTitle: "Destacados en ReaderChain",

@@ -34,11 +34,11 @@ const en = {
   home: {
     metaTitle: "AuthorChain — Publish, Prove, Sell, and Deliver Books",
     metaDescription:
-      "Launch verified digital books with AI-powered publishing tools, on-chain manuscript proof, Stripe checkout, and ReaderChain library access.",
-    badge: "AI + Web3 publishing · Verified on-chain · Powered by creators",
+      "Register on-chain proof-of-authorship, prepare a publish-ready manuscript, and sell verified digital books directly — with AI-assisted tools and ReaderChain library access.",
+    badge: "Proof-of-authorship · Verified on-chain · Built for independent authors",
     heroTitle: "Publish. Own. Earn. Grow.",
     heroSubtitle:
-      "AuthorChain is the AI + Web3 publishing ecosystem where authors create, prove, publish, and earn — and readers discover, buy, collect, and enjoy verified books.",
+      "AuthorChain is the Web3 publishing platform where authors prove their work is theirs on-chain, prepare a publish-ready manuscript, and sell directly — while readers discover, buy, and enjoy verified books.",
     readerBadge: "ReaderChain",
     readerTitle: "For readers & collectors",
     readerDesc:
@@ -48,7 +48,7 @@ const en = {
     authorBadge: "AuthorChain Studio",
     authorTitle: "For authors & creators",
     authorDesc:
-      "Create with AI, prove authorship on-chain, sell with Stripe, track royalties, and grow your audience.",
+      "Register proof-of-authorship on-chain, prepare a publish-ready manuscript, sell directly with Stripe, and grow your audience with AI-assisted tools.",
     enterStudio: "Enter AuthorChain Studio",
     startPublishing: "Start Publishing",
     featuredTitle: "Featured on ReaderChain",
