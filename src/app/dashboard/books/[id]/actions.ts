@@ -65,6 +65,25 @@ import {
 } from "@/lib/data/registrations";
 
 /**
+ * Turn an upload result into a user-facing message. Malware-scan rejections
+ * (INFECTED / scanner unavailable) map to safe, localized `security.*` strings;
+ * all other failures pass through their existing message. Never leaks scanner
+ * output, storage keys, or provider internals.
+ */
+async function uploadErrorMessage(res: {
+  error?: string;
+  code?: "SCAN_INFECTED" | "SCAN_UNAVAILABLE";
+}): Promise<string> {
+  if (res.code === "SCAN_INFECTED" || res.code === "SCAN_UNAVAILABLE") {
+    const { dict } = await getDictionary();
+    return res.code === "SCAN_INFECTED"
+      ? dict.security.fileScanRejected
+      : dict.security.uploadSecurityScanUnavailable;
+  }
+  return res.error ?? "Upload failed. Please try again.";
+}
+
+/**
  * Register a book's proof of authorship on-chain. The UI guards the disabled
  * states (not configured / no wallet), so this action returns silently in those
  * cases. On-chain failures mark the registration FAILED rather than throwing,
@@ -100,7 +119,7 @@ export async function uploadCoverAction(
   }
 
   const res = await saveCover(bookId, file);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   return { ok: true };
@@ -166,7 +185,7 @@ export async function uploadBackCoverAction(
   }
 
   const res = await saveBackCover(bookId, file);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath(`/book/${book.slug}`);
@@ -208,7 +227,7 @@ export async function finalizeBackCoverUploadAction(
   if (!key.startsWith(`backcovers/${bookId}/`)) return { error: "Invalid upload key." };
 
   const res = await finalizeBackCoverUpload(bookId, key, fileName);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath(`/book/${book.slug}`);
@@ -236,7 +255,7 @@ export async function uploadPreviewAction(
   }
 
   const res = await savePreview(bookId, file);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath(`/book/${book.slug}`);
@@ -278,7 +297,7 @@ export async function finalizePreviewUploadAction(
   if (!key.startsWith(`previews/${bookId}/`)) return { error: "Invalid upload key." };
 
   const res = await finalizePreviewUpload(bookId, key, fileName);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   revalidatePath(`/book/${book.slug}`);
@@ -520,7 +539,7 @@ export async function uploadManuscriptAction(
   }
 
   const res = await storeManuscriptForBook(bookId, file);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   return { ok: true };
@@ -574,7 +593,7 @@ export async function finalizeCoverUploadAction(
   if (!key.startsWith(`covers/${bookId}/`)) return { error: "Invalid upload key." };
 
   const res = await finalizeCoverUpload(bookId, key, fileName);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   return { ok: true };
@@ -633,7 +652,7 @@ export async function finalizeManuscriptUploadAction(
   }
 
   const res = await finalizeManuscriptForBook(bookId, key, fileName);
-  if (!res.ok) return { error: res.error };
+  if (!res.ok) return { error: await uploadErrorMessage(res) };
 
   revalidatePath(`/dashboard/books/${bookId}`);
   return { ok: true };

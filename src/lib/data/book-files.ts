@@ -1,6 +1,10 @@
 import type { BookFile, StorageProvider } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { getStorage, sha256Hex, deleteStoredObject } from "@/lib/storage";
+import {
+  scanUploadOrReject,
+  type ScanPersistFields,
+} from "@/lib/security/scan-upload";
 
 /**
  * Manuscript file handling — the single server-side seam where an uploaded book
@@ -71,7 +75,7 @@ function currentProvider(): StorageProvider {
 
 export type StoreManuscriptResult =
   | { ok: true; sha256: string; fileName: string; fileLabel: string; fileSize: number }
-  | { ok: false; error: string };
+  | { ok: false; error: string; code?: "SCAN_INFECTED" | "SCAN_UNAVAILABLE" };
 
 /**
  * Record freshly-stored manuscript bytes as the book's primary file and set
@@ -86,6 +90,7 @@ async function recordPrimaryManuscript(input: {
   storageKey: string;
   sha256: string;
   size: number;
+  scan: ScanPersistFields;
 }): Promise<void> {
   await prisma.$transaction([
     prisma.bookFile.deleteMany({ where: { bookId: input.bookId, isPrimary: true } }),
@@ -99,6 +104,10 @@ async function recordPrimaryManuscript(input: {
         storageKey: input.storageKey,
         storageProvider: currentProvider(),
         isPrimary: true,
+        scanStatus: input.scan.scanStatus,
+        scanProvider: input.scan.scanProvider,
+        scannedAt: input.scan.scannedAt,
+        scanResult: input.scan.scanResult,
       },
     }),
     prisma.book.update({
@@ -128,6 +137,24 @@ export async function storeManuscriptForBook(
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
+
+  // Scan before the bytes are ever stored — infected/unscanned files never land.
+  const gate = await scanUploadOrReject(bytes, {
+    fileName: file.name,
+    mimeType: type.mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) {
+    return {
+      ok: false,
+      error:
+        gate.code === "SCAN_INFECTED"
+          ? "This file was rejected by the security scan."
+          : "Security scan is unavailable. Please try again later.",
+      code: gate.code,
+    };
+  }
+
   const stored = await getStorage().put(file.name, bytes, type.mime);
 
   await recordPrimaryManuscript({
@@ -137,6 +164,7 @@ export async function storeManuscriptForBook(
     storageKey: stored.key,
     sha256: stored.sha256,
     size: stored.size,
+    scan: gate.persist,
   });
 
   return {
@@ -183,6 +211,25 @@ export async function finalizeManuscriptForBook(
     return { ok: false, error: "File is too large (max 25MB)." };
   }
 
+  // Malware scan on the bytes fetched back from storage. On rejection the stray
+  // object is removed and no usable manuscript is recorded (fail closed).
+  const gate = await scanUploadOrReject(bytes, {
+    fileName,
+    mimeType: type.mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) {
+    await deleteStoredObject(storageKey);
+    return {
+      ok: false,
+      error:
+        gate.code === "SCAN_INFECTED"
+          ? "This file was rejected by the security scan."
+          : "Security scan is unavailable. Please try again later.",
+      code: gate.code,
+    };
+  }
+
   const sha256 = sha256Hex(bytes);
   await recordPrimaryManuscript({
     bookId,
@@ -191,6 +238,7 @@ export async function finalizeManuscriptForBook(
     storageKey,
     sha256,
     size: bytes.byteLength,
+    scan: gate.persist,
   });
 
   return {

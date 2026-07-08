@@ -1,6 +1,12 @@
 import type { AssetType, BookAsset, StorageProvider } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { getStorage, sha256Hex, deleteStoredObject } from "@/lib/storage";
+import {
+  scanUploadOrReject,
+  originCleanPersist,
+  type ScanGate,
+  type ScanPersistFields,
+} from "@/lib/security/scan-upload";
 
 /**
  * Public-facing book assets (cover images, ISBN barcodes). Unlike the manuscript
@@ -74,6 +80,7 @@ async function recordPrimaryAsset(input: {
   storageKey: string;
   sha256: string;
   size: number;
+  scan: ScanPersistFields;
 }): Promise<void> {
   await prisma.$transaction([
     prisma.bookAsset.deleteMany({
@@ -90,6 +97,10 @@ async function recordPrimaryAsset(input: {
         fileSize: input.size,
         hash: input.sha256,
         isPrimary: true,
+        scanStatus: input.scan.scanStatus,
+        scanProvider: input.scan.scanProvider,
+        scannedAt: input.scan.scannedAt,
+        scanResult: input.scan.scanResult,
       },
     }),
   ]);
@@ -103,6 +114,7 @@ async function upsertPrimaryAsset(input: {
   mimeType: string;
   prefix: string;
   bytes: Buffer;
+  scan: ScanPersistFields;
 }): Promise<{ sha256: string; fileSize: number }> {
   const stored = await getStorage().put(
     input.fileName,
@@ -118,13 +130,30 @@ async function upsertPrimaryAsset(input: {
     storageKey: stored.key,
     sha256: stored.sha256,
     size: stored.size,
+    scan: input.scan,
   });
   return { sha256: stored.sha256, fileSize: stored.size };
 }
 
+/** Shared reject message for a failed upload scan (localized in the action layer). */
+function scanRejectResult(gate: Extract<ScanGate, { ok: false }>): {
+  ok: false;
+  error: string;
+  code: "SCAN_INFECTED" | "SCAN_UNAVAILABLE";
+} {
+  return {
+    ok: false,
+    error:
+      gate.code === "SCAN_INFECTED"
+        ? "This file was rejected by the security scan."
+        : "Security scan is unavailable. Please try again later.",
+    code: gate.code,
+  };
+}
+
 export type SaveCoverResult =
   | { ok: true; sha256: string; fileName: string; fileSize: number }
-  | { ok: false; error: string };
+  | { ok: false; error: string; code?: "SCAN_INFECTED" | "SCAN_UNAVAILABLE" };
 
 export async function saveCover(
   bookId: string,
@@ -139,6 +168,12 @@ export async function saveCover(
     return { ok: false, error: "Cover image is too large (max 8MB)." };
   }
   const bytes = Buffer.from(await file.arrayBuffer());
+  const gate = await scanUploadOrReject(bytes, {
+    fileName: file.name,
+    mimeType: mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) return scanRejectResult(gate);
   const { sha256, fileSize } = await upsertPrimaryAsset({
     bookId,
     assetType: "COVER",
@@ -146,6 +181,7 @@ export async function saveCover(
     mimeType: mime,
     prefix: "covers",
     bytes,
+    scan: gate.persist,
   });
   return { ok: true, sha256, fileName: file.name, fileSize };
 }
@@ -183,6 +219,15 @@ export async function finalizeCoverUpload(
     return { ok: false, error: "Cover image is too large (max 8MB)." };
   }
 
+  const gate = await scanUploadOrReject(bytes, {
+    fileName,
+    mimeType: mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) {
+    await deleteStoredObject(storageKey);
+    return scanRejectResult(gate);
+  }
   const sha256 = sha256Hex(bytes);
   await recordPrimaryAsset({
     bookId,
@@ -192,6 +237,7 @@ export async function finalizeCoverUpload(
     storageKey,
     sha256,
     size: bytes.byteLength,
+    scan: gate.persist,
   });
   return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
 }
@@ -210,6 +256,12 @@ export async function saveBackCover(
     return { ok: false, error: "Back cover image is too large (max 8MB)." };
   }
   const bytes = Buffer.from(await file.arrayBuffer());
+  const gate = await scanUploadOrReject(bytes, {
+    fileName: file.name,
+    mimeType: mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) return scanRejectResult(gate);
   const { sha256, fileSize } = await upsertPrimaryAsset({
     bookId,
     assetType: "BACK_COVER",
@@ -217,6 +269,7 @@ export async function saveBackCover(
     mimeType: mime,
     prefix: "backcovers",
     bytes,
+    scan: gate.persist,
   });
   return { ok: true, sha256, fileName: file.name, fileSize };
 }
@@ -246,6 +299,15 @@ export async function finalizeBackCoverUpload(
     await deleteStoredObject(storageKey);
     return { ok: false, error: "Back cover image is too large (max 8MB)." };
   }
+  const gate = await scanUploadOrReject(bytes, {
+    fileName,
+    mimeType: mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) {
+    await deleteStoredObject(storageKey);
+    return scanRejectResult(gate);
+  }
   const sha256 = sha256Hex(bytes);
   await recordPrimaryAsset({
     bookId,
@@ -255,6 +317,7 @@ export async function finalizeBackCoverUpload(
     storageKey,
     sha256,
     size: bytes.byteLength,
+    scan: gate.persist,
   });
   return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
 }
@@ -268,7 +331,7 @@ export function resolvePreviewType(fileName: string): string | null {
 
 export type SavePreviewResult =
   | { ok: true; sha256: string; fileName: string; fileSize: number }
-  | { ok: false; error: string };
+  | { ok: false; error: string; code?: "SCAN_INFECTED" | "SCAN_UNAVAILABLE" };
 
 /** Store a public reader-preview PDF (server-proxied / local path). */
 export async function savePreview(
@@ -282,6 +345,12 @@ export async function savePreview(
     return { ok: false, error: "Preview is too large (max 15MB)." };
   }
   const bytes = Buffer.from(await file.arrayBuffer());
+  const gate = await scanUploadOrReject(bytes, {
+    fileName: file.name,
+    mimeType: mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) return scanRejectResult(gate);
   const { sha256, fileSize } = await upsertPrimaryAsset({
     bookId,
     assetType: "PREVIEW",
@@ -289,6 +358,7 @@ export async function savePreview(
     mimeType: mime,
     prefix: "previews",
     bytes,
+    scan: gate.persist,
   });
   return { ok: true, sha256, fileName: file.name, fileSize };
 }
@@ -318,6 +388,15 @@ export async function finalizePreviewUpload(
     await deleteStoredObject(storageKey);
     return { ok: false, error: "Preview is too large (max 15MB)." };
   }
+  const gate = await scanUploadOrReject(bytes, {
+    fileName,
+    mimeType: mime,
+    size: bytes.byteLength,
+  });
+  if (!gate.ok) {
+    await deleteStoredObject(storageKey);
+    return scanRejectResult(gate);
+  }
   const sha256 = sha256Hex(bytes);
   await recordPrimaryAsset({
     bookId,
@@ -327,6 +406,7 @@ export async function finalizePreviewUpload(
     storageKey,
     sha256,
     size: bytes.byteLength,
+    scan: gate.persist,
   });
   return { ok: true, sha256, fileName, fileSize: bytes.byteLength };
 }
@@ -343,6 +423,8 @@ export async function saveBarcode(
     mimeType: "image/svg+xml",
     prefix: "barcodes",
     bytes: Buffer.from(svg, "utf8"),
+    // Server-generated SVG — no user bytes to scan; clean by origin.
+    scan: originCleanPersist(),
   });
 }
 
