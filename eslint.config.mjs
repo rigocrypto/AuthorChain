@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone infra service — has its own runtime/lint scope.
+    "services/**",
   ]),
 ]);
 
