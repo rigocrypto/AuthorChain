@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { randomInt } from "node:crypto";
 import type { BookReferralLink } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { getPublicBookBySlug, type PublicBookDTO } from "@/lib/data/books";
@@ -13,11 +13,12 @@ import type { Locale } from "@/i18n/config";
 const ALPHABET =
   "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no easily-confused chars
 
-/** Short, URL-safe, non-sequential code (no internal ids exposed). */
+/** Short, URL-safe, non-sequential code (no internal ids exposed). Uses
+ *  crypto.randomInt for unbiased selection — a plain `randomBytes % length`
+ *  would skew toward earlier characters since 256 % ALPHABET.length !== 0. */
 function randomCode(len = 8): string {
-  const bytes = randomBytes(len);
   let out = "";
-  for (let i = 0; i < len; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+  for (let i = 0; i < len; i++) out += ALPHABET[randomInt(ALPHABET.length)];
   return out;
 }
 
