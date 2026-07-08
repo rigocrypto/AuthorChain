@@ -34,11 +34,11 @@ const de: Dictionary = {
   home: {
     metaTitle: "AuthorChain — Bücher veröffentlichen, nachweisen, verkaufen und ausliefern",
     metaDescription:
-      "Bringen Sie verifizierte digitale Bücher heraus – mit KI-gestützten Publishing-Tools, On-Chain-Manuskriptnachweis, Stripe-Checkout und ReaderChain-Bibliothekszugang.",
-    badge: "KI + Web3 Publishing · On-Chain verifiziert · Von Kreativen gemacht",
+      "Registrieren Sie einen On-Chain-Autorennachweis, bereiten Sie ein veröffentlichungsfertiges Manuskript vor und verkaufen Sie verifizierte digitale Bücher direkt — mit KI-gestützten Tools und ReaderChain-Bibliothekszugang.",
+    badge: "Autorennachweis · On-Chain verifiziert · Für unabhängige Autoren",
     heroTitle: "Veröffentlichen. Besitzen. Verdienen. Wachsen.",
     heroSubtitle:
-      "AuthorChain ist das KI-+-Web3-Publishing-Ökosystem, in dem Autoren erstellen, nachweisen, veröffentlichen und verdienen — und Leser verifizierte Bücher entdecken, kaufen, sammeln und genießen.",
+      "AuthorChain ist die Web3-Publishing-Plattform, auf der Autoren On-Chain nachweisen, dass ihr Werk ihnen gehört, ein veröffentlichungsfertiges Manuskript vorbereiten und direkt verkaufen — während Leser verifizierte Bücher entdecken, kaufen und genießen.",
     readerBadge: "ReaderChain",
     readerTitle: "Für Leser & Sammler",
     readerDesc:
@@ -48,7 +48,7 @@ const de: Dictionary = {
     authorBadge: "AuthorChain Studio",
     authorTitle: "Für Autoren & Kreative",
     authorDesc:
-      "Erstellen Sie mit KI, weisen Sie die Autorenschaft On-Chain nach, verkaufen Sie mit Stripe, verfolgen Sie Tantiemen und lassen Sie Ihr Publikum wachsen.",
+      "Registrieren Sie den Autorennachweis On-Chain, bereiten Sie ein veröffentlichungsfertiges Manuskript vor, verkaufen Sie direkt mit Stripe und lassen Sie Ihr Publikum mit KI-gestützten Tools wachsen.",
     enterStudio: "AuthorChain Studio betreten",
     startPublishing: "Mit dem Veröffentlichen beginnen",
     featuredTitle: "Vorgestellt auf ReaderChain",
