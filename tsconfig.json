@@ -43,6 +43,7 @@
     "contracts",
     "test",
     "scripts",
+    "services",
     "hardhat.config.ts",
     "artifacts",
     "cache",
