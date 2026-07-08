@@ -179,7 +179,7 @@ export function MobileSiteNav() {
   const close = () => setOpen(false);
 
   const drawer = (
-    <div className="lg:hidden" aria-hidden={!open} inert={!open}>
+    <div className="xl:hidden" aria-hidden={!open} inert={!open}>
       <button
         type="button"
         tabIndex={-1}
@@ -242,7 +242,7 @@ export function MobileSiteNav() {
         aria-label={dict.nav.openMenu}
         aria-expanded={open}
         aria-controls="mobile-site-drawer"
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-border text-foreground transition-colors hover:bg-surface-2 lg:hidden"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-border text-foreground transition-colors hover:bg-surface-2 xl:hidden"
       >
         <svg
           aria-hidden="true"
