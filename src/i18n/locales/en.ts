@@ -407,6 +407,15 @@ const en = {
     couldNotSaveTranslation: "Could not save the translation.",
     missingTranslation: "Missing translation.",
   },
+  security: {
+    fileScanPending: "File is being scanned.",
+    fileScanClean: "File passed the security scan.",
+    fileScanFailed: "File failed the security scan.",
+    fileScanRejected: "Upload rejected for security reasons.",
+    uploadRejectedSecurity: "Please upload a different file.",
+    uploadSecurityScanUnavailable:
+      "Security scanning is temporarily unavailable. Please try again shortly.",
+  },
 };
 
 export default en;

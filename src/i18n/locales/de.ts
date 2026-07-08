@@ -395,6 +395,15 @@ const de: Dictionary = {
     couldNotSaveTranslation: "Die Übersetzung konnte nicht gespeichert werden.",
     missingTranslation: "Übersetzung fehlt.",
   },
+  security: {
+    fileScanPending: "Die Datei wird überprüft.",
+    fileScanClean: "Die Datei hat die Sicherheitsprüfung bestanden.",
+    fileScanFailed: "Die Datei hat die Sicherheitsprüfung nicht bestanden.",
+    fileScanRejected: "Upload aus Sicherheitsgründen abgelehnt.",
+    uploadRejectedSecurity: "Bitte laden Sie eine andere Datei hoch.",
+    uploadSecurityScanUnavailable:
+      "Die Sicherheitsprüfung ist vorübergehend nicht verfügbar. Bitte versuchen Sie es in Kürze erneut.",
+  },
 };
 
 export default de;

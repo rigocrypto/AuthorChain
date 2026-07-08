@@ -395,6 +395,15 @@ const it: Dictionary = {
     couldNotSaveTranslation: "Impossibile salvare la traduzione.",
     missingTranslation: "Traduzione mancante.",
   },
+  security: {
+    fileScanPending: "Il file è in fase di scansione.",
+    fileScanClean: "Il file ha superato la scansione di sicurezza.",
+    fileScanFailed: "Il file non ha superato la scansione di sicurezza.",
+    fileScanRejected: "Caricamento rifiutato per motivi di sicurezza.",
+    uploadRejectedSecurity: "Carica un file diverso.",
+    uploadSecurityScanUnavailable:
+      "La scansione di sicurezza è temporaneamente non disponibile. Riprova a breve.",
+  },
 };
 
 export default it;

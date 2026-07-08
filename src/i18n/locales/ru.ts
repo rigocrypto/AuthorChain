@@ -395,6 +395,15 @@ const ru: Dictionary = {
     couldNotSaveTranslation: "Не удалось сохранить перевод.",
     missingTranslation: "Перевод отсутствует.",
   },
+  security: {
+    fileScanPending: "Файл проверяется.",
+    fileScanClean: "Файл прошёл проверку безопасности.",
+    fileScanFailed: "Файл не прошёл проверку безопасности.",
+    fileScanRejected: "Загрузка отклонена по соображениям безопасности.",
+    uploadRejectedSecurity: "Загрузите другой файл.",
+    uploadSecurityScanUnavailable:
+      "Проверка безопасности временно недоступна. Повторите попытку позже.",
+  },
 };
 
 export default ru;

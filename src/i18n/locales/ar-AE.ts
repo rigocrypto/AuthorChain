@@ -396,6 +396,15 @@ const arAE: Dictionary = {
     couldNotSaveTranslation: "تعذّر حفظ الترجمة.",
     missingTranslation: "الترجمة مفقودة.",
   },
+  security: {
+    fileScanPending: "يجري فحص الملف.",
+    fileScanClean: "اجتاز الملف الفحص الأمني.",
+    fileScanFailed: "لم يجتز الملف الفحص الأمني.",
+    fileScanRejected: "تم رفض الرفع لأسباب أمنية.",
+    uploadRejectedSecurity: "يرجى رفع ملف آخر.",
+    uploadSecurityScanUnavailable:
+      "فحص الأمان غير متوفر مؤقتًا. يرجى المحاولة مرة أخرى قريبًا.",
+  },
 };
 
 export default arAE;

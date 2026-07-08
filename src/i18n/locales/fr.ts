@@ -395,6 +395,15 @@ const fr: Dictionary = {
     couldNotSaveTranslation: "Impossible d'enregistrer la traduction.",
     missingTranslation: "Traduction manquante.",
   },
+  security: {
+    fileScanPending: "Le fichier est en cours d'analyse.",
+    fileScanClean: "Le fichier a réussi l'analyse de sécurité.",
+    fileScanFailed: "Le fichier a échoué à l'analyse de sécurité.",
+    fileScanRejected: "Téléversement refusé pour des raisons de sécurité.",
+    uploadRejectedSecurity: "Veuillez téléverser un autre fichier.",
+    uploadSecurityScanUnavailable:
+      "L'analyse de sécurité est temporairement indisponible. Veuillez réessayer sous peu.",
+  },
 };
 
 export default fr;

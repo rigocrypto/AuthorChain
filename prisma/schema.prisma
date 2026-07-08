@@ -69,6 +69,17 @@ enum AssetType {
   BACK_COVER
 }
 
+// Malware-scan state for an uploaded file/asset. Additive foundation (Security
+// phase S1): UNKNOWN is the safe default for legacy/pre-scan rows. Serving/agent
+// enforcement lands in later phases — do not block on this yet.
+enum MalwareScanStatus {
+  UNKNOWN
+  PENDING
+  CLEAN
+  INFECTED
+  ERROR
+}
+
 enum BookFormat {
   EBOOK
   PAPERBACK
@@ -297,6 +308,12 @@ model BookAsset {
   fileSize        Int
   hash            String?
   isPrimary       Boolean         @default(true)
+  // Malware-scan tracking (Security S1, additive). Legacy rows default UNKNOWN.
+  scanStatus       MalwareScanStatus @default(UNKNOWN)
+  scanProvider     String?
+  scannedAt        DateTime?
+  scanResult       Json?
+  quarantineReason String?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
@@ -319,6 +336,12 @@ model BookFile {
   // sha-256 of the actual file bytes — used as the on-chain proof hash.
   hash      String?
   isPrimary Boolean  @default(true)
+  // Malware-scan tracking (Security S1, additive). Legacy rows default UNKNOWN.
+  scanStatus       MalwareScanStatus @default(UNKNOWN)
+  scanProvider     String?
+  scannedAt        DateTime?
+  scanResult       Json?
+  quarantineReason String?
   createdAt DateTime @default(now())
 
   book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
