@@ -402,6 +402,10 @@ const en = {
     missingBook: "Missing book.",
     proofRegistered: "Proof registered successfully.",
     proofRegistrationFailed: "Proof registration failed.",
+    selectLocale: "Select a supported locale.",
+    translatedTitleRequired: "Translated title is required.",
+    couldNotSaveTranslation: "Could not save the translation.",
+    missingTranslation: "Missing translation.",
   },
 };
 

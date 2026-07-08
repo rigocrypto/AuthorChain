@@ -26,6 +26,7 @@ import {
   upsertBookTranslation,
 } from "@/lib/data/book-translations";
 import { locales, type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 import {
   getOrCreateReferralLink,
   setReferralActive,
@@ -344,11 +345,12 @@ export async function saveBookTranslationAction(
   formData: FormData,
 ): Promise<PublishingState> {
   const author = await getCurrentAuthor();
+  const { dict } = await getDictionary();
   const bookId = String(formData.get("bookId") ?? "");
-  if (!bookId) return { error: "Missing book." };
+  if (!bookId) return { error: dict.errors.missingBook };
 
   const book = await getAuthorBookById(bookId, author.id);
-  if (!book) return { error: "Book not found." };
+  if (!book) return { error: dict.errors.bookNotFound };
 
   const locale = String(formData.get("locale") ?? "").trim();
   const title = String(formData.get("title") ?? "").trim();
@@ -356,16 +358,16 @@ export async function saveBookTranslationAction(
   const description = String(formData.get("description") ?? "").trim() || null;
 
   if (!locale || !locales.includes(locale as Locale)) {
-    return { error: "Select a supported locale." };
+    return { error: dict.errors.selectLocale };
   }
   if (!title) {
-    return { error: "Translated title is required when saving a translation." };
+    return { error: dict.errors.translatedTitleRequired };
   }
 
   try {
     await upsertBookTranslation(bookId, locale, title, subtitle, description);
   } catch {
-    return { error: "Could not save the translation." };
+    return { error: dict.errors.couldNotSaveTranslation };
   }
 
   revalidatePath(`/dashboard/books/${bookId}`);
@@ -378,15 +380,16 @@ export async function removeBookTranslationAction(
   formData: FormData,
 ): Promise<PublishingState> {
   const author = await getCurrentAuthor();
+  const { dict } = await getDictionary();
   const bookId = String(formData.get("bookId") ?? "");
   const locale = String(formData.get("locale") ?? "").trim();
-  if (!bookId || !locale) return { error: "Missing translation." };
+  if (!bookId || !locale) return { error: dict.errors.missingTranslation };
 
   const book = await getAuthorBookById(bookId, author.id);
-  if (!book) return { error: "Book not found." };
+  if (!book) return { error: dict.errors.bookNotFound };
 
   if (!locales.includes(locale as Locale)) {
-    return { error: "Select a supported locale." };
+    return { error: dict.errors.selectLocale };
   }
 
   await deleteBookTranslation(bookId, locale);

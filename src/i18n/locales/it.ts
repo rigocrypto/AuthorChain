@@ -390,6 +390,10 @@ const it: Dictionary = {
     missingBook: "Libro mancante.",
     proofRegistered: "Prova registrata con successo.",
     proofRegistrationFailed: "Registrazione della prova non riuscita.",
+    selectLocale: "Seleziona una lingua supportata.",
+    translatedTitleRequired: "Il titolo tradotto è obbligatorio.",
+    couldNotSaveTranslation: "Impossibile salvare la traduzione.",
+    missingTranslation: "Traduzione mancante.",
   },
 };
 

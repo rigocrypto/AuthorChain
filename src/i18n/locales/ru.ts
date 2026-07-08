@@ -390,6 +390,10 @@ const ru: Dictionary = {
     missingBook: "Книга отсутствует.",
     proofRegistered: "Подтверждение успешно зарегистрировано.",
     proofRegistrationFailed: "Не удалось зарегистрировать подтверждение.",
+    selectLocale: "Выберите поддерживаемый язык.",
+    translatedTitleRequired: "Требуется переведённое название.",
+    couldNotSaveTranslation: "Не удалось сохранить перевод.",
+    missingTranslation: "Перевод отсутствует.",
   },
 };
 

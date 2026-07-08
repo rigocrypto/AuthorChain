@@ -391,6 +391,10 @@ const arAE: Dictionary = {
     missingBook: "الكتاب مفقود.",
     proofRegistered: "تم تسجيل الإثبات بنجاح.",
     proofRegistrationFailed: "فشل تسجيل الإثبات.",
+    selectLocale: "اختر لغة مدعومة.",
+    translatedTitleRequired: "العنوان المترجم مطلوب.",
+    couldNotSaveTranslation: "تعذّر حفظ الترجمة.",
+    missingTranslation: "الترجمة مفقودة.",
   },
 };
 

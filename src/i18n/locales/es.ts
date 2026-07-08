@@ -391,6 +391,10 @@ const es: Dictionary = {
     missingBook: "Falta el libro.",
     proofRegistered: "Prueba registrada correctamente.",
     proofRegistrationFailed: "Error al registrar la prueba.",
+    selectLocale: "Selecciona un idioma compatible.",
+    translatedTitleRequired: "El título traducido es obligatorio.",
+    couldNotSaveTranslation: "No se pudo guardar la traducción.",
+    missingTranslation: "Falta la traducción.",
   },
 };
 
