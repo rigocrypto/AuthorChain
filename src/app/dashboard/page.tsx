@@ -100,10 +100,24 @@ export default async function DashboardPageRoute() {
             <h2 className="mb-3 font-semibold">{t.topBook}</h2>
             {topBook ? (
               <div className="flex gap-3">
-                <div
-                  className={`aspect-[2/3] w-16 shrink-0 rounded-lg bg-gradient-to-br ${topBook.coverColor}`}
-                />
-                <div className="text-sm">
+                {topBook.hasCover ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- local asset API
+                  <img
+                    src={`/api/assets/books/${topBook.id}/cover`}
+                    alt={`${topBook.title} cover`}
+                    className="aspect-[2/3] w-16 shrink-0 rounded-lg border border-border object-cover"
+                  />
+                ) : (
+                  <div
+                    className={`flex aspect-[2/3] w-16 shrink-0 items-end rounded-lg bg-gradient-to-br ${topBook.coverColor} p-1.5`}
+                    aria-hidden
+                  >
+                    <span className="line-clamp-3 text-[9px] font-bold leading-tight text-white drop-shadow">
+                      {topBook.title}
+                    </span>
+                  </div>
+                )}
+                <div className="min-w-0 text-sm">
                   <div className="font-medium">{topBook.title}</div>
                   <div className="text-muted">
                     {dict.book.by} {author.name}
