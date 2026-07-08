@@ -152,6 +152,17 @@ include `Author`, `Book`, `BookFile`, `BookAsset`, `Sale`, `Royalty`, `Reader`,
 | `npm run db:seed` | load the demo author + books/sales |
 | `npm run db:studio` | open Prisma Studio |
 
+> **⚠️ Local vs production database safety.** Keep your local `.env` pointed at the
+> **local** dev database. Never leave a production (Neon) `DATABASE_URL` / `DIRECT_URL`
+> line active in local `.env`. A duplicate `DATABASE_URL` is a footgun — the **last
+> active line wins**, so an uncommented Neon URL silently makes every local Prisma
+> command hit **production**. Keep exactly **one active** `DATABASE_URL` (and one
+> `DIRECT_URL`) line locally; comment out the rest.
+>
+> - **Local dev:** `npx prisma generate`, `npx prisma migrate dev`, `npx prisma migrate status` — always against the local/dev database.
+> - **Production:** `prisma migrate deploy` runs **only** in the Vercel deploy pipeline (`vercel-build`). Never run `prisma migrate dev`, `migrate reset`, or ad‑hoc test inserts against production Neon.
+> - **Before any local Prisma command**, confirm the effective `DATABASE_URL` target is not production (e.g. it points at `localhost`).
+
 The UI reads through a thin data-access layer ([src/lib/data/](src/lib/data/))
 that returns plain DTOs, so it never depends on Prisma directly.
 
