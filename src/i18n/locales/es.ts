@@ -17,6 +17,9 @@ const es: Dictionary = {
     backToSite: "← Volver al sitio",
     backToMyBooks: "← Volver a Mis libros",
     allBooks: "← Todos los libros",
+    menu: "Menú del sitio",
+    openMenu: "Abrir menú",
+    closeMenu: "Cerrar menú",
   },
   common: {
     login: "Iniciar sesión",
@@ -31,6 +34,8 @@ const es: Dictionary = {
     verifiedOnChain: "Verificado en la cadena",
     verifiedProof: "✓ Prueba verificada",
     openBook: "Abrir libro →",
+    openApp: "Abrir app",
+    startPublishing: "Empezar a publicar",
   },
   home: {
     metaTitle: "AuthorChain — Publica, Prueba, Vende y Entrega libros",
@@ -396,6 +401,35 @@ const es: Dictionary = {
     couldNotSaveTranslation: "No se pudo guardar la traducción.",
     missingTranslation: "Falta la traducción.",
   },
+  footer: {
+    tagline:
+      "Publicación Web3 con IA: prueba la autoría en cadena, vende directamente y entrega libros con ReaderChain.",
+    product: "Producto",
+    legal: "Legal",
+    trust: "Seguridad y cumplimiento",
+    contact: "Contacto",
+    social: "Redes",
+    explore: "Explorar libros",
+    library: "Biblioteca del lector",
+    studio: "AuthorChain Studio",
+    proof: "Prueba de autoría",
+    privacy: "Política de privacidad",
+    terms: "Términos del servicio",
+    cookies: "Política de cookies",
+    copyright: "Copyright y DMCA",
+    acceptableUse: "Uso aceptable",
+    securityPolicy: "Seguridad",
+    dataProtection: "Protección de datos",
+    uploadScanning: "Análisis de cargas",
+    disclaimers: "Avisos legales",
+    contactPage: "Contáctanos",
+    supportForm: "Formulario de soporte",
+    rights: "Todos los derechos reservados.",
+    complianceNote:
+      "Diseñamos para privacidad, seguridad y cumplimiento editorial. La prueba en cadena es un registro técnico de autoría, no un registro de copyright gubernamental.",
+    malwareNote:
+      "Las nuevas cargas se analizan en busca de malware antes de almacenarse. Nunca exponemos detalles internos del escáner en la interfaz.",
+  },
   security: {
     fileScanPending: "El archivo se está analizando.",
     fileScanClean: "El archivo pasó el análisis de seguridad.",
@@ -404,6 +438,27 @@ const es: Dictionary = {
     uploadRejectedSecurity: "Sube un archivo diferente.",
     uploadSecurityScanUnavailable:
       "El análisis de seguridad no está disponible temporalmente. Inténtalo de nuevo en breve.",
+  },
+  legal: {
+    privacyTitle: "Política de privacidad",
+    privacyDesc:
+      "Cómo AuthorChain recopila, usa y protege datos personales y de publicación.",
+    termsTitle: "Términos del servicio",
+    termsDesc: "Normas de uso de AuthorChain, ReaderChain y servicios relacionados.",
+    cookiesTitle: "Política de cookies",
+    cookiesDesc: "Cómo usamos cookies y tecnologías similares.",
+    securityTitle: "Seguridad",
+    securityDesc:
+      "Cómo protegemos cuentas, manuscritos, pagos e integridad de la plataforma.",
+    copyrightTitle: "Copyright y DMCA",
+    copyrightDesc:
+      "Expectativas de propiedad intelectual y cómo reportar infracciones.",
+    acceptableUseTitle: "Uso aceptable",
+    acceptableUseDesc:
+      "Normas de contenido y conducta para autores, lectores y partners.",
+    contactTitle: "Contacto",
+    contactDesc: "Cómo contactar a AuthorChain para soporte, privacidad y asuntos legales.",
+    updated: "8 de julio de 2026",
   },
 };
 

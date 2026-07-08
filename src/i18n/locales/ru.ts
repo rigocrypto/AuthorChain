@@ -16,6 +16,9 @@ const ru: Dictionary = {
     backToSite: "← Назад на сайт",
     backToMyBooks: "← Назад к Моим книгам",
     allBooks: "← Все книги",
+    menu: "Меню сайта",
+    openMenu: "Открыть меню",
+    closeMenu: "Закрыть меню",
   },
   common: {
     login: "Войти",
@@ -30,6 +33,8 @@ const ru: Dictionary = {
     verifiedOnChain: "Подтверждено в блокчейне",
     verifiedProof: "✓ Проверенное подтверждение",
     openBook: "Открыть книгу →",
+    openApp: "Открыть приложение",
+    startPublishing: "Начать публикацию",
   },
   home: {
     metaTitle: "AuthorChain — публикуйте, подтверждайте, продавайте и доставляйте книги",
@@ -395,6 +400,35 @@ const ru: Dictionary = {
     couldNotSaveTranslation: "Не удалось сохранить перевод.",
     missingTranslation: "Перевод отсутствует.",
   },
+  footer: {
+    tagline:
+      "AI-powered Web3 publishing: prove authorship on-chain, sell directly, and deliver books through ReaderChain.",
+    product: "Product",
+    legal: "Legal",
+    trust: "Security & compliance",
+    contact: "Contact",
+    social: "Social",
+    explore: "Explore books",
+    library: "Reader library",
+    studio: "AuthorChain Studio",
+    proof: "Proof of authorship",
+    privacy: "Privacy policy",
+    terms: "Terms of service",
+    cookies: "Cookie policy",
+    copyright: "Copyright & DMCA",
+    acceptableUse: "Acceptable use",
+    securityPolicy: "Security",
+    dataProtection: "Data protection",
+    uploadScanning: "Upload scanning",
+    disclaimers: "Disclaimers",
+    contactPage: "Contact us",
+    supportForm: "Support form",
+    rights: "All rights reserved.",
+    complianceNote:
+      "We design for privacy, security, and publishing compliance. On-chain proof is a technical authorship record — not a government copyright registration.",
+    malwareNote:
+      "New uploads are malware-scanned before they are stored. We never expose scanner internals in the UI.",
+  },
   security: {
     fileScanPending: "Файл проверяется.",
     fileScanClean: "Файл прошёл проверку безопасности.",
@@ -403,6 +437,27 @@ const ru: Dictionary = {
     uploadRejectedSecurity: "Загрузите другой файл.",
     uploadSecurityScanUnavailable:
       "Проверка безопасности временно недоступна. Повторите попытку позже.",
+  },
+  legal: {
+    privacyTitle: "Privacy policy",
+    privacyDesc:
+      "How AuthorChain collects, uses, and protects personal and publishing data.",
+    termsTitle: "Terms of service",
+    termsDesc: "Rules for using AuthorChain, ReaderChain, and related services.",
+    cookiesTitle: "Cookie policy",
+    cookiesDesc: "How we use cookies and similar technologies.",
+    securityTitle: "Security",
+    securityDesc:
+      "How we protect accounts, manuscripts, payments, and platform integrity.",
+    copyrightTitle: "Copyright & DMCA",
+    copyrightDesc:
+      "Intellectual property expectations and how to report infringement.",
+    acceptableUseTitle: "Acceptable use",
+    acceptableUseDesc:
+      "Content and conduct rules for authors, readers, and partners.",
+    contactTitle: "Contact",
+    contactDesc: "How to reach AuthorChain for support, privacy, and legal requests.",
+    updated: "July 8, 2026",
   },
 };
 

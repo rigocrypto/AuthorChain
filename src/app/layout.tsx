@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { siteConfig, siteUrl } from "@/lib/seo";
 import { dir } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -77,7 +79,14 @@ export default async function RootLayout({
     >
       <body className="min-h-full">
         <I18nProvider value={{ locale, dict }}>
-          <Providers>{children}</Providers>
+          <Providers>
+            {/* Global chrome: every HTML page gets the same head menu + footer. */}
+            <div className="flex min-h-full flex-col">
+              <SiteHeader />
+              <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+              <SiteFooter />
+            </div>
+          </Providers>
         </I18nProvider>
       </body>
     </html>

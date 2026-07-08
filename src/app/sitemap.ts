@@ -11,6 +11,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), changeFrequency: "weekly", priority: 1 },
     { url: absoluteUrl("/explore"), changeFrequency: "daily", priority: 0.9 },
+    { url: absoluteUrl("/privacy"), changeFrequency: "yearly", priority: 0.3 },
+    { url: absoluteUrl("/terms"), changeFrequency: "yearly", priority: 0.3 },
+    { url: absoluteUrl("/cookies"), changeFrequency: "yearly", priority: 0.3 },
+    { url: absoluteUrl("/security"), changeFrequency: "yearly", priority: 0.3 },
+    { url: absoluteUrl("/copyright"), changeFrequency: "yearly", priority: 0.3 },
+    { url: absoluteUrl("/acceptable-use"), changeFrequency: "yearly", priority: 0.3 },
+    { url: absoluteUrl("/contact"), changeFrequency: "yearly", priority: 0.4 },
   ];
 
   let books: { slug: string; updatedAt: Date }[] = [];

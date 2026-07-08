@@ -3,6 +3,8 @@
  * private routes, storage keys, or secrets here.
  */
 
+import { siteContact } from "@/lib/site-contact";
+
 /** Normalized site origin (no trailing slash). Falls back to the prod alias. */
 export const siteUrl = (
   process.env.NEXT_PUBLIC_APP_URL ?? "https://author-chain-alpha.vercel.app"
@@ -57,6 +59,10 @@ export function metaDescription(
 // manuscript hash — never "legal copyright" / "government registered". ---
 
 export function organizationJsonLd() {
+  const sameAs = Object.values(siteContact.social).filter(
+    (u): u is string => typeof u === "string" && u.length > 0,
+  );
+
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -65,6 +71,8 @@ export function organizationJsonLd() {
     description: siteConfig.description,
     logo: absoluteUrl("/brand/authorchain-icon-512.png"),
     slogan: siteConfig.tagline,
+    email: siteContact.email,
+    ...(sameAs.length ? { sameAs } : {}),
   };
 }
 

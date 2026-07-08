@@ -15,19 +15,19 @@ export async function DashboardPage({
   const author = await getCurrentAuthor();
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <DashboardHeader
         title={title}
         authorName={author.name}
         email={author.email}
         walletAddress={author.walletAddress}
       />
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+      <div className="flex-1 p-4 sm:p-6">
         {actions ? (
           <div className="mb-6 flex flex-wrap justify-end gap-2">{actions}</div>
         ) : null}
         {children}
       </div>
-    </>
+    </div>
   );
 }

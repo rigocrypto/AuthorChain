@@ -16,6 +16,9 @@ const fr: Dictionary = {
     backToSite: "← Retour au site",
     backToMyBooks: "← Retour à Mes livres",
     allBooks: "← Tous les livres",
+    menu: "Menu du site",
+    openMenu: "Ouvrir le menu",
+    closeMenu: "Fermer le menu",
   },
   common: {
     login: "Connexion",
@@ -30,6 +33,8 @@ const fr: Dictionary = {
     verifiedOnChain: "Vérifié sur la chaîne",
     verifiedProof: "✓ Preuve vérifiée",
     openBook: "Ouvrir le livre →",
+    openApp: "Ouvrir l'app",
+    startPublishing: "Commencer à publier",
   },
   home: {
     metaTitle: "AuthorChain — Publiez, Prouvez, Vendez et Livrez des livres",
@@ -395,6 +400,35 @@ const fr: Dictionary = {
     couldNotSaveTranslation: "Impossible d'enregistrer la traduction.",
     missingTranslation: "Traduction manquante.",
   },
+  footer: {
+    tagline:
+      "AI-powered Web3 publishing: prove authorship on-chain, sell directly, and deliver books through ReaderChain.",
+    product: "Product",
+    legal: "Legal",
+    trust: "Security & compliance",
+    contact: "Contact",
+    social: "Social",
+    explore: "Explore books",
+    library: "Reader library",
+    studio: "AuthorChain Studio",
+    proof: "Proof of authorship",
+    privacy: "Privacy policy",
+    terms: "Terms of service",
+    cookies: "Cookie policy",
+    copyright: "Copyright & DMCA",
+    acceptableUse: "Acceptable use",
+    securityPolicy: "Security",
+    dataProtection: "Data protection",
+    uploadScanning: "Upload scanning",
+    disclaimers: "Disclaimers",
+    contactPage: "Contact us",
+    supportForm: "Support form",
+    rights: "All rights reserved.",
+    complianceNote:
+      "We design for privacy, security, and publishing compliance. On-chain proof is a technical authorship record — not a government copyright registration.",
+    malwareNote:
+      "New uploads are malware-scanned before they are stored. We never expose scanner internals in the UI.",
+  },
   security: {
     fileScanPending: "Le fichier est en cours d'analyse.",
     fileScanClean: "Le fichier a réussi l'analyse de sécurité.",
@@ -403,6 +437,27 @@ const fr: Dictionary = {
     uploadRejectedSecurity: "Veuillez téléverser un autre fichier.",
     uploadSecurityScanUnavailable:
       "L'analyse de sécurité est temporairement indisponible. Veuillez réessayer sous peu.",
+  },
+  legal: {
+    privacyTitle: "Privacy policy",
+    privacyDesc:
+      "How AuthorChain collects, uses, and protects personal and publishing data.",
+    termsTitle: "Terms of service",
+    termsDesc: "Rules for using AuthorChain, ReaderChain, and related services.",
+    cookiesTitle: "Cookie policy",
+    cookiesDesc: "How we use cookies and similar technologies.",
+    securityTitle: "Security",
+    securityDesc:
+      "How we protect accounts, manuscripts, payments, and platform integrity.",
+    copyrightTitle: "Copyright & DMCA",
+    copyrightDesc:
+      "Intellectual property expectations and how to report infringement.",
+    acceptableUseTitle: "Acceptable use",
+    acceptableUseDesc:
+      "Content and conduct rules for authors, readers, and partners.",
+    contactTitle: "Contact",
+    contactDesc: "How to reach AuthorChain for support, privacy, and legal requests.",
+    updated: "July 8, 2026",
   },
 };
 

@@ -11,7 +11,7 @@ export function Sidebar() {
   const { dict } = useI18n();
 
   return (
-    <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-surface md:flex">
+    <aside className="hidden w-60 shrink-0 flex-col self-stretch border-r border-border bg-surface md:flex">
       <div className="flex h-16 flex-col justify-center border-b border-border px-5">
         <Logo href="/dashboard" />
         <span className="mt-0.5 text-[11px] uppercase tracking-wide text-muted">

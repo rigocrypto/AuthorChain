@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { PageShell } from "@/components/page-header";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button, ButtonLink } from "@/components/ui/button";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { useI18n } from "@/i18n/provider";
 
 function shortAddress(a?: string | null): string | null {
@@ -92,9 +91,6 @@ export default function LoginPage() {
 
   return (
     <PageShell>
-      <div className="mb-2 flex justify-end">
-        <LanguageSwitcher />
-      </div>
       {configured ? (
         <Suspense fallback={null}>
           <LoginInner />

@@ -17,6 +17,9 @@ const arAE: Dictionary = {
     backToSite: "→ العودة إلى الموقع",
     backToMyBooks: "→ العودة إلى كتبي",
     allBooks: "→ كل الكتب",
+    menu: "قائمة الموقع",
+    openMenu: "فتح القائمة",
+    closeMenu: "إغلاق القائمة",
   },
   common: {
     login: "تسجيل الدخول",
@@ -31,6 +34,8 @@ const arAE: Dictionary = {
     verifiedOnChain: "موثّق على السلسلة",
     verifiedProof: "✓ إثبات موثّق",
     openBook: "افتح الكتاب ←",
+    openApp: "فتح التطبيق",
+    startPublishing: "ابدأ النشر",
   },
   home: {
     metaTitle: "AuthorChain — انشر وأثبِت وبِع وسلّم الكتب",
@@ -396,6 +401,35 @@ const arAE: Dictionary = {
     couldNotSaveTranslation: "تعذّر حفظ الترجمة.",
     missingTranslation: "الترجمة مفقودة.",
   },
+  footer: {
+    tagline:
+      "AI-powered Web3 publishing: prove authorship on-chain, sell directly, and deliver books through ReaderChain.",
+    product: "Product",
+    legal: "Legal",
+    trust: "Security & compliance",
+    contact: "Contact",
+    social: "Social",
+    explore: "Explore books",
+    library: "Reader library",
+    studio: "AuthorChain Studio",
+    proof: "Proof of authorship",
+    privacy: "Privacy policy",
+    terms: "Terms of service",
+    cookies: "Cookie policy",
+    copyright: "Copyright & DMCA",
+    acceptableUse: "Acceptable use",
+    securityPolicy: "Security",
+    dataProtection: "Data protection",
+    uploadScanning: "Upload scanning",
+    disclaimers: "Disclaimers",
+    contactPage: "Contact us",
+    supportForm: "Support form",
+    rights: "All rights reserved.",
+    complianceNote:
+      "We design for privacy, security, and publishing compliance. On-chain proof is a technical authorship record — not a government copyright registration.",
+    malwareNote:
+      "New uploads are malware-scanned before they are stored. We never expose scanner internals in the UI.",
+  },
   security: {
     fileScanPending: "يجري فحص الملف.",
     fileScanClean: "اجتاز الملف الفحص الأمني.",
@@ -404,6 +438,27 @@ const arAE: Dictionary = {
     uploadRejectedSecurity: "يرجى رفع ملف آخر.",
     uploadSecurityScanUnavailable:
       "فحص الأمان غير متوفر مؤقتًا. يرجى المحاولة مرة أخرى قريبًا.",
+  },
+  legal: {
+    privacyTitle: "Privacy policy",
+    privacyDesc:
+      "How AuthorChain collects, uses, and protects personal and publishing data.",
+    termsTitle: "Terms of service",
+    termsDesc: "Rules for using AuthorChain, ReaderChain, and related services.",
+    cookiesTitle: "Cookie policy",
+    cookiesDesc: "How we use cookies and similar technologies.",
+    securityTitle: "Security",
+    securityDesc:
+      "How we protect accounts, manuscripts, payments, and platform integrity.",
+    copyrightTitle: "Copyright & DMCA",
+    copyrightDesc:
+      "Intellectual property expectations and how to report infringement.",
+    acceptableUseTitle: "Acceptable use",
+    acceptableUseDesc:
+      "Content and conduct rules for authors, readers, and partners.",
+    contactTitle: "Contact",
+    contactDesc: "How to reach AuthorChain for support, privacy, and legal requests.",
+    updated: "July 8, 2026",
   },
 };
 

@@ -5,6 +5,7 @@ import { getOptionalAuthor } from "@/lib/auth/session";
 import { getPrivyUser } from "@/lib/auth/privy";
 
 // Private author area — never index. Titles/files stay out of search results.
+// Site header + footer come from the root layout (same chrome as marketing).
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-0 flex-1">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">{children}</div>
     </div>

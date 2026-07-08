@@ -16,6 +16,9 @@ const pt: Dictionary = {
     backToSite: "← Voltar ao site",
     backToMyBooks: "← Voltar aos Meus livros",
     allBooks: "← Todos os livros",
+    menu: "Menu do site",
+    openMenu: "Abrir menu",
+    closeMenu: "Fechar menu",
   },
   common: {
     login: "Entrar",
@@ -30,6 +33,8 @@ const pt: Dictionary = {
     verifiedOnChain: "Verificado na cadeia",
     verifiedProof: "✓ Prova verificada",
     openBook: "Abrir livro →",
+    openApp: "Abrir app",
+    startPublishing: "Começar a publicar",
   },
   home: {
     metaTitle: "AuthorChain — Publique, Prove, Venda e Entregue livros",
@@ -395,6 +400,35 @@ const pt: Dictionary = {
     couldNotSaveTranslation: "Não foi possível salvar a tradução.",
     missingTranslation: "Tradução ausente.",
   },
+  footer: {
+    tagline:
+      "AI-powered Web3 publishing: prove authorship on-chain, sell directly, and deliver books through ReaderChain.",
+    product: "Product",
+    legal: "Legal",
+    trust: "Security & compliance",
+    contact: "Contact",
+    social: "Social",
+    explore: "Explore books",
+    library: "Reader library",
+    studio: "AuthorChain Studio",
+    proof: "Proof of authorship",
+    privacy: "Privacy policy",
+    terms: "Terms of service",
+    cookies: "Cookie policy",
+    copyright: "Copyright & DMCA",
+    acceptableUse: "Acceptable use",
+    securityPolicy: "Security",
+    dataProtection: "Data protection",
+    uploadScanning: "Upload scanning",
+    disclaimers: "Disclaimers",
+    contactPage: "Contact us",
+    supportForm: "Support form",
+    rights: "All rights reserved.",
+    complianceNote:
+      "We design for privacy, security, and publishing compliance. On-chain proof is a technical authorship record — not a government copyright registration.",
+    malwareNote:
+      "New uploads are malware-scanned before they are stored. We never expose scanner internals in the UI.",
+  },
   security: {
     fileScanPending: "O arquivo está sendo analisado.",
     fileScanClean: "O arquivo passou na verificação de segurança.",
@@ -403,6 +437,27 @@ const pt: Dictionary = {
     uploadRejectedSecurity: "Envie um arquivo diferente.",
     uploadSecurityScanUnavailable:
       "A verificação de segurança está temporariamente indisponível. Tente novamente em breve.",
+  },
+  legal: {
+    privacyTitle: "Privacy policy",
+    privacyDesc:
+      "How AuthorChain collects, uses, and protects personal and publishing data.",
+    termsTitle: "Terms of service",
+    termsDesc: "Rules for using AuthorChain, ReaderChain, and related services.",
+    cookiesTitle: "Cookie policy",
+    cookiesDesc: "How we use cookies and similar technologies.",
+    securityTitle: "Security",
+    securityDesc:
+      "How we protect accounts, manuscripts, payments, and platform integrity.",
+    copyrightTitle: "Copyright & DMCA",
+    copyrightDesc:
+      "Intellectual property expectations and how to report infringement.",
+    acceptableUseTitle: "Acceptable use",
+    acceptableUseDesc:
+      "Content and conduct rules for authors, readers, and partners.",
+    contactTitle: "Contact",
+    contactDesc: "How to reach AuthorChain for support, privacy, and legal requests.",
+    updated: "July 8, 2026",
   },
 };
 
