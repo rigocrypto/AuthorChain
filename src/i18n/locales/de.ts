@@ -35,15 +35,18 @@ const de: Dictionary = {
     openBook: "Buch öffnen →",
     openApp: "App öffnen",
     startPublishing: "Veröffentlichen starten",
+    viewBookDetails: "Buchdetails ansehen →",
   },
   home: {
-    metaTitle: "AuthorChain — Bücher veröffentlichen, nachweisen, verkaufen und ausliefern",
+    metaTitle: "AuthorChain | Web3-Publishing für unabhängige Autoren",
     metaDescription:
-      "Registrieren Sie einen On-Chain-Autorennachweis, bereiten Sie ein veröffentlichungsfertiges Manuskript vor und verkaufen Sie verifizierte digitale Bücher direkt — mit KI-gestützten Tools und ReaderChain-Bibliothekszugang.",
+      "AuthorChain hilft unabhängigen Autoren, Autorennachweis on-chain zu registrieren, veröffentlichungsfertige Manuskripte vorzubereiten, direkt mit Stripe zu verkaufen und verifizierte Bücher an Leser zu liefern.",
     badge: "Autorennachweis · On-Chain verifiziert · Für unabhängige Autoren",
     heroTitle: "Veröffentlichen. Besitzen. Verdienen. Wachsen.",
     heroSubtitle:
       "AuthorChain ist die Web3-Publishing-Plattform, auf der Autoren On-Chain nachweisen, dass ihr Werk ihnen gehört, ein veröffentlichungsfertiges Manuskript vorbereiten und direkt verkaufen — während Leser verifizierte Bücher entdecken, kaufen und genießen.",
+    jumpHowItWorks: "So funktioniert's",
+    jumpProof: "Autorennachweis",
     readerBadge: "ReaderChain",
     readerTitle: "Für Leser & Sammler",
     readerDesc:
@@ -104,9 +107,9 @@ const de: Dictionary = {
       "Leser entdecken und sammeln verifizierte Bücher. Autoren erstellen, weisen nach und verdienen. Die Blockchain beweist das Eigentum; KI hilft Kreativen beim Wachsen.",
   },
   explore: {
-    metaTitle: "ReaderChain — Verifizierte Bücher entdecken",
+    metaTitle: "Verifizierte Bücher auf ReaderChain entdecken",
     metaDescription:
-      "Entdecken Sie Bücher unabhängiger Autoren mit verifiziertem On-Chain-Autorennachweis, sicheren Vorschauen und Zugang zur Leser-Bibliothek.",
+      "Entdecken Sie Bücher unabhängiger Autoren mit On-Chain-Autorennachweis, sicheren Vorschauen und ReaderChain-Bibliothekszugang.",
     heroBadge: "ReaderChain · Verifizierte Bücher von unabhängigen Autoren",
     heroTitle: "Verifizierte Bücher entdecken",
     heroSubtitle:
@@ -143,7 +146,8 @@ const de: Dictionary = {
       "Sammeln Sie limitierte digitale Editionen und schalten Sie Premium-Inhalte frei.",
   },
   book: {
-    backToReaderchain: "← Zurück zu ReaderChain",
+    backToReaderchain: "← Zurück zu ReaderChain entdecken",
+    browseAllBooks: "Alle verifizierten Bücher durchsuchen",
     myLibrary: "Meine Bibliothek →",
     by: "von",
     about: "Über dieses Buch",
@@ -212,6 +216,9 @@ const de: Dictionary = {
     shareLink: "Teilen-Link",
   },
   login: {
+    metaTitle: "Anmelden",
+    metaDescription:
+      "Melden Sie sich bei AuthorChain an, um Bücher zu veröffentlichen, Ihre Bibliothek zu verwalten oder gekaufte Titel in ReaderChain zu öffnen.",
     loading: "Wird geladen…",
     signingIn: "Sie werden angemeldet…",
     alreadyTitle: "Sie sind bereits angemeldet",

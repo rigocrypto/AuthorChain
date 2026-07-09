@@ -35,6 +35,7 @@ const en = {
     openBook: "Open book →",
     openApp: "Open App",
     startPublishing: "Start publishing",
+    viewBookDetails: "View book details →",
   },
   footer: {
     tagline:
@@ -66,13 +67,15 @@ const en = {
       "New uploads are malware-scanned before they are stored. We never expose scanner internals in the UI.",
   },
   home: {
-    metaTitle: "AuthorChain — Publish, Prove, Sell, and Deliver Books",
+    metaTitle: "AuthorChain | Web3 Publishing for Independent Authors",
     metaDescription:
-      "Register on-chain proof-of-authorship, prepare a publish-ready manuscript, and sell verified digital books directly — with AI-assisted tools and ReaderChain library access.",
+      "AuthorChain helps independent authors register proof-of-authorship on-chain, prepare publish-ready manuscripts, sell directly with Stripe, and deliver verified books to readers.",
     badge: "Proof-of-authorship · Verified on-chain · Built for independent authors",
     heroTitle: "Publish. Own. Earn. Grow.",
     heroSubtitle:
       "AuthorChain is the Web3 publishing platform where authors prove their work is theirs on-chain, prepare a publish-ready manuscript, and sell directly — while readers discover, buy, and enjoy verified books.",
+    jumpHowItWorks: "How it works",
+    jumpProof: "Proof of authorship",
     readerBadge: "ReaderChain",
     readerTitle: "For readers & collectors",
     readerDesc:
@@ -133,9 +136,9 @@ const en = {
       "Readers discover and collect verified books. Authors create, prove, and earn. Blockchain proves ownership; AI helps creators grow.",
   },
   explore: {
-    metaTitle: "ReaderChain — Discover Verified Books",
+    metaTitle: "Discover Verified Books on ReaderChain",
     metaDescription:
-      "Explore books from independent authors with verified on-chain authorship proof, secure previews, and reader library access.",
+      "Browse independent authors' books with on-chain proof of authorship, secure previews, and ReaderChain library access.",
     heroBadge: "ReaderChain · Verified books from independent authors",
     heroTitle: "Discover verified books",
     heroSubtitle:
@@ -172,7 +175,8 @@ const en = {
       "Collect limited digital editions and unlock premium content.",
   },
   book: {
-    backToReaderchain: "← Back to ReaderChain",
+    backToReaderchain: "← Back to ReaderChain explore",
+    browseAllBooks: "Browse all verified books",
     myLibrary: "My Library →",
     by: "by",
     about: "About this book",
@@ -242,6 +246,9 @@ const en = {
     shareLink: "Share link",
   },
   login: {
+    metaTitle: "Sign in",
+    metaDescription:
+      "Sign in to AuthorChain to publish books, manage your library, or access purchased titles on ReaderChain.",
     loading: "Loading…",
     signingIn: "Signing you in…",
     alreadyTitle: "You are already signed in",

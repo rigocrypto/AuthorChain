@@ -50,12 +50,11 @@ export async function generateMetadata({
   );
   const url = absoluteUrl(`/book/${book.slug}`);
 
-  // og:image / twitter:image are injected automatically from the colocated
-  // opengraph-image.tsx (Next serves it at a hashed URL) — don't set them here.
+  // og:image / twitter:image come from colocated opengraph-image.tsx.
   return {
     title,
     description,
-    alternates: { canonical: `/book/${book.slug}` },
+    alternates: { canonical: url },
     openGraph: { type: "book", title, description, url },
     twitter: { card: "summary_large_image", title, description },
   };
@@ -152,6 +151,12 @@ export default async function PublicBookPage({
           className="inline-flex items-center gap-1 text-muted transition-colors hover:text-foreground"
         >
           {L.backToReaderchain}
+        </Link>
+        <Link
+          href="/explore"
+          className="text-muted transition-colors hover:text-foreground"
+        >
+          {L.browseAllBooks}
         </Link>
         <Link href="/reader/library" className="text-muted transition-colors hover:text-foreground">
           {L.myLibrary}

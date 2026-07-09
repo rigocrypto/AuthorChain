@@ -35,15 +35,18 @@ const fr: Dictionary = {
     openBook: "Ouvrir le livre →",
     openApp: "Ouvrir l'app",
     startPublishing: "Commencer à publier",
+    viewBookDetails: "Voir la fiche du livre →",
   },
   home: {
-    metaTitle: "AuthorChain — Publiez, Prouvez, Vendez et Livrez des livres",
+    metaTitle: "AuthorChain | Édition Web3 pour auteurs indépendants",
     metaDescription:
-      "Enregistrez une preuve de paternité sur la chaîne, préparez un manuscrit prêt à publier et vendez directement des livres numériques vérifiés — avec des outils assistés par IA et l'accès à la bibliothèque ReaderChain.",
+      "AuthorChain aide les auteurs indépendants à enregistrer une preuve de paternité on-chain, préparer des manuscrits prêts à publier, vendre avec Stripe et livrer des livres vérifiés aux lecteurs.",
     badge: "Preuve de paternité · Vérifié sur la chaîne · Conçu pour les auteurs indépendants",
     heroTitle: "Publiez. Possédez. Gagnez. Grandissez.",
     heroSubtitle:
       "AuthorChain est la plateforme de publication Web3 où les auteurs prouvent que leur œuvre est la leur sur la chaîne, préparent un manuscrit prêt à publier et vendent directement — pendant que les lecteurs découvrent, achètent et apprécient des livres vérifiés.",
+    jumpHowItWorks: "Comment ça marche",
+    jumpProof: "Preuve de paternité",
     readerBadge: "ReaderChain",
     readerTitle: "Pour les lecteurs et collectionneurs",
     readerDesc:
@@ -104,9 +107,9 @@ const fr: Dictionary = {
       "Les lecteurs découvrent et collectionnent des livres vérifiés. Les auteurs créent, prouvent et gagnent. La blockchain prouve la propriété ; l'IA aide les créateurs à grandir.",
   },
   explore: {
-    metaTitle: "ReaderChain — Découvrez des livres vérifiés",
+    metaTitle: "Découvrir des livres vérifiés sur ReaderChain",
     metaDescription:
-      "Explorez des livres d'auteurs indépendants avec preuve de paternité vérifiée sur la chaîne, aperçus sécurisés et accès à la bibliothèque du lecteur.",
+      "Parcourez des livres d'auteurs indépendants avec preuve de paternité on-chain, aperçus sécurisés et accès à la bibliothèque ReaderChain.",
     heroBadge: "ReaderChain · Livres vérifiés d'auteurs indépendants",
     heroTitle: "Découvrez des livres vérifiés",
     heroSubtitle:
@@ -143,7 +146,8 @@ const fr: Dictionary = {
       "Collectionnez des éditions numériques limitées et débloquez du contenu premium.",
   },
   book: {
-    backToReaderchain: "← Retour à ReaderChain",
+    backToReaderchain: "← Retour à l'exploration ReaderChain",
+    browseAllBooks: "Parcourir tous les livres vérifiés",
     myLibrary: "Ma bibliothèque →",
     by: "par",
     about: "À propos de ce livre",
@@ -212,6 +216,9 @@ const fr: Dictionary = {
     shareLink: "Lien de partage",
   },
   login: {
+    metaTitle: "Connexion",
+    metaDescription:
+      "Connectez-vous à AuthorChain pour publier des livres, gérer votre bibliothèque ou accéder à vos achats sur ReaderChain.",
     loading: "Chargement…",
     signingIn: "Connexion en cours…",
     alreadyTitle: "Vous êtes déjà connecté",

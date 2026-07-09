@@ -9,7 +9,14 @@ import { ProofSeal } from "@/components/proof-seal";
  * (served through the controlled asset route) or a gradient fallback, and a
  * verified-proof badge when the book has an on-chain proof.
  */
-export function PublishedBookCard({ book }: { book: PublishedBookDTO }) {
+export function PublishedBookCard({
+  book,
+  priority = false,
+}: {
+  book: PublishedBookDTO;
+  /** Eager-load the cover when the card is above the fold (e.g. first row). */
+  priority?: boolean;
+}) {
   return (
     <Link
       href={`/book/${book.slug}`}
@@ -17,15 +24,19 @@ export function PublishedBookCard({ book }: { book: PublishedBookDTO }) {
     >
       <div className="relative">
         {book.hasCover ? (
-          // eslint-disable-next-line @next/next/no-img-element
+          // eslint-disable-next-line @next/next/no-img-element -- dynamic asset API
           <img
             src={`/api/assets/books/${book.id}/cover`}
-            alt={`${book.title} cover`}
+            alt={`${book.title} book cover by ${book.authorName}`}
             className="aspect-[2/3] w-full border-b border-border object-cover"
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
           />
         ) : (
           <div
             className={`flex aspect-[2/3] w-full items-end bg-gradient-to-br ${book.coverColor} p-4`}
+            role="img"
+            aria-label={`${book.title} cover placeholder`}
           >
             <span className="text-lg font-semibold text-white drop-shadow">{book.title}</span>
           </div>
@@ -48,7 +59,9 @@ export function PublishedBookCard({ book }: { book: PublishedBookDTO }) {
         <p className="text-sm text-muted">by {book.authorName}</p>
         <div className="mt-3 flex items-center justify-between pt-1">
           <span className="font-semibold">${book.price.toFixed(2)}</span>
-          <span className="text-sm text-accent group-hover:underline">View book →</span>
+          <span className="text-sm text-accent group-hover:underline">
+            View {book.title} →
+          </span>
         </div>
       </div>
     </Link>

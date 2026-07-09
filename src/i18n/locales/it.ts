@@ -35,15 +35,18 @@ const it: Dictionary = {
     openBook: "Apri libro →",
     openApp: "Apri app",
     startPublishing: "Inizia a pubblicare",
+    viewBookDetails: "Vedi dettagli del libro →",
   },
   home: {
-    metaTitle: "AuthorChain — Pubblica, Dimostra, Vendi e Consegna libri",
+    metaTitle: "AuthorChain | Editoria Web3 per autori indipendenti",
     metaDescription:
-      "Registra una prova di paternità sulla catena, prepara un manoscritto pronto per la pubblicazione e vendi direttamente libri digitali verificati — con strumenti assistiti dall'IA e accesso alla biblioteca ReaderChain.",
+      "AuthorChain aiuta gli autori indipendenti a registrare la prova di paternità on-chain, preparare manoscritti pronti per la pubblicazione, vendere con Stripe e consegnare libri verificati ai lettori.",
     badge: "Prova di paternità · Verificato sulla catena · Creato per autori indipendenti",
     heroTitle: "Pubblica. Possiedi. Guadagna. Cresci.",
     heroSubtitle:
       "AuthorChain è la piattaforma di pubblicazione Web3 dove gli autori dimostrano che l'opera è loro sulla catena, preparano un manoscritto pronto per la pubblicazione e vendono direttamente — mentre i lettori scoprono, acquistano e leggono libri verificati.",
+    jumpHowItWorks: "Come funziona",
+    jumpProof: "Prova di paternità",
     readerBadge: "ReaderChain",
     readerTitle: "Per lettori e collezionisti",
     readerDesc:
@@ -104,9 +107,9 @@ const it: Dictionary = {
       "I lettori scoprono e collezionano libri verificati. Gli autori creano, dimostrano e guadagnano. La blockchain dimostra la proprietà; l'IA aiuta i creatori a crescere.",
   },
   explore: {
-    metaTitle: "ReaderChain — Scopri libri verificati",
+    metaTitle: "Scopri libri verificati su ReaderChain",
     metaDescription:
-      "Esplora libri di autori indipendenti con prova di paternità verificata sulla catena, anteprime sicure e accesso alla biblioteca del lettore.",
+      "Esplora libri di autori indipendenti con prova di paternità on-chain, anteprime sicure e accesso alla biblioteca ReaderChain.",
     heroBadge: "ReaderChain · Libri verificati di autori indipendenti",
     heroTitle: "Scopri libri verificati",
     heroSubtitle:
@@ -143,7 +146,8 @@ const it: Dictionary = {
       "Colleziona edizioni digitali limitate e sblocca contenuti premium.",
   },
   book: {
-    backToReaderchain: "← Torna a ReaderChain",
+    backToReaderchain: "← Torna a esplorare ReaderChain",
+    browseAllBooks: "Sfoglia tutti i libri verificati",
     myLibrary: "La mia biblioteca →",
     by: "di",
     about: "Informazioni su questo libro",
@@ -212,6 +216,9 @@ const it: Dictionary = {
     shareLink: "Link di condivisione",
   },
   login: {
+    metaTitle: "Accedi",
+    metaDescription:
+      "Accedi ad AuthorChain per pubblicare libri, gestire la libreria o aprire i titoli acquistati su ReaderChain.",
     loading: "Caricamento…",
     signingIn: "Accesso in corso…",
     alreadyTitle: "Hai già effettuato l'accesso",

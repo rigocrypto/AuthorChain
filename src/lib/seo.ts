@@ -14,8 +14,11 @@ export const siteConfig = {
   name: "AuthorChain",
   readerBrand: "ReaderChain",
   url: siteUrl,
+  /** Default meta description — factual, no KDP/approval guarantees. */
   description:
-    "AuthorChain is an AI-powered Web3 publishing platform where authors publish books, prove manuscript ownership on-chain, sell directly, and give readers secure access through ReaderChain.",
+    "AuthorChain helps independent authors register proof-of-authorship on-chain, prepare publish-ready manuscripts, sell directly with Stripe, and deliver verified books to readers.",
+  /** Browser tab / OG title when a page does not set its own absolute title. */
+  defaultTitle: "AuthorChain | Web3 Publishing for Independent Authors",
   tagline: "Publish. Own. Earn. Grow.",
   keywords: [
     "AuthorChain",
@@ -83,6 +86,29 @@ export function websiteJsonLd() {
     name: siteConfig.name,
     url: siteConfig.url,
     description: siteConfig.description,
+    publisher: { "@type": "Organization", name: siteConfig.name, url: siteConfig.url },
+  };
+}
+
+/**
+ * Web app entry for the public product surface. Describes free browser access to
+ * AuthorChain/ReaderChain — not a paid native app store listing.
+ */
+export function webApplicationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: siteConfig.description,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    browserRequirements: "Requires JavaScript",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
   };
 }
 
@@ -132,6 +158,14 @@ export function bookJsonLd(book: BookJsonLdInput) {
   if (book.isbn13) jsonLd.isbn = book.isbn13;
   if (book.pageCount) jsonLd.numberOfPages = book.pageCount;
   if (book.publicationDate) jsonLd.datePublished = book.publicationDate.slice(0, 10);
+  // Factual on-chain proof signal only — not a government copyright claim.
+  if (book.proofVerified) {
+    jsonLd.additionalProperty = {
+      "@type": "PropertyValue",
+      name: "onChainAuthorshipProof",
+      value: "REGISTERED",
+    };
+  }
   return jsonLd;
 }
 

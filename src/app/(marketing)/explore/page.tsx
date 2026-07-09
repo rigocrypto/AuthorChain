@@ -5,7 +5,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
 import { ReaderBackground } from "@/components/reader-background";
 import { listPublishedBooks } from "@/lib/data/books";
-import { absoluteUrl, jsonLdScript } from "@/lib/seo";
+import { absoluteUrl, jsonLdScript, siteConfig } from "@/lib/seo";
 import { getDictionary } from "@/i18n/get-dictionary";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -13,11 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: dict.explore.metaTitle,
     description: dict.explore.metaDescription,
-    alternates: { canonical: "/explore" },
+    alternates: { canonical: absoluteUrl("/explore") },
     openGraph: {
+      type: "website",
       title: dict.explore.metaTitle,
       description: dict.explore.metaDescription,
-      url: "/explore",
+      url: absoluteUrl("/explore"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.explore.metaTitle,
+      description: dict.explore.metaDescription,
     },
   };
 }
@@ -42,7 +48,9 @@ export default async function ExplorePage() {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: t.metaTitle,
+    description: t.metaDescription,
     url: absoluteUrl("/explore"),
+    isPartOf: { "@type": "WebSite", name: siteConfig.name, url: siteConfig.url },
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: books.length,
@@ -62,7 +70,7 @@ export default async function ExplorePage() {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionJsonLd) }}
       />
-      <ReaderBackground />
+      <ReaderBackground src="/background.webp" />
 
       <section className="relative overflow-hidden border-b border-border">
         <div

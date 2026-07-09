@@ -4,7 +4,7 @@ import { Suspense, useEffect } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PageShell } from "@/components/page-header";
-import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardDescription } from "@/components/ui/card";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { useI18n } from "@/i18n/provider";
 
@@ -28,7 +28,7 @@ function LoginInner() {
   if (!ready) {
     return (
       <Card className="mx-auto mt-10 max-w-md text-center">
-        <CardTitle>{dict.login.loading}</CardTitle>
+        <h1 className="text-base font-semibold text-foreground">{dict.login.loading}</h1>
       </Card>
     );
   }
@@ -37,7 +37,9 @@ function LoginInner() {
     if (redirectParam) {
       return (
         <Card className="mx-auto mt-10 max-w-md text-center">
-          <CardTitle>{dict.login.signingIn}</CardTitle>
+          <h1 className="text-base font-semibold text-foreground">
+            {dict.login.signingIn}
+          </h1>
         </Card>
       );
     }
@@ -46,7 +48,9 @@ function LoginInner() {
     const addr = shortAddress(user?.wallet?.address ?? null);
     return (
       <Card className="mx-auto mt-10 max-w-md text-center">
-        <CardTitle>{dict.login.alreadyTitle}</CardTitle>
+        <h1 className="text-base font-semibold text-foreground">
+          {dict.login.alreadyTitle}
+        </h1>
         <CardDescription>
           {email ? <span className="block">{email}</span> : null}
           {addr ? (
@@ -74,7 +78,9 @@ function LoginInner() {
 
   return (
     <Card className="mx-auto mt-10 max-w-md text-center">
-      <CardTitle>{dict.login.signInTitle}</CardTitle>
+      <h1 className="text-base font-semibold text-foreground">
+        {dict.login.signInTitle}
+      </h1>
       <CardDescription>{dict.login.signInDesc}</CardDescription>
       <div className="mt-6">
         <Button onClick={() => login()} className="w-full">
@@ -97,7 +103,9 @@ export default function LoginPage() {
         </Suspense>
       ) : (
         <Card className="mx-auto mt-10 max-w-md text-center">
-          <CardTitle>{dict.login.notConfiguredTitle}</CardTitle>
+          <h1 className="text-base font-semibold text-foreground">
+            {dict.login.notConfiguredTitle}
+          </h1>
           <CardDescription>{dict.login.notConfiguredDesc}</CardDescription>
           <div className="mt-6">
             <ButtonLink href="/">{dict.login.backHome}</ButtonLink>

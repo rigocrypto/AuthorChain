@@ -58,15 +58,19 @@ export function BookPreview({
   }, [open]);
 
   const cover = hasCover ? (
-    // eslint-disable-next-line @next/next/no-img-element
+    // eslint-disable-next-line @next/next/no-img-element -- dynamic asset API
     <img
       src={`/api/assets/books/${bookId}/cover`}
-      alt={`${title} cover`}
+      alt={`${title} book cover by ${authorName}`}
       className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
+      loading="eager"
+      decoding="async"
     />
   ) : (
     <div
       className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${coverColor} p-5`}
+      role="img"
+      aria-label={`${title} cover placeholder`}
     >
       <span className="text-2xl font-bold text-white drop-shadow">{title}</span>
     </div>

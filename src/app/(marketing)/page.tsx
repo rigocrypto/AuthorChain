@@ -5,19 +5,33 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
 import { ReaderBackground } from "@/components/reader-background";
 import { listPublishedBooks } from "@/lib/data/books";
-import { organizationJsonLd, websiteJsonLd, jsonLdScript } from "@/lib/seo";
+import {
+  absoluteUrl,
+  organizationJsonLd,
+  websiteJsonLd,
+  webApplicationJsonLd,
+  jsonLdScript,
+} from "@/lib/seo";
 import { getDictionary } from "@/i18n/get-dictionary";
+import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { dict } = await getDictionary();
+  // Absolute title — already includes brand; avoid template double-suffix.
   return {
-    title: dict.home.metaTitle,
+    title: { absolute: dict.home.metaTitle },
     description: dict.home.metaDescription,
-    alternates: { canonical: "/" },
+    alternates: { canonical: absoluteUrl("/") },
     openGraph: {
+      type: "website",
       title: dict.home.metaTitle,
       description: dict.home.metaDescription,
-      url: "/",
+      url: absoluteUrl("/"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.home.metaTitle,
+      description: dict.home.metaDescription,
     },
   };
 }
@@ -61,7 +75,11 @@ export default async function Home() {
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
-          __html: jsonLdScript([organizationJsonLd(), websiteJsonLd()]),
+          __html: jsonLdScript([
+            organizationJsonLd(),
+            websiteJsonLd(),
+            webApplicationJsonLd(),
+          ]),
         }}
       />
       {/* Hero */}
@@ -78,6 +96,29 @@ export default async function Home() {
             <span className="ac-gradient-text">{t.heroTitle}</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">{t.heroSubtitle}</p>
+          <nav
+            aria-label="Page sections"
+            className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm"
+          >
+            <Link
+              href="/explore"
+              className="font-medium text-accent transition-colors hover:underline"
+            >
+              {t.exploreReaderchain}
+            </Link>
+            <Link
+              href="/#how-it-works"
+              className="text-muted transition-colors hover:text-foreground hover:underline"
+            >
+              {t.jumpHowItWorks}
+            </Link>
+            <Link
+              href="/#proof"
+              className="text-muted transition-colors hover:text-foreground hover:underline"
+            >
+              {t.jumpProof}
+            </Link>
+          </nav>
         </div>
       </section>
 
@@ -129,8 +170,8 @@ export default async function Home() {
             </ButtonLink>
           </div>
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.map((b) => (
-              <PublishedBookCard key={b.id} book={b} />
+            {featured.map((b, i) => (
+              <PublishedBookCard key={b.id} book={b} priority={i < 2} />
             ))}
           </div>
         </section>
@@ -145,7 +186,7 @@ export default async function Home() {
               <div className="grid h-9 w-9 place-items-center rounded-lg bg-surface-2 font-mono text-accent">
                 {s.n}
               </div>
-              <div className="mt-3 font-medium">{s.t}</div>
+              <h3 className="mt-3 font-medium text-foreground">{s.t}</h3>
               <p className="mt-1 text-sm text-muted">{s.d}</p>
             </div>
           ))}

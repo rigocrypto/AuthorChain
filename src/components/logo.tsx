@@ -19,13 +19,15 @@ export function Logo({
     <Link href={href} className="flex items-center gap-2 font-semibold">
       <Image
         src="/brand/authorchain-icon-512.png"
-        alt=""
+        alt="AuthorChain"
         width={48}
         height={48}
         priority
         className={`${imgClassName} rounded-lg`}
       />
-      <span className={`ac-gradient-text ${textClassName}`}>AuthorChain</span>
+      <span className={`ac-gradient-text ${textClassName}`} aria-hidden="true">
+        AuthorChain
+      </span>
     </Link>
   );
 }

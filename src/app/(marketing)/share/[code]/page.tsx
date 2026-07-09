@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ReaderBackground } from "@/components/reader-background";
 import { resolveShareLanding } from "@/lib/data/referrals";
+import { resolveLocalizedBookMetadata } from "@/lib/data/book-translations";
 import { absoluteUrl, metaDescription } from "@/lib/seo";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 
@@ -30,17 +31,24 @@ export async function generateMetadata({
     return { title: dict.share.shareLink, robots: { index: false, follow: false } };
   }
   const { book } = landing;
-  const title = `${book.title} by ${book.authorName}`;
-  const description = metaDescription(
-    book.subtitle ? `${book.subtitle}. ${book.description}` : book.description,
+  const localized = resolveLocalizedBookMetadata(
+    { title: book.title, subtitle: book.subtitle, description: book.description },
+    book.translation,
   );
+  const title = `${localized.title} by ${book.authorName}`;
+  const description = metaDescription(
+    localized.subtitle
+      ? `${localized.subtitle}. ${localized.description}`
+      : localized.description,
+  );
+  const bookUrl = absoluteUrl(`/book/${book.slug}`);
 
   // og:image / twitter:image come from the colocated opengraph-image.tsx.
   return {
     title,
     description,
     // Canonical to the book page keeps share URLs from competing in search.
-    alternates: { canonical: `/book/${book.slug}` },
+    alternates: { canonical: bookUrl },
     robots: { index: false, follow: true },
     openGraph: {
       type: "book",
@@ -65,16 +73,15 @@ export default async function SharePage({
   if (!landing) redirect("/explore");
 
   const { book } = landing;
-  const metadata = {
-    title: book.translation?.title ?? book.title,
-    subtitle: book.translation?.subtitle ?? book.subtitle,
-    description: book.translation?.description ?? book.description,
-  };
+  const metadata = resolveLocalizedBookMetadata(
+    { title: book.title, subtitle: book.subtitle, description: book.description },
+    book.translation,
+  );
   const bookHref = `/book/${book.slug}?ref=${encodeURIComponent(code)}`;
 
   return (
     <PageShell>
-      <ReaderBackground />
+      <ReaderBackground src="/background.webp" />
       <div className="mx-auto max-w-2xl">
         <div className="rounded-2xl border border-border bg-surface/80 p-6 sm:p-8">
           <div className="flex flex-col gap-6 sm:flex-row">
@@ -83,14 +90,20 @@ export default async function SharePage({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={`/api/assets/books/${book.id}/cover`}
-                  alt={`${metadata.title} cover`}
+                  alt={`${metadata.title} book cover`}
                   className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
+                  loading="eager"
+                  decoding="async"
                 />
               ) : (
                 <div
                   className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${book.coverColor} p-4`}
+                  role="img"
+                  aria-label={`${metadata.title} cover placeholder`}
                 >
-                  <span className="text-lg font-bold text-white drop-shadow">{metadata.title}</span>
+                  <span className="text-lg font-bold text-white drop-shadow">
+                    {metadata.title}
+                  </span>
                 </div>
               )}
             </div>
@@ -106,7 +119,9 @@ export default async function SharePage({
               {metadata.subtitle ? (
                 <p className="mt-1 text-muted">{metadata.subtitle}</p>
               ) : null}
-              <p className="mt-1 text-sm text-muted">by {book.authorName}</p>
+              <p className="mt-1 text-sm text-muted">
+                {dict.book.by} {book.authorName}
+              </p>
               <p className="mt-3 line-clamp-4 text-sm text-muted">{metadata.description}</p>
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -117,6 +132,14 @@ export default async function SharePage({
                   {dict.common.openBook}
                 </ButtonLink>
               </div>
+              <p className="mt-3 text-sm">
+                <Link
+                  href={`/book/${book.slug}`}
+                  className="text-accent hover:underline"
+                >
+                  {dict.common.viewBookDetails}
+                </Link>
+              </p>
             </div>
           </div>
         </div>
@@ -125,6 +148,10 @@ export default async function SharePage({
           {dict.share.sharedFrom}{" "}
           <Link href="/explore" className="text-accent hover:underline">
             {dict.share.readerchainBy}
+          </Link>
+          {" · "}
+          <Link href="/explore" className="text-accent hover:underline">
+            {dict.book.browseAllBooks}
           </Link>
         </p>
       </div>

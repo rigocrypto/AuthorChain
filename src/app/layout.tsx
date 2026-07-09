@@ -27,7 +27,7 @@ const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "AuthorChain — AI-powered Web3 publishing for authors",
+    default: siteConfig.defaultTitle,
     template: "%s | AuthorChain",
   },
   description: siteConfig.description,
@@ -36,18 +36,18 @@ export const metadata: Metadata = {
   authors: [{ name: siteConfig.name, url: siteUrl }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
-  alternates: { canonical: "/" },
+  alternates: { canonical: siteUrl },
   openGraph: {
     type: "website",
     siteName: siteConfig.name,
-    title: "AuthorChain — AI-powered Web3 publishing for authors",
+    title: siteConfig.defaultTitle,
     description: siteConfig.description,
     url: siteUrl,
     locale: "en_US",
   },
   twitter: {
     card: siteConfig.twitterCard,
-    title: "AuthorChain — AI-powered Web3 publishing for authors",
+    title: siteConfig.defaultTitle,
     description: siteConfig.description,
   },
   robots: {

@@ -36,15 +36,18 @@ const arAE: Dictionary = {
     openBook: "افتح الكتاب ←",
     openApp: "فتح التطبيق",
     startPublishing: "ابدأ النشر",
+    viewBookDetails: "عرض تفاصيل الكتاب ←",
   },
   home: {
-    metaTitle: "AuthorChain — انشر وأثبِت وبِع وسلّم الكتب",
+    metaTitle: "AuthorChain | نشر Web3 للمؤلفين المستقلين",
     metaDescription:
-      "سجّل إثبات التأليف على السلسلة، وجهّز مخطوطة جاهزة للنشر، وبِع كتبًا رقمية موثّقة مباشرة — مع أدوات مدعومة بالذكاء الاصطناعي والوصول إلى مكتبة ReaderChain.",
+      "تساعد AuthorChain المؤلفين المستقلين على تسجيل إثبات التأليف على السلسلة، وتجهيز مخطوطات جاهزة للنشر، والبيع عبر Stripe، وتسليم كتب موثّقة للقرّاء.",
     badge: "إثبات التأليف · موثّق على السلسلة · مصمّم للمؤلفين المستقلين",
     heroTitle: "انشر. امتلك. اربح. انمُ.",
     heroSubtitle:
       "AuthorChain هي منصة النشر Web3 حيث يُثبت المؤلفون على السلسلة أن أعمالهم ملكهم، ويجهّزون مخطوطة جاهزة للنشر، ويبيعون مباشرة — بينما يكتشف القرّاء الكتب الموثّقة ويشترونها ويستمتعون بها.",
+    jumpHowItWorks: "كيف يعمل",
+    jumpProof: "إثبات التأليف",
     readerBadge: "ReaderChain",
     readerTitle: "للقرّاء والجامعين",
     readerDesc:
@@ -105,9 +108,9 @@ const arAE: Dictionary = {
       "يكتشف القرّاء الكتب الموثّقة ويجمعونها. ينشئ المؤلفون ويُثبتون ويربحون. تُثبت البلوكتشين الملكية؛ ويساعد الذكاء الاصطناعي المبدعين على النمو.",
   },
   explore: {
-    metaTitle: "ReaderChain — اكتشف كتبًا موثّقة",
+    metaTitle: "اكتشف كتبًا موثّقة على ReaderChain",
     metaDescription:
-      "استكشف كتبًا لمؤلفين مستقلين مع إثبات تأليف موثّق على السلسلة، ومعاينات آمنة، والوصول إلى مكتبة القارئ.",
+      "تصفّح كتب مؤلفين مستقلين مع إثبات تأليف على السلسلة ومعاينات آمنة ووصول لمكتبة ReaderChain.",
     heroBadge: "ReaderChain · كتب موثّقة من مؤلفين مستقلين",
     heroTitle: "اكتشف كتبًا موثّقة",
     heroSubtitle:
@@ -144,7 +147,8 @@ const arAE: Dictionary = {
       "اجمع إصدارات رقمية محدودة وافتح محتوى مميزًا.",
   },
   book: {
-    backToReaderchain: "→ العودة إلى ReaderChain",
+    backToReaderchain: "→ العودة لاستكشاف ReaderChain",
+    browseAllBooks: "تصفّح كل الكتب الموثّقة",
     myLibrary: "مكتبتي ←",
     by: "بقلم",
     about: "عن هذا الكتاب",
@@ -213,6 +217,9 @@ const arAE: Dictionary = {
     shareLink: "رابط المشاركة",
   },
   login: {
+    metaTitle: "تسجيل الدخول",
+    metaDescription:
+      "سجّل الدخول إلى AuthorChain للنشر وإدارة مكتبتك أو الوصول إلى العناوين المشتراة في ReaderChain.",
     loading: "جارٍ التحميل…",
     signingIn: "جارٍ تسجيل دخولك…",
     alreadyTitle: "لقد سجّلت الدخول بالفعل",
