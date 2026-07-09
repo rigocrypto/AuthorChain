@@ -105,6 +105,21 @@ const en = {
     proofCardNote: "shown on every verified book",
     agentsTitle: "AI tools in AuthorChain Studio",
     agentsSubtitle: "Smart assistants that write, plan, and grow your book.",
+    agentCopyName: "Copy Agent",
+    agentCopyDesc:
+      "Writes your blurb, description, social posts, emails, and keywords.",
+    agentLaunchName: "Launch Agent",
+    agentLaunchDesc:
+      "Builds a 14-day launch calendar, checklists, and a pricing strategy.",
+    agentCommunityName: "Community Agent",
+    agentCommunityDesc:
+      "Creates a reader FAQ, discussion questions, and engagement posts.",
+    agentPricingName: "Pricing Agent",
+    agentPricingDesc:
+      "Suggests the best price based on real sales and conversion data.",
+    agentOpportunityName: "Opportunity Agent",
+    agentOpportunityDesc:
+      "Finds trends, keywords, and market opportunities for your books.",
     collectorReaderBadge: "Coming soon · ReaderChain",
     collectorReaderTitle: "Collector Editions",
     collectorReaderDesc:
@@ -135,6 +150,26 @@ const en = {
     visitStudio: "Visit AuthorChain Studio",
     comingSoonTitle: "Coming soon to ReaderChain",
     comingSoonSubtitle: "The reader experience is just getting started.",
+    booksAvailable: "{count} verified books available.",
+    booksAvailableOne: "1 verified book available.",
+    soon: "Soon",
+    comingSoonBadge: "Coming soon",
+    collectorEditionsTitle: "Collector Editions",
+    collectorEditionsDesc:
+      "Collector Editions are coming soon. Readers will be able to collect limited digital editions, unlock premium content, and support independent authors directly — every edition backed by verified proof-of-authorship.",
+    soonAudiobooks: "Audiobooks",
+    soonAudiobooksDesc: "Listen to verified books from independent authors.",
+    soonVideoBooks: "Video Books",
+    soonVideoBooksDesc: "Watch companion lessons and visual editions.",
+    soonBookClubs: "Book Clubs",
+    soonBookClubsDesc: "Read together and discuss with the community.",
+    soonReaderRewards: "Reader Rewards",
+    soonReaderRewardsDesc: "Earn perks for supporting the creators you love.",
+    soonAiRecs: "AI Recommendations",
+    soonAiRecsDesc: "Discover your next read, personalized to your taste.",
+    soonCollector: "Collector Editions",
+    soonCollectorDesc:
+      "Collect limited digital editions and unlock premium content.",
   },
   book: {
     backToReaderchain: "← Back to ReaderChain",

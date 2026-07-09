@@ -77,6 +77,21 @@ const es: Dictionary = {
     proofCardNote: "mostrada en cada libro verificado",
     agentsTitle: "Herramientas de IA en AuthorChain Studio",
     agentsSubtitle: "Asistentes inteligentes que escriben, planifican y hacen crecer tu libro.",
+    agentCopyName: "Agente de copy",
+    agentCopyDesc:
+      "Escribe tu blurb, descripción, posts sociales, emails y palabras clave.",
+    agentLaunchName: "Agente de lanzamiento",
+    agentLaunchDesc:
+      "Crea un calendario de lanzamiento de 14 días, checklists y una estrategia de precios.",
+    agentCommunityName: "Agente de comunidad",
+    agentCommunityDesc:
+      "Crea un FAQ para lectores, preguntas de debate y posts de engagement.",
+    agentPricingName: "Agente de precios",
+    agentPricingDesc:
+      "Sugiere el mejor precio según ventas reales y datos de conversión.",
+    agentOpportunityName: "Agente de oportunidades",
+    agentOpportunityDesc:
+      "Encuentra tendencias, palabras clave y oportunidades de mercado para tus libros.",
     collectorReaderBadge: "Próximamente · ReaderChain",
     collectorReaderTitle: "Ediciones de coleccionista",
     collectorReaderDesc:
@@ -107,6 +122,26 @@ const es: Dictionary = {
     visitStudio: "Visitar AuthorChain Studio",
     comingSoonTitle: "Próximamente en ReaderChain",
     comingSoonSubtitle: "La experiencia del lector no ha hecho más que empezar.",
+    booksAvailable: "{count} libros verificados disponibles.",
+    booksAvailableOne: "1 libro verificado disponible.",
+    soon: "Pronto",
+    comingSoonBadge: "Próximamente",
+    collectorEditionsTitle: "Ediciones de coleccionista",
+    collectorEditionsDesc:
+      "Las ediciones de coleccionista llegan pronto. Los lectores podrán coleccionar ediciones digitales limitadas, desbloquear contenido premium y apoyar a autores independientes — cada edición respaldada por prueba de autoría verificada.",
+    soonAudiobooks: "Audiolibros",
+    soonAudiobooksDesc: "Escucha libros verificados de autores independientes.",
+    soonVideoBooks: "Videolibros",
+    soonVideoBooksDesc: "Mira lecciones complementarias y ediciones visuales.",
+    soonBookClubs: "Clubes de lectura",
+    soonBookClubsDesc: "Lee en compañía y debate con la comunidad.",
+    soonReaderRewards: "Recompensas para lectores",
+    soonReaderRewardsDesc: "Gana ventajas por apoyar a los creadores que te gustan.",
+    soonAiRecs: "Recomendaciones IA",
+    soonAiRecsDesc: "Descubre tu próxima lectura, personalizada a tu gusto.",
+    soonCollector: "Ediciones de coleccionista",
+    soonCollectorDesc:
+      "Colecciona ediciones digitales limitadas y desbloquea contenido premium.",
   },
   book: {
     backToReaderchain: "← Volver a ReaderChain",

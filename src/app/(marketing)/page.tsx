@@ -4,7 +4,6 @@ import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
 import { ReaderBackground } from "@/components/reader-background";
-import { agents, previewAgents } from "@/lib/agents";
 import { listPublishedBooks } from "@/lib/data/books";
 import { organizationJsonLd, websiteJsonLd, jsonLdScript } from "@/lib/seo";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -25,14 +24,25 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const dynamic = "force-dynamic";
 
-const agentCards = [
-  ...agents.map((a) => ({ id: a.id, name: a.name, description: a.description })),
-  ...previewAgents.map((a) => ({ id: a.id, name: a.name, description: a.description })),
-];
-
 export default async function Home() {
   const { dict } = await getDictionary();
   const t = dict.home;
+  // Localized marketing copy — never hardcode English agent blurbs on the landing page.
+  const agentCards = [
+    { id: "copy", name: t.agentCopyName, description: t.agentCopyDesc },
+    { id: "launch", name: t.agentLaunchName, description: t.agentLaunchDesc },
+    {
+      id: "community",
+      name: t.agentCommunityName,
+      description: t.agentCommunityDesc,
+    },
+    { id: "pricing", name: t.agentPricingName, description: t.agentPricingDesc },
+    {
+      id: "opportunity",
+      name: t.agentOpportunityName,
+      description: t.agentOpportunityDesc,
+    },
+  ];
   const steps = [
     { n: "1", t: t.step1t, d: t.step1d },
     { n: "2", t: t.step2t, d: t.step2d },

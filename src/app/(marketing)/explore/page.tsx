@@ -23,25 +23,25 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 export const dynamic = "force-dynamic";
 
-const comingSoon = [
-  { t: "Audiobooks", d: "Listen to verified books from independent authors." },
-  { t: "Video Books", d: "Watch companion lessons and visual editions." },
-  { t: "Book Clubs", d: "Read together and discuss with the community." },
-  { t: "Reader Rewards", d: "Earn perks for supporting the creators you love." },
-  { t: "AI Recommendations", d: "Discover your next read, personalized to your taste." },
-  { t: "Collector Editions", d: "Collect limited digital editions and unlock premium content." },
-];
-
 export default async function ExplorePage() {
   const { dict } = await getDictionary();
   const t = dict.explore;
   const books = await listPublishedBooks();
   const featured = books.filter((b) => b.proofVerified).slice(0, 4);
 
+  const comingSoon = [
+    { t: t.soonAudiobooks, d: t.soonAudiobooksDesc },
+    { t: t.soonVideoBooks, d: t.soonVideoBooksDesc },
+    { t: t.soonBookClubs, d: t.soonBookClubsDesc },
+    { t: t.soonReaderRewards, d: t.soonReaderRewardsDesc },
+    { t: t.soonAiRecs, d: t.soonAiRecsDesc },
+    { t: t.soonCollector, d: t.soonCollectorDesc },
+  ];
+
   const collectionJsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "ReaderChain — Discover Verified Books",
+    name: t.metaTitle,
     url: absoluteUrl("/explore"),
     mainEntity: {
       "@type": "ItemList",
@@ -62,10 +62,8 @@ export default async function ExplorePage() {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionJsonLd) }}
       />
-      {/* Ambient page background */}
       <ReaderBackground />
 
-      {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
         <div
           aria-hidden
@@ -88,7 +86,6 @@ export default async function ExplorePage() {
       </section>
 
       {books.length === 0 ? (
-        /* Empty state */
         <section className="mx-auto max-w-6xl px-4 py-20">
           <Card className="mx-auto max-w-lg text-center">
             <CardTitle>{t.emptyTitle}</CardTitle>
@@ -100,7 +97,6 @@ export default async function ExplorePage() {
         </section>
       ) : (
         <>
-          {/* Featured verified books */}
           {featured.length > 0 ? (
             <section className="mx-auto max-w-6xl px-4 py-14">
               <div className="flex items-center gap-3">
@@ -116,11 +112,12 @@ export default async function ExplorePage() {
             </section>
           ) : null}
 
-          {/* Full catalog */}
           <section className="mx-auto max-w-6xl px-4 pb-16">
             <h2 className="text-2xl font-semibold">{t.allBooks}</h2>
             <p className="mt-1 text-muted">
-              {books.length} verified book{books.length === 1 ? "" : "s"} available.
+              {books.length === 1
+                ? t.booksAvailableOne
+                : t.booksAvailable.replace("{count}", String(books.length))}
             </p>
             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {books.map((b) => (
@@ -131,7 +128,6 @@ export default async function ExplorePage() {
         </>
       )}
 
-      {/* Coming soon reader features */}
       <section className="border-t border-border bg-surface/40">
         <div className="mx-auto max-w-6xl px-4 py-16">
           <h2 className="text-2xl font-semibold">{t.comingSoonTitle}</h2>
@@ -141,7 +137,7 @@ export default async function ExplorePage() {
               <Card key={f.t}>
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle>{f.t}</CardTitle>
-                  <StatusBadge tone="muted">Soon</StatusBadge>
+                  <StatusBadge tone="muted">{t.soon}</StatusBadge>
                 </div>
                 <CardDescription>{f.d}</CardDescription>
               </Card>
@@ -150,16 +146,11 @@ export default async function ExplorePage() {
         </div>
       </section>
 
-      {/* Collector Editions positioning */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="ac-glow rounded-2xl border border-border bg-surface p-10 text-center">
-          <StatusBadge tone="accent">Coming soon</StatusBadge>
-          <h2 className="mt-4 text-2xl font-semibold">Collector Editions</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-muted">
-            Collector Editions are coming soon. Readers will be able to collect limited
-            digital editions, unlock premium content, and support independent authors
-            directly — every edition backed by verified proof-of-authorship.
-          </p>
+          <StatusBadge tone="accent">{t.comingSoonBadge}</StatusBadge>
+          <h2 className="mt-4 text-2xl font-semibold">{t.collectorEditionsTitle}</h2>
+          <p className="mx-auto mt-2 max-w-2xl text-muted">{t.collectorEditionsDesc}</p>
         </div>
       </section>
     </div>
