@@ -505,6 +505,11 @@ const en = {
     contactTitle: "Contact",
     contactDesc: "How to reach AuthorChain for support, privacy, and legal requests.",
     updated: "July 8, 2026",
+    lastUpdatedLabel: "Last updated",
+    legalLabel: "Legal",
+    socialTitle: "Social",
+    supportForm: "support form",
+    discordLabel: "Discord",
   },
 };
 

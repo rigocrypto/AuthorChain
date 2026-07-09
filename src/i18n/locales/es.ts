@@ -494,6 +494,11 @@ const es: Dictionary = {
     contactTitle: "Contacto",
     contactDesc: "Cómo contactar a AuthorChain para soporte, privacidad y asuntos legales.",
     updated: "8 de julio de 2026",
+    lastUpdatedLabel: "Última actualización",
+    legalLabel: "Legal",
+    socialTitle: "Redes",
+    supportForm: "formulario de soporte",
+    discordLabel: "Discord",
   },
 };
 

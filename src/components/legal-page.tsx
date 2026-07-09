@@ -6,11 +6,15 @@ export function LegalPage({
   title,
   description,
   updated,
+  lastUpdatedLabel = "Last updated",
+  legalLabel = "Legal",
   children,
 }: {
   title: string;
   description?: string;
   updated?: string;
+  lastUpdatedLabel?: string;
+  legalLabel?: string;
   children: ReactNode;
 }) {
   return (
@@ -19,7 +23,7 @@ export function LegalPage({
         <Link href="/" className="hover:underline">
           AuthorChain
         </Link>
-        <span className="text-muted"> · Legal</span>
+        <span className="text-muted"> · {legalLabel}</span>
       </p>
       <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
         {title}
@@ -28,7 +32,9 @@ export function LegalPage({
         <p className="mt-3 text-base leading-relaxed text-muted">{description}</p>
       ) : null}
       {updated ? (
-        <p className="mt-2 text-xs text-muted">Last updated: {updated}</p>
+        <p className="mt-2 text-xs text-muted">
+          {lastUpdatedLabel}: {updated}
+        </p>
       ) : null}
       <div className="prose-legal mt-8 space-y-5 text-sm leading-relaxed text-muted sm:text-[15px]">
         {children}
