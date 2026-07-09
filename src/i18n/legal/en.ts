@@ -199,19 +199,20 @@ const en: LegalBundle = {
         title: "1. What cookies are",
         blocks: [
           {
-            p: "Cookies and similar technologies (local storage, pixels) help sites remember preferences, keep you signed in, and understand usage.",
+            p: "Cookies and similar technologies (local storage, pixels) help sites remember preferences, keep you signed in, and understand usage. AuthorChain uses them only where needed to run a secure publishing and reader experience.",
           },
         ],
       },
       {
-        title: "2. How we use them",
+        title: "2. Categories we use",
         blocks: [
           {
             list: [
-              "Essential: authentication sessions (e.g. Privy), security, load balancing, and core app function.",
-              "Preferences: language selection and similar UI choices.",
-              "Analytics (if enabled): aggregate traffic and product improvement — never used to sell personal data.",
-              "Payments: processors may set their own cookies when you complete checkout.",
+              "Essential / session: authentication sessions (e.g. Privy), security, load balancing, and core app function so sign-in and protected routes work.",
+              "Preferences: language selection (locale cookie) and similar UI choices that do not identify you for advertising.",
+              "Referral attribution: when present, a short-lived referral cookie may attribute a checkout to a share link an author created — analytics for that author, not third-party ad retargeting.",
+              "Payments: Stripe (or similar processors) may set their own cookies when you complete checkout; those are governed by the processor’s policies.",
+              "Analytics (if enabled later): aggregate traffic and product improvement only — never sold as personal data.",
             ],
           },
         ],
@@ -220,7 +221,7 @@ const en: LegalBundle = {
         title: "3. Your choices",
         blocks: [
           {
-            p: "You can control cookies in your browser settings. Blocking essential cookies may prevent sign-in or purchases. Where required by law we will request consent for non-essential cookies.",
+            p: "You can control cookies in your browser settings. Blocking essential cookies may prevent sign-in, purchases, or library access. Where required by law we will request consent for non-essential cookies.",
           },
         ],
       },
@@ -228,7 +229,7 @@ const en: LegalBundle = {
         title: "4. More information",
         blocks: [
           {
-            p: "See our [[/privacy|Privacy Policy]] for broader data practices, or [[/contact|contact us]].",
+            p: "See our [[/privacy|Privacy Policy]] for broader data practices, [[/security|Security]] for platform controls, or [[/contact|contact us]].",
           },
         ],
       },
@@ -246,12 +247,20 @@ const en: LegalBundle = {
         ],
       },
       {
+        title: "2. Private manuscript storage",
+        blocks: [
+          {
+            p: "Manuscripts, covers, and related assets are stored in private object storage. They are not written into public blockchain state. Access to full files is mediated by application authorization checks.",
+          },
+        ],
+      },
+      {
         id: "uploads",
-        title: "2. Upload scanning",
+        title: "3. Malware scanning at finalize",
         blocks: [
           {
             list: [
-              "Manuscripts, covers, and previews are scanned for malware before durable storage when scanning is configured.",
+              "When scanning is configured in production, new manuscript/cover/preview uploads are malware-scanned during finalize before durable acceptance.",
               "Infected or unscannable files are rejected with safe user-facing messages — no raw scanner output, internal paths, storage keys, or signed URLs are shown in the UI.",
               "If the scanner is unavailable, new uploads fail closed rather than storing unchecked files.",
             ],
@@ -259,19 +268,20 @@ const en: LegalBundle = {
         ],
       },
       {
-        title: "3. Access control",
+        title: "4. Protected downloads & reader entitlement",
         blocks: [
           {
             list: [
               "Author Studio and reader library routes require authentication.",
-              "Book assets and downloads are authorized per user and purchase entitlement.",
+              "Book downloads and private assets are authorized per user and purchase entitlement.",
+              "Public pages may show covers and intentional previews; they do not open paid manuscripts by default.",
               "Dashboard and private APIs are excluded from search indexing.",
             ],
           },
         ],
       },
       {
-        title: "4. Payments & secrets",
+        title: "5. Payments & secrets",
         blocks: [
           {
             p: "Card payments are handled by Stripe (or similar processors). Secrets and tokens live in environment configuration — never in client bundles or public pages. Webhooks verify signatures before updating state.",
@@ -279,23 +289,23 @@ const en: LegalBundle = {
         ],
       },
       {
-        title: "5. Blockchain proofs",
+        title: "6. SHA-256 proof privacy (what is not on-chain)",
         blocks: [
           {
-            p: "On-chain authorship records use content hashes. They provide public verifiability of a manuscript fingerprint; they do not replace secure private storage of full files.",
+            p: "On-chain authorship records use content hashes (SHA-256 fingerprints) and related proof metadata. That provides public verifiability of a manuscript fingerprint without publishing the full manuscript text to Base. Proof of authorship is not a government copyright registration.",
           },
         ],
       },
       {
-        title: "6. Responsible disclosure",
+        title: "7. Responsible disclosure",
         blocks: [
           {
-            p: "If you believe you found a vulnerability, email {{email}} with a clear description. Please avoid privacy-invasive testing, social engineering, or disruption of production systems.",
+            p: "If you believe you found a vulnerability, email {{email}} with a clear description and “Security” in the subject when possible. Please avoid privacy-invasive testing, social engineering, or disruption of production systems.",
           },
         ],
       },
       {
-        title: "7. Related policies",
+        title: "8. Related policies",
         blocks: [{ policyLinks: true }],
       },
     ],
@@ -307,7 +317,7 @@ const en: LegalBundle = {
         title: "1. Respect for intellectual property",
         blocks: [
           {
-            p: "Authors must only upload and sell works they own or are licensed to distribute. Infringing content is prohibited. See also our [[/acceptable-use|Acceptable Use]] policy.",
+            p: "Authors must only upload and sell works they own or are licensed to distribute. Rights holders remain responsible for the content they publish. Infringing content is prohibited. See also our [[/acceptable-use|Acceptable Use]] policy.",
           },
         ],
       },
@@ -315,7 +325,10 @@ const en: LegalBundle = {
         title: "2. On-chain proof is not copyright registration",
         blocks: [
           {
-            p: "AuthorChain's proof-of-authorship feature records a technical hash of a manuscript (and related transaction metadata) on a public blockchain. It is not a filing with a government copyright office, not legal advice, and not a guarantee of enforceability in any jurisdiction.",
+            p: "AuthorChain's proof-of-authorship feature records a technical SHA-256 hash of a manuscript (and related transaction metadata) on a public blockchain. It is a provenance fingerprint — not a filing with a government copyright office, not legal advice, and not a guarantee of enforceability in any jurisdiction.",
+          },
+          {
+            p: "Authors who need formal copyright registration should follow the process of the relevant copyright office in their country. AuthorChain does not replace that process.",
           },
         ],
       },
@@ -370,7 +383,7 @@ const en: LegalBundle = {
         ],
       },
       {
-        title: "2. Prohibited content",
+        title: "2. Prohibited uploads & content",
         blocks: [
           {
             list: [
@@ -380,20 +393,21 @@ const en: LegalBundle = {
               "Terrorist content, credible threats of violence, or instructions for violent crime.",
               "Illegal goods/services facilitation, fraud schemes, or clear scams.",
               "Non-consensual intimate imagery or doxxing.",
-              "Spam, deceptive metadata, or manipulative SEO/storefront practices.",
+              "Spam, deceptive metadata, fake proof claims, or manipulative SEO/storefront practices.",
             ],
           },
         ],
       },
       {
-        title: "3. Prohibited conduct",
+        title: "3. Prohibited conduct (authors & readers)",
         blocks: [
           {
             list: [
-              "Attempting to bypass authentication, entitlement checks, or malware scanning.",
+              "Attempting to bypass authentication, entitlement checks, malware scanning, or payment flows.",
               "Scraping private libraries, bulk-harvesting personal data, or abusing APIs.",
               "Interfering with other users' access or the integrity of proofs and sales records.",
-              "Misrepresenting government affiliation, licenses, or copyright status.",
+              "Harassing readers or authors, review fraud, or coordinated abuse of share/referral links.",
+              "Misrepresenting government affiliation, licenses, KDP approval, or copyright status.",
             ],
           },
         ],
@@ -402,15 +416,23 @@ const en: LegalBundle = {
         title: "4. Publishing integrity",
         blocks: [
           {
-            p: "Authors should accurately describe books, pricing, and rights. AI-assisted tools may help with marketing copy, but you remain responsible for accuracy and compliance with third-party store rules when you export elsewhere.",
+            p: "Authors should accurately describe books, pricing, and rights. AI-assisted tools may help with marketing copy, but you remain responsible for accuracy and compliance with third-party store rules when you export elsewhere. AuthorChain does not guarantee Amazon KDP or other store acceptance.",
           },
         ],
       },
       {
-        title: "5. Enforcement",
+        title: "5. Enforcement options",
         blocks: [
           {
-            p: "We may investigate reports, remove content, and cooperate with law enforcement when required. Questions: see [[/contact|Contact]].",
+            list: [
+              "Remove or restrict content and storefront visibility.",
+              "Suspend or terminate accounts involved in abuse.",
+              "Block uploads that fail security scanning.",
+              "Cooperate with law enforcement when legally required.",
+            ],
+          },
+          {
+            p: "Questions or reports: see [[/contact|Contact]] and [[/copyright|Copyright & DMCA]].",
           },
         ],
       },
@@ -420,13 +442,18 @@ const en: LegalBundle = {
   contact: {
     sections: [
       {
-        title: "Support & general inquiries",
+        title: "How to reach us",
         blocks: [
           {
-            p: "Email {{email}}. We aim to respond as soon as practical.",
+            p: "Email {{email}}. We aim to respond as soon as practical. Please choose a clear subject so we can route your message.",
           },
+        ],
+      },
+      {
+        title: "Author support & onboarding",
+        blocks: [
           {
-            p: "For privacy requests, legal notices, and copyright reports, use the same email and include enough detail for us to act (see [[/copyright|Copyright & DMCA]]).",
+            p: "Questions about uploading manuscripts, metadata, proof registration, storefront listings, translations, or sales visibility belong here. Include your account email and the book title when relevant — never send private keys or passwords.",
           },
         ],
       },
@@ -434,7 +461,31 @@ const en: LegalBundle = {
         title: "Security reports",
         blocks: [
           {
-            p: 'Suspected vulnerabilities: email {{email}} with "Security" in the subject. Details: [[/security|Security]].',
+            p: 'Suspected vulnerabilities: email {{email}} with "Security" in the subject and a clear technical description. Details on posture: [[/security|Security & Compliance]].',
+          },
+        ],
+      },
+      {
+        title: "Privacy, copyright & legal",
+        blocks: [
+          {
+            p: "Privacy requests, DMCA-style notices, and legal correspondence: use the same email with enough detail for us to act. See [[/privacy|Privacy]], [[/copyright|Copyright & DMCA]], and [[/acceptable-use|Acceptable Use]].",
+          },
+        ],
+      },
+      {
+        title: "Partnerships & media",
+        blocks: [
+          {
+            p: "For partnership, press, or collaboration inquiries, email {{email}} with “Partnership” or “Media” in the subject and a short description of the opportunity.",
+          },
+        ],
+      },
+      {
+        title: "Response expectations",
+        blocks: [
+          {
+            p: "We prioritize security and abuse reports, then active author/reader account issues. Complex legal notices may take longer. This is not an emergency services channel.",
           },
         ],
       },

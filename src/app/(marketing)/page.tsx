@@ -23,6 +23,7 @@ function ContentGrid({
 }: {
   items: { t: string; d: string }[];
 }) {
+  // Non-heading labels keep the homepage heading outline lean (one H1, H2 sections).
   return (
     <div className="mt-6 grid gap-4 sm:grid-cols-2">
       {items.map((item) => (
@@ -30,7 +31,7 @@ function ContentGrid({
           key={item.t}
           className="rounded-xl border border-border bg-surface p-5"
         >
-          <h3 className="font-medium text-foreground">{item.t}</h3>
+          <p className="font-medium text-foreground">{item.t}</p>
           <p className="mt-2 text-sm leading-relaxed text-muted">{item.d}</p>
         </div>
       ))}
@@ -230,7 +231,7 @@ export default async function Home() {
               <div className="grid h-9 w-9 place-items-center rounded-lg bg-surface-2 font-mono text-accent">
                 {s.n}
               </div>
-              <h3 className="mt-3 font-medium text-foreground">{s.t}</h3>
+              <p className="mt-3 font-medium text-foreground">{s.t}</p>
               <p className="mt-1 text-sm text-muted">{s.d}</p>
             </div>
           ))}
@@ -258,7 +259,7 @@ export default async function Home() {
         </div>
 
         <div className="mt-12">
-          <h3 className="text-xl font-semibold text-foreground">{t.proofHowTitle}</h3>
+          <p className="text-xl font-semibold text-foreground">{t.proofHowTitle}</p>
           <p className="mt-2 max-w-3xl text-muted">{t.proofHowLead}</p>
           <ContentGrid
             items={[
@@ -319,16 +320,16 @@ export default async function Home() {
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {agentCards.map((a) => (
             <Card key={a.id}>
-              <CardTitle>{a.name}</CardTitle>
+              <CardTitle as="div">{a.name}</CardTitle>
               <CardDescription>{a.description}</CardDescription>
             </Card>
           ))}
         </div>
 
         <div className="mt-12 rounded-2xl border border-border bg-surface p-6 sm:p-8">
-          <h3 className="text-xl font-semibold text-foreground">
+          <p className="text-xl font-semibold text-foreground">
             {t.aiWorkflowTitle}
-          </h3>
+          </p>
           <p className="mt-2 max-w-3xl text-muted">{t.aiWorkflowLead}</p>
           <ContentGrid
             items={[
@@ -405,9 +406,7 @@ export default async function Home() {
                 key={q}
                 className="rounded-xl border border-border bg-surface p-5"
               >
-                <dt className="font-medium text-foreground">
-                  <h3 className="text-base font-medium">{q}</h3>
-                </dt>
+                <dt className="text-base font-medium text-foreground">{q}</dt>
                 <dd className="mt-2 text-sm leading-relaxed text-muted">{a}</dd>
               </div>
             ))}
@@ -420,14 +419,14 @@ export default async function Home() {
         <div className="grid gap-6 lg:grid-cols-2">
           <Card>
             <StatusBadge tone="muted">{t.collectorReaderBadge}</StatusBadge>
-            <CardTitle>
+            <CardTitle as="div">
               <span className="mt-3 block">{t.collectorReaderTitle}</span>
             </CardTitle>
             <CardDescription>{t.collectorReaderDesc}</CardDescription>
           </Card>
           <Card>
             <StatusBadge tone="muted">{t.collectorAuthorBadge}</StatusBadge>
-            <CardTitle>
+            <CardTitle as="div">
               <span className="mt-3 block">{t.collectorAuthorTitle}</span>
             </CardTitle>
             <CardDescription>{t.collectorAuthorDesc}</CardDescription>

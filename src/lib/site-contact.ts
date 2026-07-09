@@ -29,6 +29,10 @@ function normalizePublicUrl(raw: string): string | null {
   try {
     const u = new URL(input);
     if (u.protocol !== "https:" && u.protocol !== "http:") return null;
+    // Reject bare hostnames like "https://rigocrypto" (no TLD) — common handle
+    // mistake that produces broken external links in audits.
+    const host = u.hostname;
+    if (host !== "localhost" && !host.includes(".")) return null;
     // Drop common share/tracking params
     u.searchParams.delete("si");
     u.searchParams.delete("utm_source");

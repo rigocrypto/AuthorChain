@@ -40,7 +40,7 @@ const it: Dictionary = {
   home: {
     metaTitle: "AuthorChain | Editoria Web3 per autori indipendenti",
     metaDescription:
-      "AuthorChain aiuta gli autori indipendenti a registrare la prova di paternità on-chain, preparare manoscritti pronti per la pubblicazione, vendere con Stripe e consegnare libri verificati ai lettori.",
+      "AuthorChain aiuta autori indipendenti a provare la paternità on-chain, vendere con Stripe e consegnare libri verificati.",
     badge: "Prova di paternità · Verificato sulla catena · Creato per autori indipendenti",
     heroTitle: "Pubblica. Possiedi. Guadagna. Cresci.",
     heroSubtitle:
@@ -118,7 +118,7 @@ const it: Dictionary = {
     aiWorkflow3t: "Solo posizionamento publish-ready",
     aiWorkflow3d: "AuthorChain aiuta a preparare e vendere un’esperienza di manoscritto pronto per la pubblicazione. Non garantisce l’accettazione su Amazon KDP, Apple Books o altri store.",
     aiWorkflowNote: "Non promettiamo di aggirare detector IA, “passare filtri” o certificare qualità editoriale. Qui IA significa strumenti opzionali di produttività nello Studio.",
-    securityTitle: "Sicurezza, privacy e postura di conformità",
+    securityTitle: "Sicurezza e conformità per l'editoria AuthorChain",
     securityLead: "Uno stack di editoria blockchain richiede ancora sicurezza di prodotto: storage privato, download autorizzati e linguaggio preciso su cosa c’è on-chain.",
     security1t: "Storage privato del manoscritto",
     security1d: "Manoscritti e asset restano in object storage privato, non nello stato pubblico della chain.",
@@ -219,6 +219,37 @@ const it: Dictionary = {
     soonCollector: "Edizioni da collezione",
     soonCollectorDesc:
       "Colleziona edizioni digitali limitate e sblocca contenuti premium.",
+    aboutTitle: "A catalog built for verified independent publishing",
+    aboutLead:
+      "ReaderChain is the public discovery surface of AuthorChain — a Web3 publishing platform where independent authors can prove manuscript provenance on-chain, sell directly, and deliver books through a protected library.",
+    aboutP1:
+      "Every listing you open here is a public book page: marketing details, optional previews, and purchase options when the author has enabled sales. Full manuscript access is not open by default; it is delivered after a successful purchase through reader entitlement.",
+    verifiedTitle: "What “verified books” means here",
+    verifiedLead:
+      "When a book shows verified proof of authorship, AuthorChain has registered a SHA-256 fingerprint of the manuscript (and related proof metadata) via the on-chain registry. That is technical provenance — not a government copyright certificate.",
+    verifiedP1:
+      "Only the hash goes on-chain. The private manuscript file stays in protected storage. Readers still evaluate the book’s content, description, and previews as they would anywhere else; the badge adds a transparent fingerprint record authors can point to.",
+    accessTitle: "How reader access works",
+    accessLead:
+      "Discovery is open. Delivery of paid digital manuscripts is gated.",
+    access1t: "Browse and preview",
+    access1d:
+      "Explore covers, descriptions, and any preview the author published. Previews are intentional marketing assets — not the full paid file.",
+    access2t: "Buy with checkout",
+    access2d:
+      "When Stripe is configured, readers can purchase with card. Checkout is designed for independent authors selling digital books directly.",
+    access3t: "Open in your library",
+    access3d:
+      "After purchase, the title appears in the signed-in reader’s library. Download and reading routes check entitlement before serving protected files.",
+    protectTitle: "Why ReaderChain protects readers and authors",
+    protectP1:
+      "Authors get a storefront path that pairs sales with optional on-chain proof of authorship. Readers get a clear place to discover independent work without chasing file drops in email inboxes.",
+    protectP2:
+      "AuthorChain Studio is where creators upload manuscripts, prepare metadata, register proof, and manage books. ReaderChain is where the public discovers and buys. Together they form a blockchain publishing workflow focused on independent author publishing and verified book delivery.",
+    protectP3:
+      "Want the deeper explanation of hashes, Base registration, and privacy? Read about proof of authorship on the homepage, then return here to browse the catalog.",
+    linkProof: "How on-chain proof works →",
+    linkHome: "Back to AuthorChain home →",
   },
   book: {
     backToReaderchain: "← Torna a esplorare ReaderChain",
@@ -246,6 +277,11 @@ const it: Dictionary = {
     credits: "Crediti",
     acknowledgments: "Ringraziamenti",
     verifiedProofTitle: "Prova di paternità verificata",
+    verifiedProofBody: "“{title}” has a registered manuscript fingerprint on {network}. Only the SHA-256 hash is on-chain — never the full manuscript file.",
+    viewOnExplorer: "View transaction on BaseScan",
+    seoIntro: "“{title}” by {author} is available on AuthorChain with optional verified authorship proof, secure reader access, and protected delivery after purchase.",
+    h1By: "{title} by {author}",
+
     manuscriptHash: "Hash del manoscritto (SHA-256)",
     transaction: "Transazione",
     printEdition: "Edizione stampata",
@@ -556,28 +592,28 @@ const it: Dictionary = {
       "La scansione di sicurezza è temporaneamente non disponibile. Riprova a breve.",
   },
   legal: {
-    privacyTitle: "Informativa sulla privacy",
+    privacyTitle: "Informativa sulla privacy di AuthorChain",
     privacyDesc:
-      "Come AuthorChain raccoglie, usa e protegge i dati personali e di pubblicazione.",
-    termsTitle: "Termini di servizio",
+      "Come AuthorChain raccoglie, usa e protegge i dati personali e di pubblicazione di autori e lettori.",
+    termsTitle: "Termini di servizio di AuthorChain",
     termsDesc: "Regole d'uso di AuthorChain, ReaderChain e servizi correlati.",
-    cookiesTitle: "Cookie policy",
+    cookiesTitle: "Cookie policy di AuthorChain",
     cookiesDesc: "Come usiamo cookie e tecnologie simili.",
     securityTitle: "Sicurezza",
     securityDesc:
       "Come proteggiamo account, manoscritti, pagamenti e integrità della piattaforma.",
-    copyrightTitle: "Copyright e DMCA",
+    copyrightTitle: "Copyright e DMCA di AuthorChain",
     copyrightDesc:
       "Aspettative sulla proprietà intellettuale e come segnalare violazioni.",
-    acceptableUseTitle: "Uso accettabile",
+    acceptableUseTitle: "Politica di uso accettabile di AuthorChain",
     acceptableUseDesc:
       "Regole di contenuto e condotta per autori, lettori e partner.",
-    contactTitle: "Contatti",
-    contactDesc: "Come contattare AuthorChain per supporto, privacy e questioni legali.",
+    contactTitle: "Contatta il team AuthorChain",
+    contactDesc: "Contatta AuthorChain per supporto autori, segnalazioni di sicurezza, partnership, privacy e legale.",
     updated: "8 luglio 2026",
     lastUpdatedLabel: "Ultimo aggiornamento",
     legalLabel: "Legale",
-    socialTitle: "Social",
+    socialTitle: "Profili social",
     supportForm: "modulo di supporto",
     discordLabel: "Discord",
   },

@@ -535,7 +535,7 @@ export default async function BookDetailPage({
                     <a
                       href={getExplorerAddressUrl(registration.contractAddress)}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="nofollow noopener noreferrer"
                       className="text-accent hover:underline"
                     >
                       {registration.contractAddress}
@@ -550,7 +550,7 @@ export default async function BookDetailPage({
                     <a
                       href={getExplorerTxUrl(registration.transactionHash)}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="nofollow noopener noreferrer"
                       className="text-accent hover:underline"
                     >
                       {registration.transactionHash}

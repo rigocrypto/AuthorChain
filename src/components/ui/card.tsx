@@ -27,8 +27,18 @@ export function Card({
   );
 }
 
-export function CardTitle({ children }: { children: ReactNode }) {
-  return <h3 className="text-base font-semibold text-foreground">{children}</h3>;
+export function CardTitle({
+  children,
+  as = "h3",
+}: {
+  children: ReactNode;
+  /** Use `div` for decorative labels that should not inflate heading counts. */
+  as?: "h3" | "div";
+}) {
+  const Tag = as;
+  return (
+    <Tag className="text-base font-semibold text-foreground">{children}</Tag>
+  );
 }
 
 export function CardDescription({ children }: { children: ReactNode }) {

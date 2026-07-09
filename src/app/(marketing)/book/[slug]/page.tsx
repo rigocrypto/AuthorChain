@@ -193,12 +193,21 @@ export default async function PublicBookPage({
                 <StatusBadge tone="accent">{dict.common.verifiedProof}</StatusBadge>
               ) : null}
             </div>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight">{metadata.title}</h1>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight">
+              {L.h1By
+                .replace("{title}", metadata.title)
+                .replace("{author}", book.authorName)}
+            </h1>
             {metadata.subtitle ? (
               <p className="mt-1 text-lg text-muted">{metadata.subtitle}</p>
             ) : null}
             <p className="mt-1 text-sm text-muted">
               {L.by} {book.authorName}
+            </p>
+            <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted">
+              {L.seoIntro
+                .replace("{title}", metadata.title)
+                .replace("{author}", book.authorName)}
             </p>
           </div>
 
@@ -322,9 +331,9 @@ export default async function PublicBookPage({
                 <div className="min-w-0 flex-1">
                   <h2 className="font-semibold">{L.verifiedProofTitle}</h2>
                   <p className="mt-1 text-sm text-muted">
-                    This book&apos;s manuscript hash is registered on {chain.network} — a
-                    public, tamper-evident record of authorship. Only the hash goes
-                    on-chain, never the content.
+                    {L.verifiedProofBody
+                      .replace("{title}", metadata.title)
+                      .replace("{network}", chain.network)}
                   </p>
                   <dl className="mt-3 space-y-2 text-sm">
                     {book.fileHash ? (
@@ -338,14 +347,15 @@ export default async function PublicBookPage({
                     {book.proofTxHash ? (
                       <div>
                         <dt className="text-muted">{L.transaction}</dt>
-                        <dd className="mt-0.5 break-all font-mono text-xs">
+                        <dd className="mt-0.5 space-y-1 break-all font-mono text-xs">
+                          <span className="block text-foreground">{book.proofTxHash}</span>
                           <a
                             href={getExplorerTxUrl(book.proofTxHash)}
                             target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-accent hover:underline"
+                            rel="nofollow noopener noreferrer"
+                            className="inline-block text-accent hover:underline"
                           >
-                            {book.proofTxHash} ↗
+                            {L.viewOnExplorer} ↗
                           </a>
                         </dd>
                       </div>
@@ -356,7 +366,7 @@ export default async function PublicBookPage({
             </section>
           ) : null}
 
-          {/* Print edition */}
+          {/* Print edition — only expand when configured; keep empty state short + book-specific */}
           <section className="rounded-2xl border border-border bg-surface p-6">
             <div className="flex items-center justify-between gap-2">
               <h2 className="font-semibold">{L.printEdition}</h2>
@@ -401,12 +411,9 @@ export default async function PublicBookPage({
                 <p className="mt-2 text-xs text-muted">{L.printRefNote}</p>
               </>
             ) : (
-              <>
-                <p className="mt-1 max-w-prose text-sm text-muted">{L.printComingDesc}</p>
-                <Button className="mt-4" variant="secondary" disabled>
-                  {L.orderPrint}
-                </Button>
-              </>
+              <p className="mt-1 max-w-prose text-sm text-muted">
+                {L.printComingDesc.replace("{title}", metadata.title)}
+              </p>
             )}
           </section>
         </div>

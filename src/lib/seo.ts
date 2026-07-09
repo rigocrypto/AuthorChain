@@ -14,9 +14,9 @@ export const siteConfig = {
   name: "AuthorChain",
   readerBrand: "ReaderChain",
   url: siteUrl,
-  /** Default meta description — factual, no KDP/approval guarantees. */
+  /** Default meta description — keep ≤ ~155 chars / ~1000px for SERP. */
   description:
-    "AuthorChain helps independent authors register proof-of-authorship on-chain, prepare publish-ready manuscripts, sell directly with Stripe, and deliver verified books to readers.",
+    "AuthorChain helps independent authors prove authorship on-chain, sell directly with Stripe, and deliver verified books to readers.",
   /** Browser tab / OG title when a page does not set its own absolute title. */
   defaultTitle: "AuthorChain | Web3 Publishing for Independent Authors",
   tagline: "Publish. Own. Earn. Grow.",

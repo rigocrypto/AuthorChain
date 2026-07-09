@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -67,7 +68,6 @@ export default async function ExplorePage() {
     <div>
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionJsonLd) }}
       />
       <ReaderBackground src="/background.webp" />
@@ -85,18 +85,28 @@ export default async function ExplorePage() {
             <span className="ac-gradient-text">{t.heroTitle}</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-muted">{t.heroSubtitle}</p>
-          <div className="mt-8 flex items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <ButtonLink href="/reader/library" variant="secondary">
               {t.myLibrary}
+            </ButtonLink>
+            <ButtonLink href="/#proof" variant="ghost">
+              {t.linkProof}
             </ButtonLink>
           </div>
         </div>
       </section>
 
+      {/* SEO depth: what ReaderChain is */}
+      <section className="mx-auto max-w-3xl px-4 py-14">
+        <h2 className="text-2xl font-semibold">{t.aboutTitle}</h2>
+        <p className="mt-3 leading-relaxed text-muted">{t.aboutLead}</p>
+        <p className="mt-4 leading-relaxed text-muted">{t.aboutP1}</p>
+      </section>
+
       {books.length === 0 ? (
-        <section className="mx-auto max-w-6xl px-4 py-20">
+        <section className="mx-auto max-w-6xl px-4 py-12">
           <Card className="mx-auto max-w-lg text-center">
-            <CardTitle>{t.emptyTitle}</CardTitle>
+            <CardTitle as="div">{t.emptyTitle}</CardTitle>
             <CardDescription>{t.emptyDesc}</CardDescription>
             <div className="mt-6 flex justify-center">
               <ButtonLink href="/dashboard">{t.visitStudio}</ButtonLink>
@@ -106,21 +116,21 @@ export default async function ExplorePage() {
       ) : (
         <>
           {featured.length > 0 ? (
-            <section className="mx-auto max-w-6xl px-4 py-14">
+            <section className="mx-auto max-w-6xl px-4 py-10">
               <div className="flex items-center gap-3">
                 <h2 className="text-2xl font-semibold">{t.featuredTitle}</h2>
                 <StatusBadge tone="accent">{t.featuredBadge}</StatusBadge>
               </div>
               <p className="mt-1 text-muted">{t.featuredSubtitle}</p>
               <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                {featured.map((b) => (
-                  <PublishedBookCard key={b.id} book={b} />
+                {featured.map((b, i) => (
+                  <PublishedBookCard key={b.id} book={b} priority={i < 2} />
                 ))}
               </div>
             </section>
           ) : null}
 
-          <section className="mx-auto max-w-6xl px-4 pb-16">
+          <section className="mx-auto max-w-6xl px-4 pb-14">
             <h2 className="text-2xl font-semibold">{t.allBooks}</h2>
             <p className="mt-1 text-muted">
               {books.length === 1
@@ -137,14 +147,61 @@ export default async function ExplorePage() {
       )}
 
       <section className="border-t border-border bg-surface/40">
-        <div className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mx-auto max-w-3xl px-4 py-14">
+          <h2 className="text-2xl font-semibold">{t.verifiedTitle}</h2>
+          <p className="mt-3 leading-relaxed text-muted">{t.verifiedLead}</p>
+          <p className="mt-4 leading-relaxed text-muted">{t.verifiedP1}</p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-14">
+        <h2 className="text-2xl font-semibold">{t.accessTitle}</h2>
+        <p className="mt-2 max-w-3xl text-muted">{t.accessLead}</p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          {(
+            [
+              [t.access1t, t.access1d],
+              [t.access2t, t.access2d],
+              [t.access3t, t.access3d],
+            ] as const
+          ).map(([title, body]) => (
+            <div
+              key={title}
+              className="rounded-xl border border-border bg-surface p-5"
+            >
+              <p className="font-medium text-foreground">{title}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-border bg-surface/30">
+        <div className="mx-auto max-w-3xl px-4 py-14">
+          <h2 className="text-2xl font-semibold">{t.protectTitle}</h2>
+          <p className="mt-3 leading-relaxed text-muted">{t.protectP1}</p>
+          <p className="mt-4 leading-relaxed text-muted">{t.protectP2}</p>
+          <p className="mt-4 leading-relaxed text-muted">{t.protectP3}</p>
+          <div className="mt-6 flex flex-wrap gap-4 text-sm">
+            <Link href="/#proof" className="text-accent hover:underline">
+              {t.linkProof}
+            </Link>
+            <Link href="/" className="text-accent hover:underline">
+              {t.linkHome}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border">
+        <div className="mx-auto max-w-6xl px-4 py-14">
           <h2 className="text-2xl font-semibold">{t.comingSoonTitle}</h2>
           <p className="mt-1 text-muted">{t.comingSoonSubtitle}</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {comingSoon.map((f) => (
               <Card key={f.t}>
                 <div className="flex items-center justify-between gap-2">
-                  <CardTitle>{f.t}</CardTitle>
+                  <CardTitle as="div">{f.t}</CardTitle>
                   <StatusBadge tone="muted">{t.soon}</StatusBadge>
                 </div>
                 <CardDescription>{f.d}</CardDescription>
@@ -154,11 +211,15 @@ export default async function ExplorePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-16">
+      <section className="mx-auto max-w-6xl px-4 py-14">
         <div className="ac-glow rounded-2xl border border-border bg-surface p-10 text-center">
           <StatusBadge tone="accent">{t.comingSoonBadge}</StatusBadge>
-          <h2 className="mt-4 text-2xl font-semibold">{t.collectorEditionsTitle}</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-muted">{t.collectorEditionsDesc}</p>
+          <p className="mt-4 text-2xl font-semibold text-foreground">
+            {t.collectorEditionsTitle}
+          </p>
+          <p className="mx-auto mt-2 max-w-2xl text-muted">
+            {t.collectorEditionsDesc}
+          </p>
         </div>
       </section>
     </div>

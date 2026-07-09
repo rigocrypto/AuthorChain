@@ -5,13 +5,14 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { getLegalDoc } from "@/i18n/legal";
 import { legalChrome } from "@/lib/legal-page-helpers";
 import { siteContact } from "@/lib/site-contact";
+import { absoluteUrl } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { dict } = await getDictionary();
   return {
     title: dict.legal.contactTitle,
     description: dict.legal.contactDesc,
-    alternates: { canonical: "/contact" },
+    alternates: { canonical: absoluteUrl("/contact") },
   };
 }
 

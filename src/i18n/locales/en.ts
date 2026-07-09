@@ -69,7 +69,7 @@ const en = {
   home: {
     metaTitle: "AuthorChain | Web3 Publishing for Independent Authors",
     metaDescription:
-      "AuthorChain helps independent authors register proof-of-authorship on-chain, prepare publish-ready manuscripts, sell directly with Stripe, and deliver verified books to readers.",
+      "AuthorChain helps independent authors prove authorship on-chain, sell directly with Stripe, and deliver verified books to readers.",
     badge: "Proof-of-authorship · Verified on-chain · Built for independent authors",
     heroTitle: "Publish. Own. Earn. Grow.",
     heroSubtitle:
@@ -261,26 +261,26 @@ const en = {
     metaDescription:
       "Browse independent authors' books with on-chain proof of authorship, secure previews, and ReaderChain library access.",
     heroBadge: "ReaderChain · Verified books from independent authors",
-    heroTitle: "Discover verified books",
+    heroTitle: "Discover verified books on ReaderChain",
     heroSubtitle:
       "Buy directly from independent authors, access your secure digital library, and support creators building the future of publishing.",
     myLibrary: "My Library",
-    featuredTitle: "Featured verified books",
+    featuredTitle: "Featured titles with on-chain proof",
     featuredBadge: "✓ Proof of authorship",
-    featuredSubtitle: "Books with an on-chain proof of authorship on Base.",
-    allBooks: "All books",
+    featuredSubtitle: "Independent authors with a registered manuscript fingerprint on Base.",
+    allBooks: "Full catalog",
     emptyTitle: "ReaderChain is getting ready",
     emptyDesc: "New verified books will appear here soon.",
     visitStudio: "Visit AuthorChain Studio",
-    comingSoonTitle: "Coming soon to ReaderChain",
-    comingSoonSubtitle: "The reader experience is just getting started.",
+    comingSoonTitle: "Roadmap for the reader experience",
+    comingSoonSubtitle: "Planned ReaderChain capabilities beyond today's catalog and library.",
     booksAvailable: "{count} verified books available.",
     booksAvailableOne: "1 verified book available.",
     soon: "Soon",
     comingSoonBadge: "Coming soon",
-    collectorEditionsTitle: "Collector Editions",
+    collectorEditionsTitle: "Limited digital collector editions",
     collectorEditionsDesc:
-      "Collector Editions are coming soon. Readers will be able to collect limited digital editions, unlock premium content, and support independent authors directly — every edition backed by verified proof-of-authorship.",
+      "Limited digital editions and premium unlocks are planned for ReaderChain — always backed by verified proof-of-authorship when registered.",
     soonAudiobooks: "Audiobooks",
     soonAudiobooksDesc: "Listen to verified books from independent authors.",
     soonVideoBooks: "Video Books",
@@ -291,9 +291,41 @@ const en = {
     soonReaderRewardsDesc: "Earn perks for supporting the creators you love.",
     soonAiRecs: "AI Recommendations",
     soonAiRecsDesc: "Discover your next read, personalized to your taste.",
-    soonCollector: "Collector Editions",
+    soonCollector: "Collector editions (planned)",
     soonCollectorDesc:
       "Collect limited digital editions and unlock premium content.",
+    // Phase 3: richer explore copy
+    aboutTitle: "A catalog built for verified independent publishing",
+    aboutLead:
+      "ReaderChain is the public discovery surface of AuthorChain — a Web3 publishing platform where independent authors can prove manuscript provenance on-chain, sell directly, and deliver books through a protected library.",
+    aboutP1:
+      "Every listing you open here is a public book page: marketing details, optional previews, and purchase options when the author has enabled sales. Full manuscript access is not open by default; it is delivered after a successful purchase through reader entitlement.",
+    verifiedTitle: "What “verified books” means here",
+    verifiedLead:
+      "When a book shows verified proof of authorship, AuthorChain has registered a SHA-256 fingerprint of the manuscript (and related proof metadata) via the on-chain registry. That is technical provenance — not a government copyright certificate.",
+    verifiedP1:
+      "Only the hash goes on-chain. The private manuscript file stays in protected storage. Readers still evaluate the book’s content, description, and previews as they would anywhere else; the badge adds a transparent fingerprint record authors can point to.",
+    accessTitle: "How reader access works",
+    accessLead:
+      "Discovery is open. Delivery of paid digital manuscripts is gated.",
+    access1t: "Browse and preview",
+    access1d:
+      "Explore covers, descriptions, and any preview the author published. Previews are intentional marketing assets — not the full paid file.",
+    access2t: "Buy with checkout",
+    access2d:
+      "When Stripe is configured, readers can purchase with card. Checkout is designed for independent authors selling digital books directly.",
+    access3t: "Open in your library",
+    access3d:
+      "After purchase, the title appears in the signed-in reader’s library. Download and reading routes check entitlement before serving protected files.",
+    protectTitle: "Why ReaderChain protects readers and authors",
+    protectP1:
+      "Authors get a storefront path that pairs sales with optional on-chain proof of authorship. Readers get a clear place to discover independent work without chasing file drops in email inboxes.",
+    protectP2:
+      "AuthorChain Studio is where creators upload manuscripts, prepare metadata, register proof, and manage books. ReaderChain is where the public discovers and buys. Together they form a blockchain publishing workflow focused on independent author publishing and verified book delivery.",
+    protectP3:
+      "Want the deeper explanation of hashes, Base registration, and privacy? Read about proof of authorship on the homepage, then return here to browse the catalog.",
+    linkProof: "How on-chain proof works →",
+    linkHome: "Back to AuthorChain home →",
   },
   book: {
     backToReaderchain: "← Back to ReaderChain explore",
@@ -321,17 +353,27 @@ const en = {
     credits: "Credits",
     acknowledgments: "Thanks & acknowledgments",
     verifiedProofTitle: "Verified proof of authorship",
+    /** {title} {network} placeholders */
+    verifiedProofBody:
+      "“{title}” has a registered manuscript fingerprint on {network}. Only the SHA-256 hash is on-chain — never the full manuscript file.",
     manuscriptHash: "Manuscript hash (SHA-256)",
     transaction: "Transaction",
+    viewOnExplorer: "View transaction on BaseScan",
     printEdition: "Print edition",
     printAvailable: "Available",
-    printSoon: "Coming soon",
+    printSoon: "Planned",
     printAvailableDesc: "A physical edition of this book is available.",
-    orderPrint: "Order print edition (coming soon)",
+    orderPrint: "Order print edition (online ordering soon)",
     printRefNote:
-      "Print specifications shown for reference. Online print ordering is coming soon.",
+      "Print specs are shown for reference. Online print checkout is not enabled yet.",
+    /** {title} placeholder */
     printComingDesc:
-      "Paperback and hardcover editions with print-ready covers are coming to AuthorChain — order a physical copy delivered to your door, straight from an independent author.",
+      "A print edition for “{title}” is not listed yet. Authors can publish print specs from Studio when ready.",
+    /** {title} {author} placeholders */
+    seoIntro:
+      "“{title}” by {author} is available on AuthorChain with optional verified authorship proof, secure reader access, and protected delivery after purchase.",
+    /** Visible H1 uses title + author; stored title unchanged */
+    h1By: "{title} by {author}",
     notFound: "Book not found",
     // Detail row labels
     format: "Format",
@@ -614,28 +656,30 @@ const en = {
       "Security scanning is temporarily unavailable. Please try again shortly.",
   },
   legal: {
-    privacyTitle: "Privacy policy",
+    privacyTitle: "AuthorChain Privacy Policy",
     privacyDesc:
-      "How AuthorChain collects, uses, and protects personal and publishing data.",
-    termsTitle: "Terms of service",
+      "How AuthorChain collects, uses, and protects personal and publishing data for authors and readers.",
+    termsTitle: "AuthorChain Terms of Service",
     termsDesc: "Rules for using AuthorChain, ReaderChain, and related services.",
-    cookiesTitle: "Cookie policy",
-    cookiesDesc: "How we use cookies and similar technologies.",
-    securityTitle: "Security",
+    cookiesTitle: "AuthorChain Cookie Policy",
+    cookiesDesc:
+      "How AuthorChain uses essential, preference, referral, and payment-related cookies.",
+    securityTitle: "Security & Compliance for AuthorChain Publishing",
     securityDesc:
-      "How we protect accounts, manuscripts, payments, and platform integrity.",
-    copyrightTitle: "Copyright & DMCA",
+      "How AuthorChain protects accounts, manuscripts, payments, uploads, and platform integrity.",
+    copyrightTitle: "AuthorChain Copyright & DMCA Policy",
     copyrightDesc:
-      "Intellectual property expectations and how to report infringement.",
-    acceptableUseTitle: "Acceptable use",
+      "Intellectual property expectations, proof-of-authorship limits, and how to report infringement.",
+    acceptableUseTitle: "AuthorChain Acceptable Use Policy",
     acceptableUseDesc:
-      "Content and conduct rules for authors, readers, and partners.",
-    contactTitle: "Contact",
-    contactDesc: "How to reach AuthorChain for support, privacy, and legal requests.",
+      "Content and conduct rules for authors, readers, and partners on AuthorChain and ReaderChain.",
+    contactTitle: "Contact the AuthorChain Team",
+    contactDesc:
+      "Reach AuthorChain for author support, security reports, partnerships, privacy, and legal requests.",
     updated: "July 8, 2026",
     lastUpdatedLabel: "Last updated",
     legalLabel: "Legal",
-    socialTitle: "Social",
+    socialTitle: "Social profiles",
     supportForm: "support form",
     discordLabel: "Discord",
   },
