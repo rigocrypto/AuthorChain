@@ -99,13 +99,134 @@ const en = {
     step3t: "Publish & sell",
     step3d: "Sell to global readers in fiat or crypto.",
     step4t: "Earn & grow",
-    step4d: "Get paid instantly. Grow your audience.",
+    step4d: "Track sales in Studio and grow your audience.",
     proofBadge: "Proof of authorship",
     proofTitle: "Verified ownership, on-chain",
     proofDesc:
       "Every manuscript is hashed with SHA-256 and its proof is registered on Base — a public, verifiable record that you are the author. Readers see a verified badge; you keep full control of your work.",
     proofCardLabel: "On-chain proof",
     proofCardNote: "shown on every verified book",
+
+    // --- SEO Phase 2: deeper people-first explanations ---
+    proofHowTitle: "How on-chain authorship proof works",
+    proofHowLead:
+      "AuthorChain is a Web3 publishing platform that records manuscript provenance without putting your private file on a public chain.",
+    proofHow1t: "Hash the manuscript",
+    proofHow1d:
+      "When you register proof, AuthorChain computes a SHA-256 fingerprint of the manuscript file you uploaded. The fingerprint identifies that exact file content.",
+    proofHow2t: "Register the proof on Base",
+    proofHow2d:
+      "Only the hash (and related proof metadata) is registered through the AuthorChain registry on Base. Readers and third parties can later verify the fingerprint against a public record.",
+    proofHow3t: "Keep the manuscript private",
+    proofHow3d:
+      "Your full manuscript is not stored on-chain. Private files stay in protected storage and are delivered through authorized reader access after purchase.",
+    proofHow4t: "Show a verified badge",
+    proofHow4d:
+      "Books with a successful registration can display verified on-chain proof of authorship on public pages — a timestamped provenance signal, not a legal title certificate.",
+    proofHowNote:
+      "On-chain proof of authorship is technical evidence of a manuscript fingerprint at a point in time. It is not government copyright registration, trademark filing, or a guarantee of enforceability in court.",
+
+    whyProofTitle: "Why independent authors need proof",
+    whyProofLead:
+      "Independent author publishing moves fast — drafts, AI-assisted edits, collaborators, and public launches. Provenance helps you document what you held, and when.",
+    whyProof1t: "Plagiarism and copy disputes",
+    whyProof1d:
+      "A public hash record gives you a clear fingerprint to compare if someone later claims your work or circulates a near-identical file.",
+    whyProof2t: "Manuscript ownership history",
+    whyProof2d:
+      "Co-authors, editors, and freelancers can change over time. Timestamped proof helps you show which manuscript version you controlled before a release.",
+    whyProof3t: "AI-assisted workflow documentation",
+    whyProof3d:
+      "Many authors use AI-assisted publishing tools for research or copy. Proof still fingerprints the manuscript file you register — you remain responsible for originality and rights.",
+    whyProof4t: "Evidence before public release",
+    whyProof4d:
+      "Registering proof before wide distribution creates an earlier on-chain reference point for manuscript provenance.",
+
+    salesTitle: "Direct sales and verified book delivery",
+    salesLead:
+      "AuthorChain connects checkout to a protected reader library so buyers get access without emailing files around.",
+    sales1t: "Stripe checkout for readers",
+    sales1d:
+      "Readers can buy with card through Stripe when payments are configured. Checkout is designed for independent authors selling digital books directly.",
+    sales2t: "Reader entitlement after purchase",
+    sales2d:
+      "A successful purchase creates reader access for that title. Entitlement — not a public download link — is what unlocks the library experience.",
+    sales3t: "Protected ReaderChain library",
+    sales3d:
+      "Purchased titles appear in the reader’s secured library. Access is tied to the signed-in buyer rather than an open file drop.",
+    sales4t: "Sales visibility for authors",
+    sales4d:
+      "Author Studio surfaces sales activity so you can track orders and reader access. Payout timing and methods depend on your Stripe (or other) payment configuration — AuthorChain does not invent guaranteed instant bank deposits.",
+
+    aiWorkflowTitle: "AI-assisted publishing — with the author in control",
+    aiWorkflowLead:
+      "Studio AI tools can speed blurbs, launch plans, and community copy. They support your workflow; they do not replace your judgment or store rules elsewhere.",
+    aiWorkflow1t: "Assist, don’t replace",
+    aiWorkflow1d:
+      "Agents draft marketing and planning assets from the book details you provide. You review, edit, and decide what goes public.",
+    aiWorkflow2t: "You stay responsible",
+    aiWorkflow2d:
+      "You remain responsible for accuracy, rights, and claims about your book — including any export to other platforms.",
+    aiWorkflow3t: "Publish-ready positioning only",
+    aiWorkflow3d:
+      "AuthorChain helps you prepare and sell a publish-ready manuscript experience. It does not guarantee acceptance by Amazon KDP, Apple Books, or any third-party store.",
+    aiWorkflowNote:
+      "We do not promise to bypass AI detectors, “pass filters,” or certify editorial quality. AI-assisted publishing here means optional productivity tools inside AuthorChain Studio.",
+
+    securityTitle: "Security, privacy, and compliance posture",
+    securityLead:
+      "A blockchain publishing stack still needs ordinary product security: private storage, authorized downloads, and careful wording about what the chain actually holds.",
+    security1t: "Private manuscript storage",
+    security1d:
+      "Manuscripts and assets are kept in private object storage, not pasted into public chain state.",
+    security2t: "Protected downloads",
+    security2d:
+      "Reader download routes check entitlement before serving files. Public pages show covers and previews you choose to expose — not the full paid manuscript by default.",
+    security3t: "Upload malware scanning",
+    security3d:
+      "When scanning is configured in production, new uploads are malware-scanned at finalize before durable acceptance. Infected or unscannable files are rejected with safe user-facing messages.",
+    security4t: "Proof hash privacy",
+    security4d:
+      "The on-chain record is about a hash fingerprint and proof metadata. It is not a publication of your full manuscript text on Base.",
+
+    diffTitle: "What makes AuthorChain different",
+    diffLead:
+      "Most tools solve one slice of the problem. AuthorChain combines on-chain authorship proof, direct sales, and verified book delivery in one independent-author workflow.",
+    diff1t: "Traditional self-publishing portals",
+    diff1d:
+      "Classic portals focus on storefront distribution and print logistics. They rarely give you a public, portable proof hash of the manuscript you held before launch.",
+    diff2t: "Simple cloud file storage",
+    diff2d:
+      "Drive folders keep files private but do not create buyer entitlement, a reader library, or a verifiable authorship fingerprint.",
+    diff3t: "Generic marketplaces",
+    diff3d:
+      "Marketplaces optimize discovery and checkout, but manuscript provenance and author-controlled proof registration are usually outside the product.",
+    diff4t: "AuthorChain’s combination",
+    diff4d:
+      "Upload and prepare a manuscript, register proof of authorship on-chain, sell directly, and deliver through a protected reader library — with AI-assisted tools when you want them.",
+
+    faqTitle: "Frequently asked questions",
+    faqSubtitle:
+      "Straight answers for independent authors evaluating a Web3 publishing platform.",
+    faq1q: "Does AuthorChain store my manuscript on-chain?",
+    faq1a:
+      "No. AuthorChain registers a SHA-256 hash (fingerprint) of the manuscript for proof of authorship. The full manuscript stays in private storage and is not published to the blockchain.",
+    faq2q: "Is AuthorChain the same as copyright registration?",
+    faq2a:
+      "No. On-chain authorship proof is a technical provenance record. It is not a filing with a government copyright office and is not legal advice about your rights in any country.",
+    faq3q: "Can readers access a book without buying it?",
+    faq3a:
+      "Public pages may show marketing details, covers, and optional previews. Full manuscript access for paid titles is delivered through reader entitlement after a successful purchase (or other access you configure).",
+    faq4q: "Can authors translate their book metadata?",
+    faq4a:
+      "Yes. Author Studio supports localized metadata so storefront titles, subtitles, and descriptions can be shown in the reader’s language when you provide translations.",
+    faq5q: "Does AuthorChain guarantee KDP approval?",
+    faq5a:
+      "No. AuthorChain does not guarantee Amazon KDP (or any store) acceptance, ranking, or policy outcomes. We help you prepare and sell on AuthorChain/ReaderChain; third-party stores have their own rules.",
+    faq6q: "How does proof-of-authorship work?",
+    faq6a:
+      "You upload a manuscript, AuthorChain hashes the file with SHA-256, and a successful registration records that proof on Base via the AuthorChain registry. Readers can see a verified badge when proof is registered — without your private file living on-chain.",
+
     agentsTitle: "AI tools in AuthorChain Studio",
     agentsSubtitle: "Smart assistants that write, plan, and grow your book.",
     agentCopyName: "Copy Agent",

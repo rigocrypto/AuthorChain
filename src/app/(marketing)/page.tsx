@@ -13,7 +13,50 @@ import {
   jsonLdScript,
 } from "@/lib/seo";
 import { getDictionary } from "@/i18n/get-dictionary";
+import type { Dictionary } from "@/i18n/locales/en";
 import Link from "next/link";
+
+type HomeDict = Dictionary["home"];
+
+function ContentGrid({
+  items,
+}: {
+  items: { t: string; d: string }[];
+}) {
+  return (
+    <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      {items.map((item) => (
+        <div
+          key={item.t}
+          className="rounded-xl border border-border bg-surface p-5"
+        >
+          <h3 className="font-medium text-foreground">{item.t}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted">{item.d}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function faqJsonLd(t: HomeDict) {
+  const pairs = [
+    [t.faq1q, t.faq1a],
+    [t.faq2q, t.faq2a],
+    [t.faq3q, t.faq3a],
+    [t.faq4q, t.faq4a],
+    [t.faq5q, t.faq5a],
+    [t.faq6q, t.faq6a],
+  ] as const;
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: pairs.map(([q, a]) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const { dict } = await getDictionary();
@@ -79,6 +122,7 @@ export default async function Home() {
             organizationJsonLd(),
             websiteJsonLd(),
             webApplicationJsonLd(),
+            faqJsonLd(t),
           ]),
         }}
       />
@@ -204,13 +248,67 @@ export default async function Home() {
           <div className="ac-glow rounded-2xl border border-border bg-surface p-8">
             <div className="text-sm text-muted">{t.proofCardLabel}</div>
             <div className="mt-2 font-mono text-xs text-accent break-all">
-              sha256 · Base Sepolia · AuthorChainRegistry
+              sha256 · Base · AuthorChainRegistry
             </div>
             <div className="mt-4 flex items-center gap-2">
               <StatusBadge tone="accent">{dict.common.verifiedProof}</StatusBadge>
               <span className="text-sm text-muted">{t.proofCardNote}</span>
             </div>
           </div>
+        </div>
+
+        <div className="mt-12">
+          <h3 className="text-xl font-semibold text-foreground">{t.proofHowTitle}</h3>
+          <p className="mt-2 max-w-3xl text-muted">{t.proofHowLead}</p>
+          <ContentGrid
+            items={[
+              { t: t.proofHow1t, d: t.proofHow1d },
+              { t: t.proofHow2t, d: t.proofHow2d },
+              { t: t.proofHow3t, d: t.proofHow3d },
+              { t: t.proofHow4t, d: t.proofHow4d },
+            ]}
+          />
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+            {t.proofHowNote}
+          </p>
+        </div>
+      </section>
+
+      {/* Why independent authors need proof */}
+      <section
+        id="why-proof"
+        className="border-y border-border bg-surface/30"
+      >
+        <div className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16">
+          <h2 className="text-2xl font-semibold">{t.whyProofTitle}</h2>
+          <p className="mt-2 max-w-3xl text-muted">{t.whyProofLead}</p>
+          <ContentGrid
+            items={[
+              { t: t.whyProof1t, d: t.whyProof1d },
+              { t: t.whyProof2t, d: t.whyProof2d },
+              { t: t.whyProof3t, d: t.whyProof3d },
+              { t: t.whyProof4t, d: t.whyProof4d },
+            ]}
+          />
+        </div>
+      </section>
+
+      {/* Direct sales */}
+      <section id="direct-sales" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16">
+        <h2 className="text-2xl font-semibold">{t.salesTitle}</h2>
+        <p className="mt-2 max-w-3xl text-muted">{t.salesLead}</p>
+        <ContentGrid
+          items={[
+            { t: t.sales1t, d: t.sales1d },
+            { t: t.sales2t, d: t.sales2d },
+            { t: t.sales3t, d: t.sales3d },
+            { t: t.sales4t, d: t.sales4d },
+          ]}
+        />
+        <div className="mt-6">
+          <ButtonLink href="/explore" variant="secondary">
+            {t.exploreReaderchain}
+          </ButtonLink>
         </div>
       </section>
 
@@ -225,6 +323,95 @@ export default async function Home() {
               <CardDescription>{a.description}</CardDescription>
             </Card>
           ))}
+        </div>
+
+        <div className="mt-12 rounded-2xl border border-border bg-surface p-6 sm:p-8">
+          <h3 className="text-xl font-semibold text-foreground">
+            {t.aiWorkflowTitle}
+          </h3>
+          <p className="mt-2 max-w-3xl text-muted">{t.aiWorkflowLead}</p>
+          <ContentGrid
+            items={[
+              { t: t.aiWorkflow1t, d: t.aiWorkflow1d },
+              { t: t.aiWorkflow2t, d: t.aiWorkflow2d },
+              { t: t.aiWorkflow3t, d: t.aiWorkflow3d },
+            ]}
+          />
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted">
+            {t.aiWorkflowNote}
+          </p>
+        </div>
+      </section>
+
+      {/* Security */}
+      <section
+        id="security-posture"
+        className="border-y border-border bg-surface/30"
+      >
+        <div className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16">
+          <h2 className="text-2xl font-semibold">{t.securityTitle}</h2>
+          <p className="mt-2 max-w-3xl text-muted">{t.securityLead}</p>
+          <ContentGrid
+            items={[
+              { t: t.security1t, d: t.security1d },
+              { t: t.security2t, d: t.security2d },
+              { t: t.security3t, d: t.security3d },
+              { t: t.security4t, d: t.security4d },
+            ]}
+          />
+          <p className="mt-6 text-sm">
+            <Link href="/security" className="text-accent hover:underline">
+              {dict.footer.securityPolicy}
+            </Link>
+            {" · "}
+            <Link href="/privacy" className="text-accent hover:underline">
+              {dict.footer.privacy}
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* Differentiators */}
+      <section id="why-authorchain" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16">
+        <h2 className="text-2xl font-semibold">{t.diffTitle}</h2>
+        <p className="mt-2 max-w-3xl text-muted">{t.diffLead}</p>
+        <ContentGrid
+          items={[
+            { t: t.diff1t, d: t.diff1d },
+            { t: t.diff2t, d: t.diff2d },
+            { t: t.diff3t, d: t.diff3d },
+            { t: t.diff4t, d: t.diff4d },
+          ]}
+        />
+      </section>
+
+      {/* FAQ — visible questions only; FAQPage JSON-LD matches these pairs */}
+      <section id="faq" className="border-t border-border bg-surface/30">
+        <div className="mx-auto max-w-3xl scroll-mt-20 px-4 py-16">
+          <h2 className="text-2xl font-semibold">{t.faqTitle}</h2>
+          <p className="mt-2 text-muted">{t.faqSubtitle}</p>
+          <dl className="mt-8 space-y-6">
+            {(
+              [
+                [t.faq1q, t.faq1a],
+                [t.faq2q, t.faq2a],
+                [t.faq3q, t.faq3a],
+                [t.faq4q, t.faq4a],
+                [t.faq5q, t.faq5a],
+                [t.faq6q, t.faq6a],
+              ] as const
+            ).map(([q, a]) => (
+              <div
+                key={q}
+                className="rounded-xl border border-border bg-surface p-5"
+              >
+                <dt className="font-medium text-foreground">
+                  <h3 className="text-base font-medium">{q}</h3>
+                </dt>
+                <dd className="mt-2 text-sm leading-relaxed text-muted">{a}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
