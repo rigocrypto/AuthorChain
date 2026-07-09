@@ -1,5 +1,5 @@
 /**
- * Compliance guardrails for Modern Bestsellers Agent (Phase 1).
+ * Compliance guardrails for Modern Bestsellers Agent.
  *
  * - Cap paste sizes
  * - Reject copy/paraphrase-plot style instructions
@@ -145,4 +145,11 @@ export function runComplianceGuardrails(
   }
 
   return { ok: true, warnings };
+}
+
+/** Product-language alias for input validation. */
+export function validateMarketResearchInputs(
+  input: MarketResearchInput,
+): GuardrailResult {
+  return runComplianceGuardrails(input);
 }

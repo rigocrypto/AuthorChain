@@ -1,8 +1,7 @@
 /**
  * Modern Bestsellers Agent — types for market research inputs and reports.
  *
- * MVP (Phase 1): user-pasted inputs only. No automated marketplace fetch.
- * Full AI report generation is Phase 2.
+ * User-pasted inputs only. No automated marketplace fetch.
  */
 
 export const MODERN_BESTSELLERS_GENRES = [
@@ -49,8 +48,14 @@ export type MarketResearchInput = {
 
 export type ReportRiskLevel = "saturated" | "moderate" | "emerging" | "unknown";
 
+export type ConceptOpportunity = {
+  title: string;
+  angle: string;
+  readerPromise: string;
+};
+
 /**
- * Structured opportunity report shape (filled in Phase 2; scaffold in Phase 1).
+ * Structured opportunity report (Phase 2 full generation + Phase 1 scaffold).
  */
 export type ModernBestsellerOpportunityReport = {
   version: 1;
@@ -61,21 +66,20 @@ export type ModernBestsellerOpportunityReport = {
   commonPraisePatterns: string[];
   commonComplaintPatterns: string[];
   marketGaps: string[];
-  coverTitlePositioningNotes: string[];
-  originalConceptOpportunities: {
-    title: string;
-    angle: string;
-    readerPromise: string;
-  }[];
-  recommendedReaderPromise: string;
-  avoidList: string[];
+  coverTitlePositioning: string[];
+  originalConceptOpportunities: ConceptOpportunity[];
+  readerPromise: string;
   suggestedOutlineDirection: string;
   marketingKeywordIdeas: string[];
-  riskLevel: ReportRiskLevel;
+  saturationRiskLevel: ReportRiskLevel;
+  complianceWarnings: string[];
+  nextSteps: string[];
+  /** Explicit avoid-list (copycat traps, risky claims). */
+  avoidList: string[];
   complianceDisclaimer: string;
-  /** Phase marker so UI can show scaffold vs full report. */
   pipelinePhase: "scaffold" | "full";
   generatedAt: string;
+  providerName?: string;
 };
 
 export const COMPLIANCE_DISCLAIMER =
@@ -87,3 +91,22 @@ export const COMPLIANCE_DISCLAIMER =
 export const COMPLIANCE_UI_COPY =
   "This agent summarizes market patterns from content you provide. " +
   "It does not copy books, guarantee bestseller status, or bypass marketplace policies.";
+
+/** LLM JSON schema target (before normalize/guardrails). */
+export type RawModelReport = {
+  genreSnapshot?: unknown;
+  bestsellerSignalSummary?: unknown;
+  readerExpectations?: unknown;
+  commonPraisePatterns?: unknown;
+  commonComplaintPatterns?: unknown;
+  marketGaps?: unknown;
+  coverTitlePositioning?: unknown;
+  originalConceptOpportunities?: unknown;
+  readerPromise?: unknown;
+  suggestedOutlineDirection?: unknown;
+  marketingKeywordIdeas?: unknown;
+  saturationRiskLevel?: unknown;
+  complianceWarnings?: unknown;
+  nextSteps?: unknown;
+  avoidList?: unknown;
+};

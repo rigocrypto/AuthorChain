@@ -420,6 +420,64 @@ const es: Dictionary = {
     viewAssets: "Ver recursos",
     comingPhase2: "Llega en la Fase 2",
 
+    modernBestsellers: {
+      title: "Agente Modern Bestsellers",
+      backToAgents: "← Todos los agentes",
+      intro:
+        "Investiga tendencias de género, patrones de reseñas y oportunidades de libros originales a partir del contenido que pegas. Primera plantilla: ciencia ficción.",
+      compliance:
+        "Este agente resume patrones de mercado a partir del contenido que aportas. No copia libros, no garantiza ser bestseller ni elude políticas de marketplaces.",
+      genre: "Género",
+      researchModes: "Modos de investigación",
+      sourceUrls: "URLs de origen",
+      sourceUrlsHint: "opcional, solo https — no se descargan automáticamente",
+      marketNotes: "Descripciones / notas de mercado",
+      marketNotesPlaceholder:
+        "Pega blurbs, notas de categoría o descripciones de competidores que hayas recopilado…",
+      reviewExcerpts: "Extractos de reseñas",
+      reviewExcerptsHint: "extractos cortos; solo patrones — no se guarda el texto completo",
+      reviewExcerptsPlaceholder:
+        "Pega fragmentos cortos de reseñas con elogios o quejas…",
+      optionalIdea: "Tu idea de libro (opcional)",
+      optionalIdeaPlaceholder:
+        "Concepto opcional para comparar con la demanda del mercado…",
+      linkBook: "Vincular a un libro existente",
+      linkBookHint: "opcional — se permiten informes independientes",
+      standalone: "— Informe independiente (sin libro) —",
+      generate: "Generar informe de mercado",
+      generating: "Generando informe…",
+      saveDraft: "Guardar borrador de investigación",
+      savingDraft: "Guardando borrador…",
+      providerNote:
+        "La generación usa tu proveedor de IA configurado y solo el texto que pegas. Las URLs son referencias — nunca se extraen.",
+      liveReady: "Proveedor de IA listo",
+      mockBlocked: "Proveedor de IA no configurado (los borradores sí funcionan)",
+      recentReports: "Tus informes recientes",
+      deleteReport: "Eliminar",
+      standaloneLabel: "Informe independiente",
+      linkedLabel: "Libro vinculado",
+      sectionGenreSnapshot: "Instantánea del género",
+      sectionSignals: "Resumen de señales de bestsellers",
+      sectionExpectations: "Expectativas de los lectores",
+      sectionPraise: "Patrones de elogio",
+      sectionComplaints: "Patrones de queja",
+      sectionGaps: "Huecos de mercado",
+      sectionCoverTitle: "Posicionamiento de portada / título",
+      sectionConcepts: "Oportunidades de concepto original",
+      sectionPromise: "Promesa al lector",
+      sectionOutline: "Dirección de esquema sugerida",
+      sectionKeywords: "Ideas de palabras clave",
+      sectionRisk: "Nivel de saturación / riesgo",
+      sectionWarnings: "Avisos de cumplimiento y datos",
+      sectionNextSteps: "Próximos pasos",
+      sectionAvoid: "Lista de evitar",
+      noReports: "Aún no hay informes. Genera o guarda un borrador para empezar.",
+      marketResearch: "Investigación de mercado",
+      cardDescription:
+        "Investiga tendencias de género, patrones de reseñas y oportunidades originales a partir del contenido que pegas. Primera plantilla: ciencia ficción.",
+      phaseBadge: "Activo",
+    },
+
     uploadIntro:
       "Empieza con los detalles de tu libro. Se guarda como borrador y luego continúas en la página del libro para subir el manuscrito, añadir una portada y registrar la prueba en la cadena. Puedes publicarlo desde Mis libros cuando quieras.",
     nextStepManuscript:

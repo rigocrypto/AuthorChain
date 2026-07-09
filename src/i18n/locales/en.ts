@@ -507,6 +507,65 @@ const en = {
     viewAssets: "View assets",
     comingPhase2: "Coming in Phase 2",
 
+    // Modern Bestsellers Agent
+    modernBestsellers: {
+      title: "Modern Bestsellers Agent",
+      backToAgents: "← All agents",
+      intro:
+        "Research genre trends, review patterns, and original book opportunities from content you paste. First template: Science Fiction.",
+      compliance:
+        "This agent summarizes market patterns from content you provide. It does not copy books, guarantee bestseller status, or bypass marketplace policies.",
+      genre: "Genre",
+      researchModes: "Research modes",
+      sourceUrls: "Source URLs",
+      sourceUrlsHint: "optional, https only — not auto-fetched",
+      marketNotes: "Book descriptions / market notes",
+      marketNotesPlaceholder:
+        "Paste bestseller blurbs, category notes, or competitor descriptions you collected yourself…",
+      reviewExcerpts: "Review excerpts",
+      reviewExcerptsHint: "short excerpts; patterns only — full text not stored",
+      reviewExcerptsPlaceholder:
+        "Paste short review snippets that show praise or complaints…",
+      optionalIdea: "Your book idea (optional)",
+      optionalIdeaPlaceholder:
+        "Optional concept to compare against market demand…",
+      linkBook: "Link to existing book",
+      linkBookHint: "optional — standalone reports allowed",
+      standalone: "— Standalone report (no book) —",
+      generate: "Generate market report",
+      generating: "Generating report…",
+      saveDraft: "Save research draft",
+      savingDraft: "Saving draft…",
+      providerNote:
+        "Generation uses your configured AI provider and only the text you paste. URLs are references only — never scraped.",
+      liveReady: "AI provider ready",
+      mockBlocked: "AI provider not configured (drafts still work)",
+      recentReports: "Your recent reports",
+      deleteReport: "Delete",
+      standaloneLabel: "Standalone report",
+      linkedLabel: "Linked book",
+      sectionGenreSnapshot: "Genre snapshot",
+      sectionSignals: "Bestseller signal summary",
+      sectionExpectations: "Reader expectations",
+      sectionPraise: "Common praise patterns",
+      sectionComplaints: "Common complaint patterns",
+      sectionGaps: "Market gaps",
+      sectionCoverTitle: "Cover / title positioning",
+      sectionConcepts: "Original concept opportunities",
+      sectionPromise: "Reader promise",
+      sectionOutline: "Suggested outline direction",
+      sectionKeywords: "Marketing keyword ideas",
+      sectionRisk: "Saturation / risk level",
+      sectionWarnings: "Compliance & data warnings",
+      sectionNextSteps: "Next steps",
+      sectionAvoid: "Avoid-list",
+      noReports: "No reports yet. Generate or save a draft to get started.",
+      marketResearch: "Market research",
+      cardDescription:
+        "Research genre trends, review patterns, and original book opportunities from content you paste. First template: Science Fiction.",
+      phaseBadge: "Live",
+    },
+
     // Upload page
     uploadIntro:
       "Start with your book's details. It saves as a draft, then you'll continue on the book's page to upload the manuscript, add a cover, and register on-chain proof. You can publish it from My Books anytime.",

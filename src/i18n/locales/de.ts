@@ -419,6 +419,64 @@ const de: Dictionary = {
     viewAssets: "Assets ansehen",
     comingPhase2: "Kommt in Phase 2",
 
+    modernBestsellers: {
+      title: "Modern-Bestsellers-Agent",
+      backToAgents: "← Alle Agenten",
+      intro:
+        "Recherchieren Sie Genre-Trends, Review-Muster und originale Buchchancen aus von Ihnen eingefügten Inhalten. Erstes Template: Science-Fiction.",
+      compliance:
+        "Dieser Agent fasst Marktmuster aus Ihren Inhalten zusammen. Er kopiert keine Bücher, garantiert keinen Bestseller-Status und umgeht keine Marketplace-Regeln.",
+      genre: "Genre",
+      researchModes: "Forschungsmodi",
+      sourceUrls: "Quell-URLs",
+      sourceUrlsHint: "optional, nur https — nicht automatisch geladen",
+      marketNotes: "Buchbeschreibungen / Marktnotizen",
+      marketNotesPlaceholder:
+        "Fügen Sie Blurbs, Kategorie-Notizen oder Wettbewerber-Beschreibungen ein…",
+      reviewExcerpts: "Review-Auszüge",
+      reviewExcerptsHint: "kurze Auszüge; nur Muster — Volltext wird nicht gespeichert",
+      reviewExcerptsPlaceholder:
+        "Kurze Review-Schnipsel mit Lob oder Kritik einfügen…",
+      optionalIdea: "Ihre Buchidee (optional)",
+      optionalIdeaPlaceholder:
+        "Optionales Konzept zum Abgleich mit der Marktnachfrage…",
+      linkBook: "Mit bestehendem Buch verknüpfen",
+      linkBookHint: "optional — eigenständige Berichte erlaubt",
+      standalone: "— Eigenständiger Bericht (kein Buch) —",
+      generate: "Marktbericht erzeugen",
+      generating: "Bericht wird erzeugt…",
+      saveDraft: "Forschungsentwurf speichern",
+      savingDraft: "Entwurf wird gespeichert…",
+      providerNote:
+        "Die Erzeugung nutzt Ihren konfigurierten KI-Anbieter und nur eingefügten Text. URLs sind Referenzen — nie gescrapt.",
+      liveReady: "KI-Anbieter bereit",
+      mockBlocked: "KI-Anbieter nicht konfiguriert (Entwürfe funktionieren)",
+      recentReports: "Ihre letzten Berichte",
+      deleteReport: "Löschen",
+      standaloneLabel: "Eigenständiger Bericht",
+      linkedLabel: "Verknüpftes Buch",
+      sectionGenreSnapshot: "Genre-Snapshot",
+      sectionSignals: "Bestseller-Signale",
+      sectionExpectations: "Lesererwartungen",
+      sectionPraise: "Lob-Muster",
+      sectionComplaints: "Kritik-Muster",
+      sectionGaps: "Marktlücken",
+      sectionCoverTitle: "Cover-/Titel-Positionierung",
+      sectionConcepts: "Originale Konzeptchancen",
+      sectionPromise: "Leserversprechen",
+      sectionOutline: "Vorgeschlagene Gliederungsrichtung",
+      sectionKeywords: "Marketing-Keyword-Ideen",
+      sectionRisk: "Sättigung / Risiko",
+      sectionWarnings: "Compliance- und Datenhinweise",
+      sectionNextSteps: "Nächste Schritte",
+      sectionAvoid: "Vermeiden-Liste",
+      noReports: "Noch keine Berichte. Erzeugen oder Entwurf speichern.",
+      marketResearch: "Marktforschung",
+      cardDescription:
+        "Genre-Trends, Review-Muster und originale Chancen aus eingefügten Inhalten. Erstes Template: Science-Fiction.",
+      phaseBadge: "Live",
+    },
+
     uploadIntro:
       "Beginnen Sie mit den Details Ihres Buchs. Es wird als Entwurf gespeichert, dann fahren Sie auf der Buchseite fort, um das Manuskript hochzuladen, ein Cover hinzuzufügen und den On-Chain-Nachweis zu registrieren. Sie können es jederzeit über Meine Bücher veröffentlichen.",
     nextStepManuscript:

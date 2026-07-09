@@ -419,6 +419,64 @@ const fr: Dictionary = {
     viewAssets: "Voir les ressources",
     comingPhase2: "Arrive en Phase 2",
 
+    modernBestsellers: {
+      title: "Agent Modern Bestsellers",
+      backToAgents: "← Tous les agents",
+      intro:
+        "Analysez les tendances de genre, les motifs de critiques et les opportunités de livres originaux à partir du contenu collé. Premier modèle : science-fiction.",
+      compliance:
+        "Cet agent résume des motifs de marché à partir de votre contenu. Il ne copie pas les livres, ne garantit pas un statut best-seller et ne contourne pas les politiques des places de marché.",
+      genre: "Genre",
+      researchModes: "Modes de recherche",
+      sourceUrls: "URL sources",
+      sourceUrlsHint: "optionnel, https uniquement — non récupérées automatiquement",
+      marketNotes: "Descriptions / notes de marché",
+      marketNotesPlaceholder:
+        "Collez des blurbs, notes de catégorie ou descriptions concurrentes que vous avez collectées…",
+      reviewExcerpts: "Extraits d’avis",
+      reviewExcerptsHint: "courts extraits ; motifs uniquement — texte intégral non stocké",
+      reviewExcerptsPlaceholder:
+        "Collez de courts extraits d’avis (éloges ou plaintes)…",
+      optionalIdea: "Votre idée de livre (optionnel)",
+      optionalIdeaPlaceholder:
+        "Concept optionnel à comparer à la demande du marché…",
+      linkBook: "Lier à un livre existant",
+      linkBookHint: "optionnel — rapports autonomes autorisés",
+      standalone: "— Rapport autonome (sans livre) —",
+      generate: "Générer le rapport de marché",
+      generating: "Génération du rapport…",
+      saveDraft: "Enregistrer le brouillon de recherche",
+      savingDraft: "Enregistrement du brouillon…",
+      providerNote:
+        "La génération utilise votre fournisseur d’IA configuré et uniquement le texte collé. Les URL sont des références — jamais scrapées.",
+      liveReady: "Fournisseur d’IA prêt",
+      mockBlocked: "Fournisseur d’IA non configuré (brouillons disponibles)",
+      recentReports: "Vos rapports récents",
+      deleteReport: "Supprimer",
+      standaloneLabel: "Rapport autonome",
+      linkedLabel: "Livre lié",
+      sectionGenreSnapshot: "Instantané du genre",
+      sectionSignals: "Résumé des signaux best-sellers",
+      sectionExpectations: "Attentes des lecteurs",
+      sectionPraise: "Motifs d’éloges",
+      sectionComplaints: "Motifs de plaintes",
+      sectionGaps: "Écarts de marché",
+      sectionCoverTitle: "Positionnement couverture / titre",
+      sectionConcepts: "Opportunités de concepts originaux",
+      sectionPromise: "Promesse au lecteur",
+      sectionOutline: "Direction de plan suggérée",
+      sectionKeywords: "Idées de mots-clés marketing",
+      sectionRisk: "Niveau de saturation / risque",
+      sectionWarnings: "Avertissements conformité et données",
+      sectionNextSteps: "Prochaines étapes",
+      sectionAvoid: "Liste à éviter",
+      noReports: "Pas encore de rapports. Générez ou enregistrez un brouillon.",
+      marketResearch: "Étude de marché",
+      cardDescription:
+        "Analysez tendances, avis et opportunités originales à partir du contenu collé. Premier modèle : science-fiction.",
+      phaseBadge: "Actif",
+    },
+
     uploadIntro:
       "Commencez par les détails de votre livre. Il est enregistré comme brouillon, puis vous continuez sur la page du livre pour téléverser le manuscrit, ajouter une couverture et enregistrer la preuve sur la chaîne. Vous pouvez le publier depuis Mes livres à tout moment.",
     nextStepManuscript:

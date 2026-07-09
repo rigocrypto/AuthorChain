@@ -420,6 +420,64 @@ const arAE: Dictionary = {
     viewAssets: "عرض المواد",
     comingPhase2: "قادم في المرحلة 2",
 
+    modernBestsellers: {
+      title: "وكيل Modern Bestsellers",
+      backToAgents: "← كل الوكلاء",
+      intro:
+        "ابحث عن اتجاهات الأنواع وأنماط المراجعات وفرص الكتب الأصلية من المحتوى الذي تلصقه. القالب الأول: الخيال العلمي.",
+      compliance:
+        "يلخّص هذا الوكيل أنماط السوق من المحتوى الذي تقدّمه. لا ينسخ الكتب ولا يضمن مكانة الأكثر مبيعًا ولا يتجاوز سياسات المنصات.",
+      genre: "النوع الأدبي",
+      researchModes: "أوضاع البحث",
+      sourceUrls: "روابط المصادر",
+      sourceUrlsHint: "اختياري، https فقط — لا تُجلب تلقائيًا",
+      marketNotes: "أوصاف الكتب / ملاحظات السوق",
+      marketNotesPlaceholder:
+        "الصق ملخصات أو ملاحظات فئة أو أوصاف منافسين جمعتها بنفسك…",
+      reviewExcerpts: "مقتطفات المراجعات",
+      reviewExcerptsHint: "مقتطفات قصيرة؛ أنماط فقط — لا يُخزَّن النص الكامل",
+      reviewExcerptsPlaceholder:
+        "الصق مقتطفات قصيرة تُظهر الإشادة أو الشكاوى…",
+      optionalIdea: "فكرة كتابك (اختياري)",
+      optionalIdeaPlaceholder:
+        "مفهوم اختياري لمقارنته بطلب السوق…",
+      linkBook: "ربط بكتاب موجود",
+      linkBookHint: "اختياري — يُسمح بتقارير مستقلة",
+      standalone: "— تقرير مستقل (بدون كتاب) —",
+      generate: "إنشاء تقرير السوق",
+      generating: "جارٍ إنشاء التقرير…",
+      saveDraft: "حفظ مسودة البحث",
+      savingDraft: "جارٍ حفظ المسودة…",
+      providerNote:
+        "يستخدم الإنشاء مزوّد الذكاء الاصطناعي المضبوط لديك والنص الذي تلصقه فقط. الروابط مراجع فقط — دون استخراج.",
+      liveReady: "مزوّد الذكاء الاصطناعي جاهز",
+      mockBlocked: "مزوّد الذكاء الاصطناعي غير مضبوط (المسودات تعمل)",
+      recentReports: "تقاريرك الأخيرة",
+      deleteReport: "حذف",
+      standaloneLabel: "تقرير مستقل",
+      linkedLabel: "كتاب مرتبط",
+      sectionGenreSnapshot: "لمحة عن النوع",
+      sectionSignals: "ملخص إشارات الأكثر مبيعًا",
+      sectionExpectations: "توقعات القرّاء",
+      sectionPraise: "أنماط الإشادة",
+      sectionComplaints: "أنماط الشكاوى",
+      sectionGaps: "فجوات السوق",
+      sectionCoverTitle: "تموضع الغلاف / العنوان",
+      sectionConcepts: "فرص مفاهيم أصلية",
+      sectionPromise: "وعد القارئ",
+      sectionOutline: "اتجاه المخطط المقترح",
+      sectionKeywords: "أفكار كلمات مفتاحية للتسويق",
+      sectionRisk: "مستوى التشبع / المخاطر",
+      sectionWarnings: "تحذيرات الامتثال والبيانات",
+      sectionNextSteps: "الخطوات التالية",
+      sectionAvoid: "قائمة التجنّب",
+      noReports: "لا تقارير بعد. أنشئ تقريرًا أو احفظ مسودة للبدء.",
+      marketResearch: "أبحاث السوق",
+      cardDescription:
+        "اتجاهات الأنواع وأنماط المراجعات وفرص أصلية من المحتوى الملصوق. القالب الأول: الخيال العلمي.",
+      phaseBadge: "مباشر",
+    },
+
     uploadIntro:
       "ابدأ بتفاصيل كتابك. يُحفظ كمسودة، ثم تتابع في صفحة الكتاب لرفع المخطوطة وإضافة غلاف وتسجيل الإثبات على السلسلة. يمكنك نشره من «كتبي» في أي وقت.",
     nextStepManuscript:

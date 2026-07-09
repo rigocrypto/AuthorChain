@@ -1,8 +1,8 @@
 /**
  * Modern Bestsellers Agent — market intelligence for original books.
  *
- * Phase 1: input validation, compliance guardrails, scaffold report, persistence.
- * Phase 2: LLM pipeline (no aggressive marketplace scraping).
+ * Phase 1: draft scaffold + compliance.
+ * Phase 2: live LLM opportunity reports from user-pasted inputs only.
  */
 
 export {
@@ -16,10 +16,12 @@ export {
   type MarketResearchInput,
   type ModernBestsellerOpportunityReport,
   type ReportRiskLevel,
+  type ConceptOpportunity,
 } from "./types";
 
 export {
   runComplianceGuardrails,
+  validateMarketResearchInputs,
   MAX_COMBINED_TEXT_CHARS,
   MAX_REVIEW_EXCERPT_CHARS,
   MAX_MARKET_NOTES_CHARS,
@@ -33,4 +35,13 @@ export {
   buildInputSummary,
 } from "./analyze-market-input";
 
-export { buildScaffoldReport } from "./generate-opportunity-report";
+export {
+  buildScaffoldReport,
+  generateModernBestsellersReport,
+  type GeneratedMarketBundle,
+  type GenerateResult,
+} from "./generate-opportunity-report";
+
+export { buildModernBestsellersPrompt } from "./prompt";
+export { normalizeMarketResearchReport } from "./normalize-report";
+export { enforceModernBestsellersGuardrails } from "./output-guardrails";

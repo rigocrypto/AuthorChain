@@ -419,6 +419,64 @@ const it: Dictionary = {
     viewAssets: "Vedi risorse",
     comingPhase2: "In arrivo nella Fase 2",
 
+    modernBestsellers: {
+      title: "Agente Modern Bestsellers",
+      backToAgents: "← Tutti gli agenti",
+      intro:
+        "Ricerca trend di genere, pattern delle recensioni e opportunità di libri originali dai contenuti che incolli. Primo template: fantascienza.",
+      compliance:
+        "Questo agente riassume pattern di mercato dai contenuti che fornisci. Non copia libri, non garantisce lo status di bestseller e non aggirare le policy dei marketplace.",
+      genre: "Genere",
+      researchModes: "Modalità di ricerca",
+      sourceUrls: "URL di origine",
+      sourceUrlsHint: "opzionale, solo https — non recuperati automaticamente",
+      marketNotes: "Descrizioni / note di mercato",
+      marketNotesPlaceholder:
+        "Incolla blurb, note di categoria o descrizioni di competitor…",
+      reviewExcerpts: "Estratti di recensioni",
+      reviewExcerptsHint: "estratti brevi; solo pattern — testo completo non salvato",
+      reviewExcerptsPlaceholder:
+        "Incolla brevi frammenti di recensioni (lodi o lamentele)…",
+      optionalIdea: "La tua idea di libro (opzionale)",
+      optionalIdeaPlaceholder:
+        "Concetto opzionale da confrontare con la domanda di mercato…",
+      linkBook: "Collega a un libro esistente",
+      linkBookHint: "opzionale — report autonomi consentiti",
+      standalone: "— Report autonomo (nessun libro) —",
+      generate: "Genera report di mercato",
+      generating: "Generazione report…",
+      saveDraft: "Salva bozza di ricerca",
+      savingDraft: "Salvataggio bozza…",
+      providerNote:
+        "La generazione usa il provider AI configurato e solo il testo incollato. Gli URL sono riferimenti — mai scrapati.",
+      liveReady: "Provider AI pronto",
+      mockBlocked: "Provider AI non configurato (le bozze funzionano)",
+      recentReports: "I tuoi report recenti",
+      deleteReport: "Elimina",
+      standaloneLabel: "Report autonomo",
+      linkedLabel: "Libro collegato",
+      sectionGenreSnapshot: "Istantanea del genere",
+      sectionSignals: "Riepilogo segnali bestseller",
+      sectionExpectations: "Aspettative dei lettori",
+      sectionPraise: "Pattern di elogi",
+      sectionComplaints: "Pattern di lamentele",
+      sectionGaps: "Gap di mercato",
+      sectionCoverTitle: "Posizionamento copertina / titolo",
+      sectionConcepts: "Opportunità di concetti originali",
+      sectionPromise: "Promessa al lettore",
+      sectionOutline: "Direzione di outline suggerita",
+      sectionKeywords: "Idee di keyword di marketing",
+      sectionRisk: "Livello di saturazione / rischio",
+      sectionWarnings: "Avvisi di conformità e dati",
+      sectionNextSteps: "Prossimi passi",
+      sectionAvoid: "Lista da evitare",
+      noReports: "Nessun report ancora. Genera o salva una bozza per iniziare.",
+      marketResearch: "Ricerca di mercato",
+      cardDescription:
+        "Trend di genere, pattern di recensioni e opportunità originali dai contenuti incollati. Primo template: fantascienza.",
+      phaseBadge: "Attivo",
+    },
+
     uploadIntro:
       "Inizia con i dettagli del tuo libro. Viene salvato come bozza, poi continui nella pagina del libro per caricare il manoscritto, aggiungere una copertina e registrare la prova sulla catena. Puoi pubblicarlo da I miei libri in qualsiasi momento.",
     nextStepManuscript:

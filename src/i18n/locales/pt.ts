@@ -419,6 +419,64 @@ const pt: Dictionary = {
     viewAssets: "Ver recursos",
     comingPhase2: "Chega na Fase 2",
 
+    modernBestsellers: {
+      title: "Agente Modern Bestsellers",
+      backToAgents: "← Todos os agentes",
+      intro:
+        "Pesquise tendências de gênero, padrões de avaliações e oportunidades de livros originais a partir do conteúdo que você cola. Primeiro modelo: ficção científica.",
+      compliance:
+        "Este agente resume padrões de mercado a partir do conteúdo que você fornece. Não copia livros, não garante status de best-seller nem contorna políticas de marketplaces.",
+      genre: "Gênero",
+      researchModes: "Modos de pesquisa",
+      sourceUrls: "URLs de origem",
+      sourceUrlsHint: "opcional, apenas https — não buscadas automaticamente",
+      marketNotes: "Descrições / notas de mercado",
+      marketNotesPlaceholder:
+        "Cole blurbs, notas de categoria ou descrições de concorrentes…",
+      reviewExcerpts: "Trechos de avaliações",
+      reviewExcerptsHint: "trechos curtos; só padrões — texto completo não é armazenado",
+      reviewExcerptsPlaceholder:
+        "Cole trechos curtos de avaliações com elogios ou reclamações…",
+      optionalIdea: "Sua ideia de livro (opcional)",
+      optionalIdeaPlaceholder:
+        "Conceito opcional para comparar com a demanda do mercado…",
+      linkBook: "Vincular a um livro existente",
+      linkBookHint: "opcional — relatórios avulsos permitidos",
+      standalone: "— Relatório avulso (sem livro) —",
+      generate: "Gerar relatório de mercado",
+      generating: "Gerando relatório…",
+      saveDraft: "Salvar rascunho de pesquisa",
+      savingDraft: "Salvando rascunho…",
+      providerNote:
+        "A geração usa seu provedor de IA configurado e apenas o texto colado. URLs são referências — nunca raspadas.",
+      liveReady: "Provedor de IA pronto",
+      mockBlocked: "Provedor de IA não configurado (rascunhos funcionam)",
+      recentReports: "Seus relatórios recentes",
+      deleteReport: "Excluir",
+      standaloneLabel: "Relatório avulso",
+      linkedLabel: "Livro vinculado",
+      sectionGenreSnapshot: "Instantâneo do gênero",
+      sectionSignals: "Resumo de sinais de best-sellers",
+      sectionExpectations: "Expectativas dos leitores",
+      sectionPraise: "Padrões de elogio",
+      sectionComplaints: "Padrões de reclamação",
+      sectionGaps: "Lacunas de mercado",
+      sectionCoverTitle: "Posicionamento de capa / título",
+      sectionConcepts: "Oportunidades de conceito original",
+      sectionPromise: "Promessa ao leitor",
+      sectionOutline: "Direção de outline sugerida",
+      sectionKeywords: "Ideias de palavras-chave",
+      sectionRisk: "Nível de saturação / risco",
+      sectionWarnings: "Avisos de conformidade e dados",
+      sectionNextSteps: "Próximos passos",
+      sectionAvoid: "Lista de evitar",
+      noReports: "Ainda sem relatórios. Gere ou salve um rascunho para começar.",
+      marketResearch: "Pesquisa de mercado",
+      cardDescription:
+        "Tendências de gênero, padrões de avaliações e oportunidades originais a partir do conteúdo colado. Primeiro modelo: ficção científica.",
+      phaseBadge: "Ativo",
+    },
+
     uploadIntro:
       "Comece com os detalhes do seu livro. Ele é salvo como rascunho e então você continua na página do livro para enviar o manuscrito, adicionar uma capa e registrar a prova na cadeia. Você pode publicá-lo em Meus livros a qualquer momento.",
     nextStepManuscript:

@@ -140,3 +140,39 @@ export async function deleteMarketResearchReportForAuthor(
   await prisma.bookMarketResearchReport.delete({ where: { id: existing.id } });
   return true;
 }
+
+/** Update fields on an author-owned report (e.g. FAILED after generation error). */
+export async function updateMarketResearchReportForAuthor(params: {
+  id: string;
+  authorId: string;
+  status?: MarketResearchReportStatus;
+  inputSummary?: string;
+  trendSignals?: Prisma.InputJsonValue;
+  reviewPatterns?: Prisma.InputJsonValue;
+  opportunityGaps?: Prisma.InputJsonValue;
+  recommendedConcepts?: Prisma.InputJsonValue;
+  warnings?: Prisma.InputJsonValue;
+  report?: Prisma.InputJsonValue;
+}): Promise<MarketResearchReportDTO | null> {
+  const existing = await prisma.bookMarketResearchReport.findFirst({
+    where: { id: params.id, authorId: params.authorId },
+    select: { id: true },
+  });
+  if (!existing) return null;
+
+  const row = await prisma.bookMarketResearchReport.update({
+    where: { id: existing.id },
+    data: {
+      status: params.status,
+      inputSummary: params.inputSummary,
+      trendSignals: params.trendSignals,
+      reviewPatterns: params.reviewPatterns,
+      opportunityGaps: params.opportunityGaps,
+      recommendedConcepts: params.recommendedConcepts,
+      warnings: params.warnings,
+      report: params.report,
+    },
+    include: { book: { select: { title: true } } },
+  });
+  return toDTO(row);
+}
