@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { AgentStudio, type StudioBook } from "@/components/agent-studio";
 import { AgentCard } from "@/components/agent-card";
-import { Card } from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getOptionalAuthor } from "@/lib/auth/session";
 import { listAuthorBooks } from "@/lib/data/books";
 import { listAgentOutputs } from "@/lib/data/agent-outputs";
 import { getAgentMeta, previewAgents, isLiveConfigured } from "@/lib/agents";
+import { COMPLIANCE_UI_COPY } from "@/lib/agents/modern-bestsellers";
 import { getDictionary } from "@/i18n/get-dictionary";
 
 export const metadata: Metadata = { title: "AI agents" };
@@ -46,6 +48,28 @@ export default async function AgentsPage() {
       </div>
 
       <AgentStudio agents={getAgentMeta()} books={studioBooks} />
+
+      {/* Modern Bestsellers Agent — dedicated research surface (Phase 1 scaffold) */}
+      <section className="mt-10">
+        <h2 className="mb-3 text-lg font-semibold">Market research</h2>
+        <Link
+          href="/dashboard/agents/modern-bestsellers"
+          className="block rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+        >
+          <Card interactive>
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <CardTitle>Modern Bestsellers Agent</CardTitle>
+              <StatusBadge tone="accent">Phase 1</StatusBadge>
+            </div>
+            <CardDescription>
+              Research genre trends, review patterns, and original book
+              opportunities from content you paste. First template: Science
+              Fiction.
+            </CardDescription>
+            <p className="mt-3 text-xs text-muted">{COMPLIANCE_UI_COPY}</p>
+          </Card>
+        </Link>
+      </section>
 
       {/* Previous outputs */}
       <section className="mt-10">

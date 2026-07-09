@@ -97,6 +97,15 @@ enum LicenseType {
   STANDARD
 }
 
+// Modern Bestsellers Agent — market research reports (author-private).
+// Additive only. Status DRAFT = saved inputs/scaffold; READY = full report
+// generated (Phase 2+); FAILED = generation error.
+enum MarketResearchReportStatus {
+  DRAFT
+  READY
+  FAILED
+}
+
 // --- Print edition settings (display/metadata only — no real print-on-demand) ---
 
 enum PrintTrimSize {
@@ -153,6 +162,7 @@ model Author {
   blockchainRegistrations BlockchainRegistration[]
   referralLinks           BookReferralLink[]
   printSettings           BookPrintSettings[]
+  marketResearchReports   BookMarketResearchReport[]
 }
 
 model Book {
@@ -208,6 +218,7 @@ model Book {
   referralLinks           BookReferralLink[]
   printSettings           BookPrintSettings?
   translations            BookTranslation[]
+  marketResearchReports   BookMarketResearchReport[]
 
   @@index([authorId])
 }
@@ -448,4 +459,34 @@ model BlockchainRegistration {
   author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([bookId])
+}
+
+/**
+ * Modern Bestsellers Agent — author-private market intelligence reports.
+ * MVP stores structured summaries + user source URL references only.
+ * Does not store bulk copyrighted review text or marketplace credentials.
+ * Optional bookId: standalone research before a book exists is allowed.
+ */
+model BookMarketResearchReport {
+  id                  String                      @id @default(cuid())
+  authorId            String
+  bookId              String?
+  genre               String
+  sourceUrls          Json?
+  inputSummary        String?
+  trendSignals        Json?
+  reviewPatterns      Json?
+  opportunityGaps     Json?
+  recommendedConcepts Json?
+  warnings            Json?
+  report              Json?
+  status              MarketResearchReportStatus  @default(DRAFT)
+  createdAt           DateTime                    @default(now())
+  updatedAt           DateTime                    @updatedAt
+
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  book   Book?  @relation(fields: [bookId], references: [id], onDelete: SetNull)
+
+  @@index([authorId, createdAt])
+  @@index([authorId, bookId])
 }
