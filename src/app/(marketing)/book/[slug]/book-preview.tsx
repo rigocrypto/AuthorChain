@@ -119,8 +119,8 @@ export function BookPreview({
             className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <div className="relative z-10 flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
-            <div className="flex items-center justify-between gap-4 border-b border-border p-4">
+          <div className="relative z-10 flex max-h-[96dvh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
+            <div className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-surface p-4">
               <div className="min-w-0">
                 <h2 className="truncate text-lg font-semibold">{title}</h2>
                 <p className="truncate text-sm text-muted">
@@ -142,7 +142,7 @@ export function BookPreview({
                 <iframe
                   src={`/api/assets/books/${bookId}/preview#view=FitH`}
                   title={`${title} — reader preview`}
-                  className="h-[60vh] w-full border-0"
+                  className="h-[min(68vh,calc(100dvh-16rem))] w-full border-0"
                 />
               ) : !hasBackCover ? (
                 <div className="flex h-[38vh] items-center justify-center p-8 text-center">
@@ -167,7 +167,7 @@ export function BookPreview({
               ) : null}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-4">
+            <div className="sticky bottom-0 z-20 flex flex-wrap items-center justify-between gap-3 border-t border-border bg-surface p-4">
               <span className="text-xs text-muted">{L.freeSampleNote}</span>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setOpen(false)}>
