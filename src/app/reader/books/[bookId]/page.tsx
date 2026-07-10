@@ -7,8 +7,12 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { getCurrentReader } from "@/lib/auth/reader-session";
 import { getReaderBook } from "@/lib/data/reader";
 import { getExplorerTxUrl, getExplorerAddressUrl } from "@/lib/blockchain/registry";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export const metadata: Metadata = { title: "My book" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { dict } = await getDictionary();
+  return { title: dict.reader.metaBookTitle };
+}
 export const dynamic = "force-dynamic";
 
 export default async function ReaderBookPage({
@@ -17,6 +21,7 @@ export default async function ReaderBookPage({
   params: Promise<{ bookId: string }>;
 }) {
   const { bookId } = await params;
+  const { dict } = await getDictionary();
   const reader = await getCurrentReader();
   if (!reader) notFound();
 
@@ -24,6 +29,12 @@ export default async function ReaderBookPage({
   if (!book) notFound();
 
   const isActive = book.accessStatus === "ACTIVE";
+  const localizedAccessStatus =
+    book.accessStatus === "REFUNDED"
+      ? dict.reader.accessRefunded
+      : book.accessStatus === "REVOKED"
+      ? dict.reader.accessRevoked
+      : dict.reader.accessActive;
 
   return (
     <PageShell>
@@ -45,51 +56,52 @@ export default async function ReaderBookPage({
 
         <div>
           <h1 className="text-3xl font-bold">{book.title}</h1>
-          <p className="mt-1 text-sm text-muted">by {book.authorName}</p>
+          <p className="mt-1 text-sm text-muted">
+            {dict.book.by} {book.authorName}
+          </p>
 
           <div className="mt-4 flex items-center gap-2 text-sm">
-            <span className="text-muted">Access:</span>
+            <span className="text-muted">{dict.reader.access}</span>
             {isActive ? (
-              <StatusBadge tone="success">Active</StatusBadge>
+              <StatusBadge tone="success">{dict.reader.accessActive}</StatusBadge>
             ) : (
-              <StatusBadge tone="warning">{book.accessStatus}</StatusBadge>
+              <StatusBadge tone="warning">{localizedAccessStatus}</StatusBadge>
             )}
           </div>
 
           <Card className="mt-6 max-w-sm">
-            <CardTitle>Read your book</CardTitle>
+            <CardTitle>{dict.reader.readTitle}</CardTitle>
             {isActive ? (
               <>
                 <p className="mt-1 text-sm text-muted">
-                  Your download is private to your account.
+                  {dict.reader.readPrivateNote}
                 </p>
                 <div className="mt-4">
                   <ButtonLink href={`/api/reader/books/${book.bookId}/download`}>
-                    Download manuscript
+                    {dict.reader.downloadManuscript}
                   </ButtonLink>
                 </div>
               </>
             ) : (
               <p className="mt-1 text-sm text-warning">
-                Access to this book is {book.accessStatus.toLowerCase()}.
+                {dict.reader.accessState} {localizedAccessStatus.toLowerCase()}.
               </p>
             )}
             <p className="mt-3 text-xs text-muted">
-              In-browser reading arrives in a later phase. Files stay private to
-              your library.
+              {dict.reader.browserReaderLater}
             </p>
           </Card>
 
           {book.registration ? (
             <Card className="mt-4 max-w-sm">
-              <CardTitle>Proof of authorship</CardTitle>
+              <CardTitle>{dict.reader.proofTitle}</CardTitle>
               <p className="mt-1 text-xs text-muted">
-                This book&apos;s authorship is registered on Base Sepolia.
+                {dict.reader.proofDesc}
               </p>
               <dl className="mt-3 space-y-2 text-xs">
                 {book.registration.contractAddress ? (
                   <div>
-                    <dt className="text-muted">Contract</dt>
+                    <dt className="text-muted">{dict.reader.contract}</dt>
                     <dd className="mt-0.5 break-all font-mono">
                       <a
                         href={getExplorerAddressUrl(book.registration.contractAddress)}
@@ -104,7 +116,7 @@ export default async function ReaderBookPage({
                 ) : null}
                 {book.registration.transactionHash ? (
                   <div>
-                    <dt className="text-muted">Transaction</dt>
+                    <dt className="text-muted">{dict.reader.transaction}</dt>
                     <dd className="mt-0.5 break-all font-mono">
                       <a
                         href={getExplorerTxUrl(book.registration.transactionHash)}

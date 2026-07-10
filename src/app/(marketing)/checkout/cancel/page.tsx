@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import { PageShell } from "@/components/page-header";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export const metadata: Metadata = { title: "Payment canceled" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { dict } = await getDictionary();
+  return { title: dict.checkout.cancelMetaTitle };
+}
 export const dynamic = "force-dynamic";
 
 export default async function CheckoutCancelPage({
@@ -11,8 +15,10 @@ export default async function CheckoutCancelPage({
 }: {
   searchParams: Promise<{ book?: string }>;
 }) {
+  const { dict } = await getDictionary();
   const { book } = await searchParams;
   const backHref = book ? `/book/${book}` : "/";
+  const t = dict.checkout;
 
   return (
     <PageShell>
@@ -20,24 +26,16 @@ export default async function CheckoutCancelPage({
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-surface-2 text-2xl text-muted">
           ×
         </div>
-        <h1 className="mt-6 text-3xl font-bold">Payment canceled</h1>
-        <p className="mt-3 text-muted">
-          No charge was made. You can pick up right where you left off whenever
-          you’re ready.
-        </p>
+        <h1 className="mt-6 text-3xl font-bold">{t.cancelTitle}</h1>
+        <p className="mt-3 text-muted">{t.cancelDesc}</p>
 
         <Card className="mt-8 text-left">
-          <CardTitle>Changed your mind?</CardTitle>
-          <CardDescription>
-            Your cart wasn’t saved, but the book is still available. Head back to
-            try again.
-          </CardDescription>
+          <CardTitle>{t.changedMindTitle}</CardTitle>
+          <CardDescription>{t.changedMindDesc}</CardDescription>
         </Card>
 
         <div className="mt-8 flex justify-center gap-3">
-          <ButtonLink href={backHref}>
-            {book ? "Back to book" : "Back to marketplace"}
-          </ButtonLink>
+          <ButtonLink href={backHref}>{book ? t.backToBook : t.backToMarketplace}</ButtonLink>
         </div>
       </div>
     </PageShell>

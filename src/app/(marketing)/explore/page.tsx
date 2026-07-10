@@ -124,7 +124,14 @@ export default async function ExplorePage() {
               <p className="mt-1 text-muted">{t.featuredSubtitle}</p>
               <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {featured.map((b, i) => (
-                  <PublishedBookCard key={b.id} book={b} priority={i < 2} />
+                  <PublishedBookCard
+                    key={b.id}
+                    book={b}
+                    priority={i < 2}
+                    byLabel={dict.book.by}
+                    verifiedProofLabel={dict.common.verifiedProof}
+                    openBookLabel={dict.common.openBook}
+                  />
                 ))}
               </div>
             </section>
@@ -139,7 +146,13 @@ export default async function ExplorePage() {
             </p>
             <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {books.map((b) => (
-                <PublishedBookCard key={b.id} book={b} />
+                <PublishedBookCard
+                  key={b.id}
+                  book={b}
+                  byLabel={dict.book.by}
+                  verifiedProofLabel={dict.common.verifiedProof}
+                  openBookLabel={dict.common.openBook}
+                />
               ))}
             </div>
           </section>

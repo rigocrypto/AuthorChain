@@ -219,37 +219,37 @@ const fr: Dictionary = {
     soonCollector: "Éditions collectionneur",
     soonCollectorDesc:
       "Collectionnez des éditions numériques limitées et débloquez du contenu premium.",
-    aboutTitle: "A catalog built for verified independent publishing",
+    aboutTitle: "Un catalogue conçu pour l’édition indépendante vérifiée",
     aboutLead:
-      "ReaderChain is the public discovery surface of AuthorChain — a Web3 publishing platform where independent authors can prove manuscript provenance on-chain, sell directly, and deliver books through a protected library.",
+      "ReaderChain est la vitrine publique de découverte d’AuthorChain, une plateforme d’édition Web3 où les auteurs indépendants peuvent prouver la provenance de leur manuscrit on-chain, vendre en direct et livrer les livres via une bibliothèque protégée.",
     aboutP1:
-      "Every listing you open here is a public book page: marketing details, optional previews, and purchase options when the author has enabled sales. Full manuscript access is not open by default; it is delivered after a successful purchase through reader entitlement.",
-    verifiedTitle: "What “verified books” means here",
+      "Chaque fiche que vous ouvrez ici est une page publique de livre : détails marketing, aperçus optionnels et options d’achat lorsque l’auteur a activé les ventes. L’accès complet au manuscrit n’est pas ouvert par défaut ; il est accordé après un achat réussi via le droit d’accès lecteur.",
+    verifiedTitle: "Ce que signifie ici « livres vérifiés »",
     verifiedLead:
-      "When a book shows verified proof of authorship, AuthorChain has registered a SHA-256 fingerprint of the manuscript (and related proof metadata) via the on-chain registry. That is technical provenance — not a government copyright certificate.",
+      "Lorsqu’un livre affiche une preuve de paternité vérifiée, AuthorChain a enregistré une empreinte SHA-256 du manuscrit (et des métadonnées de preuve associées) via le registre on-chain. Il s’agit d’une provenance technique, pas d’un certificat de copyright gouvernemental.",
     verifiedP1:
-      "Only the hash goes on-chain. The private manuscript file stays in protected storage. Readers still evaluate the book’s content, description, and previews as they would anywhere else; the badge adds a transparent fingerprint record authors can point to.",
-    accessTitle: "How reader access works",
+      "Seul le hash est inscrit on-chain. Le fichier manuscrit privé reste en stockage protégé. Les lecteurs évaluent toujours le contenu, la description et les aperçus comme ailleurs ; l’insigne ajoute une empreinte transparente que les auteurs peuvent invoquer.",
+    accessTitle: "Comment fonctionne l’accès lecteur",
     accessLead:
-      "Discovery is open. Delivery of paid digital manuscripts is gated.",
-    access1t: "Browse and preview",
+      "La découverte est ouverte. La livraison des manuscrits numériques payants est protégée.",
+    access1t: "Parcourir et prévisualiser",
     access1d:
-      "Explore covers, descriptions, and any preview the author published. Previews are intentional marketing assets — not the full paid file.",
-    access2t: "Buy with checkout",
+      "Explorez les couvertures, descriptions et tout aperçu publié par l’auteur. Les aperçus sont des éléments marketing volontaires, pas le fichier payant complet.",
+    access2t: "Acheter via le checkout",
     access2d:
-      "When Stripe is configured, readers can purchase with card. Checkout is designed for independent authors selling digital books directly.",
-    access3t: "Open in your library",
+      "Lorsque Stripe est configuré, les lecteurs peuvent payer par carte. Le checkout est conçu pour les auteurs indépendants qui vendent des livres numériques en direct.",
+    access3t: "Ouvrir dans votre bibliothèque",
     access3d:
-      "After purchase, the title appears in the signed-in reader’s library. Download and reading routes check entitlement before serving protected files.",
-    protectTitle: "Why ReaderChain protects readers and authors",
+      "Après l’achat, le titre apparaît dans la bibliothèque du lecteur connecté. Les routes de lecture et de téléchargement vérifient le droit d’accès avant de servir les fichiers protégés.",
+    protectTitle: "Pourquoi ReaderChain protège lecteurs et auteurs",
     protectP1:
-      "Authors get a storefront path that pairs sales with optional on-chain proof of authorship. Readers get a clear place to discover independent work without chasing file drops in email inboxes.",
+      "Les auteurs disposent d’un parcours de vitrine qui associe ventes et preuve de paternité on-chain optionnelle. Les lecteurs disposent d’un endroit clair pour découvrir des œuvres indépendantes sans courir après des fichiers envoyés par e-mail.",
     protectP2:
-      "AuthorChain Studio is where creators upload manuscripts, prepare metadata, register proof, and manage books. ReaderChain is where the public discovers and buys. Together they form a blockchain publishing workflow focused on independent author publishing and verified book delivery.",
+      "AuthorChain Studio est l’endroit où les créateurs téléversent les manuscrits, préparent les métadonnées, enregistrent la preuve et gèrent les livres. ReaderChain est l’endroit où le public découvre et achète. Ensemble, ils forment un flux d’édition blockchain centré sur l’édition indépendante et la livraison vérifiée des livres.",
     protectP3:
-      "Want the deeper explanation of hashes, Base registration, and privacy? Read about proof of authorship on the homepage, then return here to browse the catalog.",
-    linkProof: "How on-chain proof works →",
-    linkHome: "Back to AuthorChain home →",
+      "Vous voulez l’explication détaillée des hash, de l’enregistrement sur Base et de la confidentialité ? Lisez la section sur la preuve de paternité sur la page d’accueil, puis revenez ici pour parcourir le catalogue.",
+    linkProof: "Comment fonctionne la preuve on-chain →",
+    linkHome: "Retour à l’accueil AuthorChain →",
   },
   book: {
     backToReaderchain: "← Retour à l'exploration ReaderChain",
@@ -320,11 +320,65 @@ const fr: Dictionary = {
     imprint: "Marque d'éditeur",
     distribution: "Distribution",
     minutes: "min",
+    previewComingSoon: "Aperçu bientôt disponible",
+    previewNotAdded: "L'auteur n'a pas encore ajouté d'aperçu lecteur pour ce livre.",
+    backCoverLabel: "Quatrième de couverture",
+    freeSampleNote: "Extrait gratuit · le livre complet nécessite un achat.",
+  },
+  checkout: {
+    successMetaTitle: "Paiement réussi",
+    successTitle: "Paiement réussi",
+    successDesc:
+      "Merci de soutenir les auteurs indépendants. Votre achat est confirmé et l'auteur a été crédité.",
+    accessGrantedTitle: "Accès accordé",
+    accessGrantedDesc:
+      "Votre livre a été ajouté à votre bibliothèque lecteur. Connectez-vous avec le même e-mail que celui utilisé lors de l'achat pour l'ouvrir et le télécharger à tout moment.",
+    orderReference: "Référence de commande",
+    goToLibrary: "Aller à votre bibliothèque →",
+    backToMarketplace: "Retour au marketplace",
+    cancelMetaTitle: "Paiement annulé",
+    cancelTitle: "Paiement annulé",
+    cancelDesc:
+      "Aucun débit n'a été effectué. Vous pouvez reprendre exactement où vous vous êtes arrêté quand vous le souhaitez.",
+    changedMindTitle: "Vous avez changé d'avis ?",
+    changedMindDesc:
+      "Votre panier n'a pas été enregistré, mais le livre est toujours disponible. Revenez pour réessayer.",
+    backToBook: "Retour au livre",
   },
   share: {
     sharedFrom: "Partagé depuis",
     readerchainBy: "ReaderChain par AuthorChain",
     shareLink: "Lien de partage",
+  },
+  reader: {
+    metaLibraryTitle: "Ma bibliothèque ReaderChain",
+    metaBookTitle: "Mon livre",
+    libraryTitle: "Ma bibliothèque ReaderChain",
+    signedInAs: "Connecté en tant que",
+    purchasedBooksCountOne: "1 livre acheté",
+    purchasedBooksCountMany: "{count} livres achetés",
+    noBooksTitle: "Vous n'avez pas encore de livres dans votre bibliothèque ReaderChain.",
+    noBooksDesc:
+      "L'accès est accordé juste après l'achat d'un livre. Vos achats apparaîtront ici automatiquement.",
+    explore: "Explorer ReaderChain",
+    details: "Détails →",
+    download: "Télécharger",
+    access: "Accès :",
+    accessActive: "Actif",
+    accessRefunded: "Remboursé",
+    accessRevoked: "Révoqué",
+    readTitle: "Lire votre livre",
+    readPrivateNote: "Votre téléchargement est privé à votre compte.",
+    downloadManuscript: "Télécharger le manuscrit",
+    accessState: "L'accès à ce livre est",
+    browserReaderLater:
+      "La lecture dans le navigateur arrive dans une phase ultérieure. Les fichiers restent privés dans votre bibliothèque.",
+    proofTitle: "Preuve de paternité",
+    proofDesc: "La paternité de ce livre est enregistrée sur Base Sepolia.",
+    contract: "Contrat",
+    transaction: "Transaction",
+    areaLabel: "Espace lecteur",
+    role: "Lecteur",
   },
   login: {
     metaTitle: "Connexion",

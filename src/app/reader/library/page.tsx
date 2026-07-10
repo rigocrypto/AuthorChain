@@ -7,31 +7,32 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { ProofSeal } from "@/components/proof-seal";
 import { getCurrentReader } from "@/lib/auth/reader-session";
 import { listReaderLibrary } from "@/lib/data/reader";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export const metadata: Metadata = { title: "My ReaderChain Library" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { dict } = await getDictionary();
+  return { title: dict.reader.metaLibraryTitle };
+}
 export const dynamic = "force-dynamic";
 
-function accessBadge(status: string) {
-  if (status === "ACTIVE") return <StatusBadge tone="success">Active</StatusBadge>;
-  if (status === "REFUNDED") return <StatusBadge tone="muted">Refunded</StatusBadge>;
-  return <StatusBadge tone="warning">Revoked</StatusBadge>;
+function accessBadge(status: string, labels: { active: string; refunded: string; revoked: string }) {
+  if (status === "ACTIVE") return <StatusBadge tone="success">{labels.active}</StatusBadge>;
+  if (status === "REFUNDED") return <StatusBadge tone="muted">{labels.refunded}</StatusBadge>;
+  return <StatusBadge tone="warning">{labels.revoked}</StatusBadge>;
 }
 
 export default async function ReaderLibraryPage() {
+  const { dict } = await getDictionary();
   const reader = await getCurrentReader();
 
   if (!reader) {
     return (
       <PageShell>
         <div className="mx-auto max-w-lg text-center">
-          <h1 className="text-3xl font-bold">My ReaderChain Library</h1>
-          <p className="mt-3 text-muted">
-            You do not have any books in your ReaderChain Library yet. Access is granted
-            right after you buy a book — complete a purchase and you&apos;ll land here
-            automatically with your books ready to read.
-          </p>
+          <h1 className="text-3xl font-bold">{dict.reader.libraryTitle}</h1>
+          <p className="mt-3 text-muted">{dict.reader.noBooksDesc}</p>
           <div className="mt-6">
-            <ButtonLink href="/explore">Explore ReaderChain</ButtonLink>
+            <ButtonLink href="/explore">{dict.reader.explore}</ButtonLink>
           </div>
         </div>
       </PageShell>
@@ -42,21 +43,21 @@ export default async function ReaderLibraryPage() {
 
   return (
     <PageShell>
-      <h1 className="text-2xl font-bold tracking-tight">My ReaderChain Library</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{dict.reader.libraryTitle}</h1>
       <p className="mt-1 text-sm text-muted">
-        Signed in as {reader.email} · {items.length} purchased book
-        {items.length === 1 ? "" : "s"}
+        {dict.reader.signedInAs} {reader.email} ·{" "}
+        {items.length === 1
+          ? dict.reader.purchasedBooksCountOne
+          : dict.reader.purchasedBooksCountMany.replace("{count}", String(items.length))}
       </p>
 
       {items.length === 0 ? (
         <Card className="mt-6 text-center">
-          <p className="text-foreground">
-            You do not have any books in your ReaderChain Library yet.
-          </p>
-          <p className="mt-1 text-sm text-muted">Your purchases will appear here.</p>
+          <p className="text-foreground">{dict.reader.noBooksTitle}</p>
+          <p className="mt-1 text-sm text-muted">{dict.reader.noBooksDesc}</p>
           <div className="mt-4 flex justify-center">
             <ButtonLink href="/explore" variant="secondary">
-              Explore ReaderChain
+              {dict.reader.explore}
             </ButtonLink>
           </div>
         </Card>
@@ -87,11 +88,17 @@ export default async function ReaderLibraryPage() {
                 ) : null}
               </div>
               <CardTitle>{b.title}</CardTitle>
-              <p className="text-sm text-muted">by {b.authorName}</p>
+              <p className="text-sm text-muted">
+                {dict.book.by} {b.authorName}
+              </p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
-                {accessBadge(b.accessStatus)}
+                {accessBadge(b.accessStatus, {
+                  active: dict.reader.accessActive,
+                  refunded: dict.reader.accessRefunded,
+                  revoked: dict.reader.accessRevoked,
+                })}
                 {b.proofVerified ? (
-                  <StatusBadge tone="accent">✓ Verified proof</StatusBadge>
+                  <StatusBadge tone="accent">{dict.common.verifiedProof}</StatusBadge>
                 ) : null}
                 <span>· {b.purchaseDate.slice(0, 10)}</span>
               </div>
@@ -100,14 +107,14 @@ export default async function ReaderLibraryPage() {
                   href={`/reader/books/${b.bookId}`}
                   className="text-sm text-accent hover:underline"
                 >
-                  Details →
+                  {dict.reader.details}
                 </Link>
                 {b.accessStatus === "ACTIVE" ? (
                   <a
                     href={`/api/reader/books/${b.bookId}/download`}
                     className="text-sm font-medium text-accent hover:underline"
                   >
-                    Download
+                    {dict.reader.download}
                   </a>
                 ) : null}
               </div>

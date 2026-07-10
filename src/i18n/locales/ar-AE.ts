@@ -38,6 +38,36 @@ const arAE: Dictionary = {
     startPublishing: "ابدأ النشر",
     viewBookDetails: "عرض تفاصيل الكتاب ←",
   },
+  reader: {
+    metaLibraryTitle: "مكتبة ReaderChain الخاصة بي",
+    metaBookTitle: "كتابي",
+    libraryTitle: "مكتبة ReaderChain الخاصة بي",
+    signedInAs: "تم تسجيل الدخول باسم",
+    purchasedBooksCountOne: "كتاب واحد تم شراؤه",
+    purchasedBooksCountMany: "{count} كتب تم شراؤها",
+    noBooksTitle: "ليس لديك أي كتب في مكتبة ReaderChain حتى الآن.",
+    noBooksDesc:
+      "يتم منح الوصول مباشرة بعد شراء كتاب. ستظهر مشترياتك هنا تلقائيًا.",
+    explore: "استكشف ReaderChain",
+    details: "التفاصيل ←",
+    download: "تنزيل",
+    access: "الوصول:",
+    accessActive: "نشط",
+    accessRefunded: "تم رد المبلغ",
+    accessRevoked: "تم الإلغاء",
+    readTitle: "اقرأ كتابك",
+    readPrivateNote: "تنزيلك خاص بحسابك.",
+    downloadManuscript: "تنزيل المخطوطة",
+    accessState: "وصول هذا الكتاب",
+    browserReaderLater:
+      "القراءة داخل المتصفح ستصل في مرحلة لاحقة. تبقى الملفات خاصة داخل مكتبتك.",
+    proofTitle: "إثبات التأليف",
+    proofDesc: "تأليف هذا الكتاب مسجل على Base Sepolia.",
+    contract: "العقد",
+    transaction: "المعاملة",
+    areaLabel: "منطقة القارئ",
+    role: "قارئ",
+  },
   home: {
     metaTitle: "AuthorChain | نشر Web3 للمؤلفين المستقلين",
     metaDescription:
@@ -220,37 +250,37 @@ const arAE: Dictionary = {
     soonCollector: "إصدارات المقتنيات",
     soonCollectorDesc:
       "اجمع إصدارات رقمية محدودة وافتح محتوى مميزًا.",
-    aboutTitle: "A catalog built for verified independent publishing",
+    aboutTitle: "كتالوج مُصمَّم للنشر المستقل الموثّق",
     aboutLead:
-      "ReaderChain is the public discovery surface of AuthorChain — a Web3 publishing platform where independent authors can prove manuscript provenance on-chain, sell directly, and deliver books through a protected library.",
+      "ReaderChain هي واجهة الاكتشاف العامة لـ AuthorChain، وهي منصة نشر Web3 تُمكّن المؤلفين المستقلين من إثبات مصدر المخطوطة على السلسلة، والبيع مباشرة، وتسليم الكتب عبر مكتبة محمية.",
     aboutP1:
-      "Every listing you open here is a public book page: marketing details, optional previews, and purchase options when the author has enabled sales. Full manuscript access is not open by default; it is delivered after a successful purchase through reader entitlement.",
-    verifiedTitle: "What “verified books” means here",
+      "كل بطاقة كتاب تفتحها هنا هي صفحة عامة: تفاصيل تسويقية، ومعاينات اختيارية، وخيارات شراء عندما يفعّل المؤلف البيع. الوصول الكامل إلى المخطوطة ليس مفتوحًا افتراضيًا؛ بل يُمنح بعد عملية شراء ناجحة عبر صلاحية القارئ.",
+    verifiedTitle: "ماذا يعني «الكتب الموثّقة» هنا",
     verifiedLead:
-      "When a book shows verified proof of authorship, AuthorChain has registered a SHA-256 fingerprint of the manuscript (and related proof metadata) via the on-chain registry. That is technical provenance — not a government copyright certificate.",
+      "عندما يظهر على الكتاب إثبات تأليف موثّق، تكون AuthorChain قد سجّلت بصمة SHA-256 للمخطوطة (ومعلومات الإثبات المرتبطة) عبر السجل على السلسلة. هذا إثبات تقني للأصل، وليس شهادة حقوق نشر حكومية.",
     verifiedP1:
-      "Only the hash goes on-chain. The private manuscript file stays in protected storage. Readers still evaluate the book’s content, description, and previews as they would anywhere else; the badge adds a transparent fingerprint record authors can point to.",
-    accessTitle: "How reader access works",
+      "الذي يُسجَّل على السلسلة هو الهاش فقط. ملف المخطوطة الخاص يبقى في تخزين محمي. ما يزال القارئ يقيّم المحتوى والوصف والمعاينات كأي منصة أخرى؛ وتضيف الشارة سجل بصمة شفافًا يمكن للمؤلف الاستناد إليه.",
+    accessTitle: "كيف يعمل وصول القارئ",
     accessLead:
-      "Discovery is open. Delivery of paid digital manuscripts is gated.",
-    access1t: "Browse and preview",
+      "الاكتشاف مفتوح. تسليم المخطوطات الرقمية المدفوعة محمي.",
+    access1t: "تصفّح وعاين",
     access1d:
-      "Explore covers, descriptions, and any preview the author published. Previews are intentional marketing assets — not the full paid file.",
-    access2t: "Buy with checkout",
+      "استكشف الأغلفة والأوصاف وأي معاينة ينشرها المؤلف. المعاينات أصول تسويقية مقصودة، وليست الملف المدفوع الكامل.",
+    access2t: "اشترِ عبر صفحة الدفع",
     access2d:
-      "When Stripe is configured, readers can purchase with card. Checkout is designed for independent authors selling digital books directly.",
-    access3t: "Open in your library",
+      "عند إعداد Stripe، يمكن للقراء الشراء بالبطاقة. صُممت صفحة الدفع للمؤلفين المستقلين الذين يبيعون الكتب الرقمية مباشرة.",
+    access3t: "افتح في مكتبتك",
     access3d:
-      "After purchase, the title appears in the signed-in reader’s library. Download and reading routes check entitlement before serving protected files.",
-    protectTitle: "Why ReaderChain protects readers and authors",
+      "بعد الشراء، يظهر العنوان في مكتبة القارئ المسجل دخوله. تتحقق مسارات القراءة والتنزيل من الصلاحية قبل تقديم الملفات المحمية.",
+    protectTitle: "لماذا تحمي ReaderChain القرّاء والمؤلفين",
     protectP1:
-      "Authors get a storefront path that pairs sales with optional on-chain proof of authorship. Readers get a clear place to discover independent work without chasing file drops in email inboxes.",
+      "يحصل المؤلفون على مسار عرض يجمع بين المبيعات وإثبات التأليف على السلسلة بشكل اختياري. ويحصل القرّاء على مكان واضح لاكتشاف الأعمال المستقلة دون ملاحقة ملفات مرسلة عبر البريد.",
     protectP2:
-      "AuthorChain Studio is where creators upload manuscripts, prepare metadata, register proof, and manage books. ReaderChain is where the public discovers and buys. Together they form a blockchain publishing workflow focused on independent author publishing and verified book delivery.",
+      "AuthorChain Studio هو المكان الذي يرفع فيه المبدعون المخطوطات، ويجهزون البيانات الوصفية، ويسجلون الإثبات، ويديرون الكتب. أما ReaderChain فهو المكان الذي يكتشف فيه الجمهور ويشتري. معًا يشكلان سير عمل نشر بلوكتشين يركز على النشر المستقل وتسليم الكتب الموثق.",
     protectP3:
-      "Want the deeper explanation of hashes, Base registration, and privacy? Read about proof of authorship on the homepage, then return here to browse the catalog.",
-    linkProof: "How on-chain proof works →",
-    linkHome: "Back to AuthorChain home →",
+      "تريد شرحًا أعمق للهاش والتسجيل على Base والخصوصية؟ اقرأ قسم إثبات التأليف في الصفحة الرئيسية، ثم عد إلى هنا لتصفح الكتالوج.",
+    linkProof: "كيف يعمل إثبات on-chain →",
+    linkHome: "العودة إلى الصفحة الرئيسية لـ AuthorChain →",
   },
   book: {
     backToReaderchain: "→ العودة لاستكشاف ReaderChain",
@@ -321,6 +351,30 @@ const arAE: Dictionary = {
     imprint: "دار النشر",
     distribution: "التوزيع",
     minutes: "دقيقة",
+    previewComingSoon: "المعاينة قريبًا",
+    previewNotAdded: "لم يضف المؤلف معاينة للقارئ لهذا الكتاب بعد.",
+    backCoverLabel: "الغلاف الخلفي",
+    freeSampleNote: "عينة مجانية · الكتاب الكامل يتطلب الشراء.",
+  },
+  checkout: {
+    successMetaTitle: "تم الدفع بنجاح",
+    successTitle: "تم الدفع بنجاح",
+    successDesc:
+      "شكرًا لدعمك المؤلفين المستقلين. تم تأكيد عملية الشراء وتم اعتماد المؤلف.",
+    accessGrantedTitle: "تم منح الوصول",
+    accessGrantedDesc:
+      "تمت إضافة كتابك إلى مكتبة القارئ الخاصة بك. سجّل الدخول بنفس البريد الإلكتروني الذي استخدمته في الشراء لفتحه وتنزيله في أي وقت.",
+    orderReference: "مرجع الطلب",
+    goToLibrary: "اذهب إلى مكتبتك ←",
+    backToMarketplace: "العودة إلى السوق",
+    cancelMetaTitle: "تم إلغاء الدفع",
+    cancelTitle: "تم إلغاء الدفع",
+    cancelDesc:
+      "لم يتم تحصيل أي مبلغ. يمكنك المتابعة من حيث توقفت في أي وقت.",
+    changedMindTitle: "غيّرت رأيك؟",
+    changedMindDesc:
+      "لم يتم حفظ سلة التسوق، لكن الكتاب لا يزال متاحًا. ارجع وحاول مرة أخرى.",
+    backToBook: "العودة إلى الكتاب",
   },
   share: {
     sharedFrom: "تمت المشاركة من",

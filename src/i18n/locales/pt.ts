@@ -37,6 +37,36 @@ const pt: Dictionary = {
     startPublishing: "Começar a publicar",
     viewBookDetails: "Ver detalhes do livro →",
   },
+  reader: {
+    metaLibraryTitle: "Minha biblioteca ReaderChain",
+    metaBookTitle: "Meu livro",
+    libraryTitle: "Minha biblioteca ReaderChain",
+    signedInAs: "Conectado como",
+    purchasedBooksCountOne: "1 livro comprado",
+    purchasedBooksCountMany: "{count} livros comprados",
+    noBooksTitle: "Você ainda não tem livros na sua biblioteca ReaderChain.",
+    noBooksDesc:
+      "O acesso é concedido logo após comprar um livro. Suas compras aparecerão aqui automaticamente.",
+    explore: "Explorar ReaderChain",
+    details: "Detalhes →",
+    download: "Baixar",
+    access: "Acesso:",
+    accessActive: "Ativo",
+    accessRefunded: "Reembolsado",
+    accessRevoked: "Revogado",
+    readTitle: "Leia seu livro",
+    readPrivateNote: "Seu download é privado para sua conta.",
+    downloadManuscript: "Baixar manuscrito",
+    accessState: "O acesso a este livro está",
+    browserReaderLater:
+      "A leitura no navegador chegará em uma fase posterior. Os arquivos permanecem privados na sua biblioteca.",
+    proofTitle: "Prova de autoria",
+    proofDesc: "A autoria deste livro está registrada na Base Sepolia.",
+    contract: "Contrato",
+    transaction: "Transação",
+    areaLabel: "Área do leitor",
+    role: "Leitor",
+  },
   home: {
     metaTitle: "AuthorChain | Publicação Web3 para autores independentes",
     metaDescription:
@@ -219,37 +249,37 @@ const pt: Dictionary = {
     soonCollector: "Edições de colecionador",
     soonCollectorDesc:
       "Colecione edições digitais limitadas e desbloqueie conteúdo premium.",
-    aboutTitle: "A catalog built for verified independent publishing",
+    aboutTitle: "Um catálogo criado para publicação independente verificada",
     aboutLead:
-      "ReaderChain is the public discovery surface of AuthorChain — a Web3 publishing platform where independent authors can prove manuscript provenance on-chain, sell directly, and deliver books through a protected library.",
+      "ReaderChain é a superfície pública de descoberta da AuthorChain, uma plataforma Web3 de publicação onde autores independentes podem comprovar a procedência do manuscrito on-chain, vender diretamente e entregar livros por meio de uma biblioteca protegida.",
     aboutP1:
-      "Every listing you open here is a public book page: marketing details, optional previews, and purchase options when the author has enabled sales. Full manuscript access is not open by default; it is delivered after a successful purchase through reader entitlement.",
-    verifiedTitle: "What “verified books” means here",
+      "Cada listagem que você abre aqui é uma página pública de livro: detalhes de marketing, prévias opcionais e opções de compra quando o autor habilita vendas. O acesso completo ao manuscrito não fica aberto por padrão; ele é entregue após uma compra bem-sucedida por meio da titularidade do leitor.",
+    verifiedTitle: "O que significa “livros verificados” aqui",
     verifiedLead:
-      "When a book shows verified proof of authorship, AuthorChain has registered a SHA-256 fingerprint of the manuscript (and related proof metadata) via the on-chain registry. That is technical provenance — not a government copyright certificate.",
+      "Quando um livro mostra prova de autoria verificada, a AuthorChain registrou uma impressão digital SHA-256 do manuscrito (e metadados de prova relacionados) via o registro on-chain. Isso é procedência técnica, não um certificado governamental de direitos autorais.",
     verifiedP1:
-      "Only the hash goes on-chain. The private manuscript file stays in protected storage. Readers still evaluate the book’s content, description, and previews as they would anywhere else; the badge adds a transparent fingerprint record authors can point to.",
-    accessTitle: "How reader access works",
+      "Somente o hash vai para a blockchain. O arquivo privado do manuscrito permanece em armazenamento protegido. Os leitores continuam avaliando conteúdo, descrição e prévias como em qualquer outro lugar; o selo adiciona um registro de impressão digital transparente ao qual os autores podem recorrer.",
+    accessTitle: "Como funciona o acesso do leitor",
     accessLead:
-      "Discovery is open. Delivery of paid digital manuscripts is gated.",
-    access1t: "Browse and preview",
+      "A descoberta é aberta. A entrega de manuscritos digitais pagos é protegida.",
+    access1t: "Navegar e visualizar prévias",
     access1d:
-      "Explore covers, descriptions, and any preview the author published. Previews are intentional marketing assets — not the full paid file.",
-    access2t: "Buy with checkout",
+      "Explore capas, descrições e qualquer prévia publicada pelo autor. As prévias são ativos de marketing intencionais, não o arquivo pago completo.",
+    access2t: "Comprar no checkout",
     access2d:
-      "When Stripe is configured, readers can purchase with card. Checkout is designed for independent authors selling digital books directly.",
-    access3t: "Open in your library",
+      "Quando o Stripe está configurado, leitores podem comprar com cartão. O checkout foi projetado para autores independentes venderem livros digitais diretamente.",
+    access3t: "Abrir na sua biblioteca",
     access3d:
-      "After purchase, the title appears in the signed-in reader’s library. Download and reading routes check entitlement before serving protected files.",
-    protectTitle: "Why ReaderChain protects readers and authors",
+      "Após a compra, o título aparece na biblioteca do leitor autenticado. As rotas de download e leitura verificam a titularidade antes de servir arquivos protegidos.",
+    protectTitle: "Por que a ReaderChain protege leitores e autores",
     protectP1:
-      "Authors get a storefront path that pairs sales with optional on-chain proof of authorship. Readers get a clear place to discover independent work without chasing file drops in email inboxes.",
+      "Autores recebem um caminho de vitrine que combina vendas com prova de autoria on-chain opcional. Leitores recebem um lugar claro para descobrir obras independentes sem caçar arquivos em caixas de e-mail.",
     protectP2:
-      "AuthorChain Studio is where creators upload manuscripts, prepare metadata, register proof, and manage books. ReaderChain is where the public discovers and buys. Together they form a blockchain publishing workflow focused on independent author publishing and verified book delivery.",
+      "AuthorChain Studio é onde criadores enviam manuscritos, preparam metadados, registram prova e gerenciam livros. ReaderChain é onde o público descobre e compra. Juntas, elas formam um fluxo de publicação em blockchain focado em autores independentes e entrega verificada de livros.",
     protectP3:
-      "Want the deeper explanation of hashes, Base registration, and privacy? Read about proof of authorship on the homepage, then return here to browse the catalog.",
-    linkProof: "How on-chain proof works →",
-    linkHome: "Back to AuthorChain home →",
+      "Quer uma explicação mais profunda sobre hashes, registro na Base e privacidade? Leia sobre prova de autoria na página inicial e depois volte aqui para explorar o catálogo.",
+    linkProof: "Como funciona a prova on-chain →",
+    linkHome: "Voltar para a página inicial da AuthorChain →",
   },
   book: {
     backToReaderchain: "← Voltar a explorar o ReaderChain",
@@ -320,6 +350,30 @@ const pt: Dictionary = {
     imprint: "Selo editorial",
     distribution: "Distribuição",
     minutes: "min",
+    previewComingSoon: "Prévia em breve",
+    previewNotAdded: "O autor ainda não adicionou uma prévia de leitura para este livro.",
+    backCoverLabel: "Contracapa",
+    freeSampleNote: "Amostra grátis · o livro completo requer compra.",
+  },
+  checkout: {
+    successMetaTitle: "Pagamento realizado",
+    successTitle: "Pagamento realizado",
+    successDesc:
+      "Obrigado por apoiar autores independentes. Sua compra foi confirmada e o autor foi creditado.",
+    accessGrantedTitle: "Acesso concedido",
+    accessGrantedDesc:
+      "Seu livro foi adicionado à sua biblioteca de leitor. Entre com o mesmo e-mail usado na compra para abrir e baixar quando quiser.",
+    orderReference: "Referência do pedido",
+    goToLibrary: "Ir para sua biblioteca →",
+    backToMarketplace: "Voltar ao marketplace",
+    cancelMetaTitle: "Pagamento cancelado",
+    cancelTitle: "Pagamento cancelado",
+    cancelDesc:
+      "Nenhuma cobrança foi feita. Você pode continuar exatamente de onde parou quando quiser.",
+    changedMindTitle: "Mudou de ideia?",
+    changedMindDesc:
+      "Seu carrinho não foi salvo, mas o livro ainda está disponível. Volte para tentar novamente.",
+    backToBook: "Voltar ao livro",
   },
   share: {
     sharedFrom: "Compartilhado de",

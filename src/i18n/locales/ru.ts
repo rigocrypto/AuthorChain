@@ -37,6 +37,36 @@ const ru: Dictionary = {
     startPublishing: "Начать публикацию",
     viewBookDetails: "Подробнее о книге →",
   },
+  reader: {
+    metaLibraryTitle: "Моя библиотека ReaderChain",
+    metaBookTitle: "Моя книга",
+    libraryTitle: "Моя библиотека ReaderChain",
+    signedInAs: "Вы вошли как",
+    purchasedBooksCountOne: "1 купленная книга",
+    purchasedBooksCountMany: "{count} купленных книг",
+    noBooksTitle: "В вашей библиотеке ReaderChain пока нет книг.",
+    noBooksDesc:
+      "Доступ выдается сразу после покупки книги. Ваши покупки появятся здесь автоматически.",
+    explore: "Открыть ReaderChain",
+    details: "Детали →",
+    download: "Скачать",
+    access: "Доступ:",
+    accessActive: "Активен",
+    accessRefunded: "Возврат",
+    accessRevoked: "Отозван",
+    readTitle: "Читайте вашу книгу",
+    readPrivateNote: "Скачивание доступно только вашей учетной записи.",
+    downloadManuscript: "Скачать рукопись",
+    accessState: "Доступ к этой книге",
+    browserReaderLater:
+      "Чтение в браузере появится на более позднем этапе. Файлы остаются приватными в вашей библиотеке.",
+    proofTitle: "Подтверждение авторства",
+    proofDesc: "Авторство этой книги зарегистрировано в Base Sepolia.",
+    contract: "Контракт",
+    transaction: "Транзакция",
+    areaLabel: "Область читателя",
+    role: "Читатель",
+  },
   home: {
     metaTitle: "AuthorChain | Web3-издательство для независимых авторов",
     metaDescription:
@@ -219,37 +249,37 @@ const ru: Dictionary = {
     soonCollector: "Коллекционные издания",
     soonCollectorDesc:
       "Собирайте ограниченные цифровые издания и открывайте премиум-контент.",
-    aboutTitle: "A catalog built for verified independent publishing",
+    aboutTitle: "Каталог для проверенного независимого издания",
     aboutLead:
-      "ReaderChain is the public discovery surface of AuthorChain — a Web3 publishing platform where independent authors can prove manuscript provenance on-chain, sell directly, and deliver books through a protected library.",
+      "ReaderChain - это публичная витрина AuthorChain, платформы Web3-публикации, где независимые авторы могут подтвердить происхождение рукописи в блокчейне, продавать напрямую и доставлять книги через защищённую библиотеку.",
     aboutP1:
-      "Every listing you open here is a public book page: marketing details, optional previews, and purchase options when the author has enabled sales. Full manuscript access is not open by default; it is delivered after a successful purchase through reader entitlement.",
-    verifiedTitle: "What “verified books” means here",
+      "Каждая карточка здесь - это публичная страница книги: маркетинговые данные, необязательные предпросмотры и варианты покупки, если автор включил продажи. Полный доступ к рукописи по умолчанию не открыт; он предоставляется после успешной покупки через право доступа читателя.",
+    verifiedTitle: "Что здесь означает «проверенные книги»",
     verifiedLead:
-      "When a book shows verified proof of authorship, AuthorChain has registered a SHA-256 fingerprint of the manuscript (and related proof metadata) via the on-chain registry. That is technical provenance — not a government copyright certificate.",
+      "Когда у книги отображается подтверждённое авторство, AuthorChain регистрирует SHA-256-отпечаток рукописи (и связанные метаданные доказательства) через on-chain реестр. Это техническое подтверждение происхождения, а не государственный сертификат авторского права.",
     verifiedP1:
-      "Only the hash goes on-chain. The private manuscript file stays in protected storage. Readers still evaluate the book’s content, description, and previews as they would anywhere else; the badge adds a transparent fingerprint record authors can point to.",
-    accessTitle: "How reader access works",
+      "В блокчейн записывается только хеш. Приватный файл рукописи хранится в защищённом хранилище. Читатели по-прежнему оценивают содержание, описание и предпросмотры как обычно; значок добавляет прозрачную запись об отпечатке, на которую автор может ссылаться.",
+    accessTitle: "Как работает доступ для читателя",
     accessLead:
-      "Discovery is open. Delivery of paid digital manuscripts is gated.",
-    access1t: "Browse and preview",
+      "Обнаружение открыто. Доставка платных цифровых рукописей защищена.",
+    access1t: "Просмотр и предпросмотр",
     access1d:
-      "Explore covers, descriptions, and any preview the author published. Previews are intentional marketing assets — not the full paid file.",
-    access2t: "Buy with checkout",
+      "Изучайте обложки, описания и любые предпросмотры, опубликованные автором. Предпросмотры - это намеренные маркетинговые материалы, а не полный платный файл.",
+    access2t: "Покупка через checkout",
     access2d:
-      "When Stripe is configured, readers can purchase with card. Checkout is designed for independent authors selling digital books directly.",
-    access3t: "Open in your library",
+      "Когда настроен Stripe, читатели могут оплачивать картой. Checkout создан для независимых авторов, которые продают цифровые книги напрямую.",
+    access3t: "Открыть в своей библиотеке",
     access3d:
-      "After purchase, the title appears in the signed-in reader’s library. Download and reading routes check entitlement before serving protected files.",
-    protectTitle: "Why ReaderChain protects readers and authors",
+      "После покупки книга появляется в библиотеке авторизованного читателя. Маршруты чтения и скачивания проверяют право доступа перед выдачей защищённых файлов.",
+    protectTitle: "Почему ReaderChain защищает читателей и авторов",
     protectP1:
-      "Authors get a storefront path that pairs sales with optional on-chain proof of authorship. Readers get a clear place to discover independent work without chasing file drops in email inboxes.",
+      "Авторы получают витрину, которая объединяет продажи и опциональное подтверждение авторства в блокчейне. Читатели получают понятное место для поиска независимых книг без пересылки файлов по почте.",
     protectP2:
-      "AuthorChain Studio is where creators upload manuscripts, prepare metadata, register proof, and manage books. ReaderChain is where the public discovers and buys. Together they form a blockchain publishing workflow focused on independent author publishing and verified book delivery.",
+      "AuthorChain Studio - это место, где авторы загружают рукописи, готовят метаданные, регистрируют доказательство и управляют книгами. ReaderChain - место, где публика находит и покупает. Вместе они формируют blockchain-воркфлоу публикации, ориентированный на независимых авторов и проверенную доставку книг.",
     protectP3:
-      "Want the deeper explanation of hashes, Base registration, and privacy? Read about proof of authorship on the homepage, then return here to browse the catalog.",
-    linkProof: "How on-chain proof works →",
-    linkHome: "Back to AuthorChain home →",
+      "Нужны подробности о хешах, регистрации в Base и приватности? Прочитайте раздел о подтверждении авторства на главной странице, затем возвращайтесь сюда, чтобы изучать каталог.",
+    linkProof: "Как работает on-chain подтверждение →",
+    linkHome: "Назад на главную AuthorChain →",
   },
   book: {
     backToReaderchain: "← Назад к каталогу ReaderChain",
@@ -320,6 +350,30 @@ const ru: Dictionary = {
     imprint: "Издательская марка",
     distribution: "Дистрибуция",
     minutes: "мин",
+    previewComingSoon: "Предпросмотр скоро появится",
+    previewNotAdded: "Автор пока не добавил предпросмотр для читателей для этой книги.",
+    backCoverLabel: "Задняя обложка",
+    freeSampleNote: "Бесплатный фрагмент · полная книга доступна после покупки.",
+  },
+  checkout: {
+    successMetaTitle: "Оплата прошла успешно",
+    successTitle: "Оплата прошла успешно",
+    successDesc:
+      "Спасибо за поддержку независимых авторов. Ваша покупка подтверждена, а автор получил начисление.",
+    accessGrantedTitle: "Доступ предоставлен",
+    accessGrantedDesc:
+      "Книга добавлена в вашу читательскую библиотеку. Войдите с тем же email, который использовали при покупке, чтобы открывать и скачивать её в любое время.",
+    orderReference: "Номер заказа",
+    goToLibrary: "Перейти в библиотеку →",
+    backToMarketplace: "Назад в маркетплейс",
+    cancelMetaTitle: "Оплата отменена",
+    cancelTitle: "Оплата отменена",
+    cancelDesc:
+      "Списание не выполнено. Вы можете продолжить с того же места в любое удобное время.",
+    changedMindTitle: "Передумали?",
+    changedMindDesc:
+      "Корзина не была сохранена, но книга всё ещё доступна. Вернитесь и попробуйте снова.",
+    backToBook: "Назад к книге",
   },
   share: {
     sharedFrom: "Поделились из",

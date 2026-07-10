@@ -61,7 +61,7 @@ export function BookPreview({
     // eslint-disable-next-line @next/next/no-img-element -- dynamic asset API
     <img
       src={`/api/assets/books/${bookId}/cover`}
-      alt={`${title} book cover by ${authorName}`}
+      alt={title}
       className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
       loading="eager"
       decoding="async"
@@ -70,7 +70,7 @@ export function BookPreview({
     <div
       className={`flex aspect-[2/3] w-full items-end rounded-xl bg-gradient-to-br ${coverColor} p-5`}
       role="img"
-      aria-label={`${title} cover placeholder`}
+      aria-label={title}
     >
       <span className="text-2xl font-bold text-white drop-shadow">{title}</span>
     </div>
@@ -82,7 +82,7 @@ export function BookPreview({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label={`Preview ${title}`}
+          aria-label={L.previewBook}
           className="group block w-full cursor-pointer overflow-hidden rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
         >
           <span className="block transition-transform duration-300 group-hover:scale-[1.02]">
@@ -111,11 +111,11 @@ export function BookPreview({
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
-          aria-label={`${title} preview`}
+          aria-label={L.readerPreview}
         >
           <button
             type="button"
-            aria-label="Close preview"
+            aria-label={L.closePreview}
             className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
@@ -123,7 +123,9 @@ export function BookPreview({
             <div className="flex items-center justify-between gap-4 border-b border-border p-4">
               <div className="min-w-0">
                 <h2 className="truncate text-lg font-semibold">{title}</h2>
-                <p className="truncate text-sm text-muted">by {authorName}</p>
+                <p className="truncate text-sm text-muted">
+                  {L.by} {authorName}
+                </p>
               </div>
               <button
                 type="button"
@@ -145,22 +147,20 @@ export function BookPreview({
               ) : !hasBackCover ? (
                 <div className="flex h-[38vh] items-center justify-center p-8 text-center">
                   <div>
-                    <p className="font-medium text-foreground">Preview coming soon</p>
-                    <p className="mt-1 text-sm text-muted">
-                      The author hasn&apos;t added a reader preview for this book yet.
-                    </p>
+                    <p className="font-medium text-foreground">{L.previewComingSoon}</p>
+                    <p className="mt-1 text-sm text-muted">{L.previewNotAdded}</p>
                   </div>
                 </div>
               ) : null}
               {hasBackCover ? (
                 <div className="p-4">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-                    Back cover
+                    {L.backCoverLabel}
                   </p>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`/api/assets/books/${bookId}/backcover`}
-                    alt={`${title} back cover`}
+                    alt={L.backCoverLabel}
                     className="mx-auto max-h-[60vh] w-auto rounded-lg border border-border"
                   />
                 </div>
@@ -168,9 +168,7 @@ export function BookPreview({
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border p-4">
-              <span className="text-xs text-muted">
-                Free sample · the full book requires purchase.
-              </span>
+              <span className="text-xs text-muted">{L.freeSampleNote}</span>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setOpen(false)}>
                   {L.backToBookPage}
