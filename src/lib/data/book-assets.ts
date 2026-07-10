@@ -20,6 +20,14 @@ const COVER_TYPES: Record<string, string> = {
   jpeg: "image/jpeg",
   png: "image/png",
   webp: "image/webp",
+  mp4: "video/mp4",
+};
+
+const BACK_COVER_TYPES: Record<string, string> = {
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
 };
 
 /** Max cover size (well under the 25MB server-action limit). */
@@ -50,6 +58,11 @@ function toDTO(a: BookAsset): BookAssetDTO {
 export function resolveCoverType(fileName: string): string | null {
   const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
   return COVER_TYPES[ext] ?? null;
+}
+
+export function resolveBackCoverType(fileName: string): string | null {
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
+  return BACK_COVER_TYPES[ext] ?? null;
 }
 
 function currentProvider(): StorageProvider {
@@ -161,7 +174,10 @@ export async function saveCover(
 ): Promise<SaveCoverResult> {
   const mime = resolveCoverType(file.name);
   if (!mime) {
-    return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
+    return {
+      ok: false,
+      error: "Unsupported cover type. Use JPG, PNG, WEBP, or MP4.",
+    };
   }
   if (file.size === 0) return { ok: false, error: "The image is empty." };
   if (file.size > MAX_COVER_BYTES) {
@@ -200,7 +216,10 @@ export async function finalizeCoverUpload(
   const mime = resolveCoverType(fileName);
   if (!mime) {
     await deleteStoredObject(storageKey);
-    return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
+    return {
+      ok: false,
+      error: "Unsupported cover type. Use JPG, PNG, WEBP, or MP4.",
+    };
   }
 
   let bytes: Buffer;
@@ -247,7 +266,7 @@ export async function saveBackCover(
   bookId: string,
   file: File,
 ): Promise<SaveCoverResult> {
-  const mime = resolveCoverType(file.name);
+  const mime = resolveBackCoverType(file.name);
   if (!mime) {
     return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
   }
@@ -280,7 +299,7 @@ export async function finalizeBackCoverUpload(
   storageKey: string,
   fileName: string,
 ): Promise<SaveCoverResult> {
-  const mime = resolveCoverType(fileName);
+  const mime = resolveBackCoverType(fileName);
   if (!mime) {
     await deleteStoredObject(storageKey);
     return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };

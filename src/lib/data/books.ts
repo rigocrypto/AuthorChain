@@ -182,6 +182,8 @@ export async function getAuthorBookById(
 export type PublicBookDTO = BookDTO & {
   authorName: string;
   hasCover: boolean;
+  /** MIME type of the primary cover asset, if one exists. */
+  coverMimeType: string | null;
   /** Whether a public reader-preview PDF exists (served via /api/assets/books/[id]/preview). */
   hasPreview: boolean;
   /** Whether a public back-cover image exists (served via /api/assets/books/[id]/backcover). */
@@ -206,7 +208,7 @@ export async function getPublicBookBySlug(
       author: true,
       assets: {
         where: { assetType: { in: ["COVER", "PREVIEW", "BACK_COVER"] }, isPrimary: true },
-        select: { assetType: true },
+        select: { assetType: true, mimeType: true },
       },
       blockchainRegistrations: {
         where: { status: "REGISTERED" },
@@ -218,11 +220,13 @@ export async function getPublicBookBySlug(
   });
   if (!book) return null;
   const reg = book.blockchainRegistrations[0];
+  const coverAsset = book.assets.find((a) => a.assetType === "COVER");
   const translation = await getBookTranslation(book.id, locale);
   return {
     ...toDTO(book),
     authorName: book.author.name,
     hasCover: book.assets.some((a) => a.assetType === "COVER"),
+    coverMimeType: coverAsset?.mimeType ?? null,
     hasPreview: book.assets.some((a) => a.assetType === "PREVIEW"),
     hasBackCover: book.assets.some((a) => a.assetType === "BACK_COVER"),
     proofVerified: Boolean(reg),
@@ -251,6 +255,8 @@ export type PublishedBookDTO = {
   currency: string;
   coverColor: string;
   hasCover: boolean;
+  /** MIME type of the primary cover asset, if one exists. */
+  coverMimeType: string | null;
   /** True when the book has a successful on-chain proof of authorship. */
   proofVerified: boolean;
 };
@@ -268,7 +274,7 @@ export async function listPublishedBooks(): Promise<PublishedBookDTO[]> {
       author: { select: { name: true } },
       assets: {
         where: { assetType: "COVER", isPrimary: true },
-        select: { id: true },
+        select: { id: true, mimeType: true },
         take: 1,
       },
       blockchainRegistrations: {
@@ -290,6 +296,7 @@ export async function listPublishedBooks(): Promise<PublishedBookDTO[]> {
     currency: b.currency,
     coverColor: coverGradient(b.id),
     hasCover: b.assets.length > 0,
+    coverMimeType: b.assets[0]?.mimeType ?? null,
     proofVerified: b.blockchainRegistrations.length > 0,
   }));
 }

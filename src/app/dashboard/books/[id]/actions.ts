@@ -41,6 +41,7 @@ import {
   saveCover,
   finalizeCoverUpload,
   resolveCoverType,
+  resolveBackCoverType,
   saveBackCover,
   finalizeBackCoverUpload,
   savePreview,
@@ -115,7 +116,7 @@ export async function uploadCoverAction(
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { error: "Choose an image file (JPG, PNG, or WEBP)." };
+    return { error: "Choose a cover file (JPG, PNG, WEBP, or MP4)." };
   }
 
   const res = await saveCover(bookId, file);
@@ -202,7 +203,7 @@ export async function presignBackCoverUploadAction(
   const book = await getAuthorBookById(bookId, author.id);
   if (!book) return { ok: false, error: "Book not found." };
 
-  const mime = resolveCoverType(fileName);
+  const mime = resolveBackCoverType(fileName);
   if (!mime) return { ok: false, error: "Unsupported image type. Use JPG, PNG, or WEBP." };
 
   const store = getStorage();

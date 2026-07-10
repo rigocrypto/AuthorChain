@@ -172,6 +172,7 @@ export default async function PublicBookPage({
             title={metadata.title}
             authorName={book.authorName}
             hasCover={book.hasCover}
+            coverMimeType={book.coverMimeType}
             coverColor={book.coverColor}
             proofVerified={book.proofVerified}
             hasPreview={book.hasPreview}

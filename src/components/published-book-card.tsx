@@ -23,16 +23,41 @@ export function PublishedBookCard({
   verifiedProofLabel?: string;
   openBookLabel?: string;
 }) {
+  const coverSrc = `/api/assets/books/${book.id}/cover`;
+  const coverIsVideo = book.coverMimeType?.startsWith("video/") ?? false;
+
   return (
     <Link
       href={`/book/${book.slug}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-primary/60"
     >
       <div className="relative">
-        {book.hasCover ? (
+        {book.hasCover && coverIsVideo ? (
+          <>
+            <video
+              src={coverSrc}
+              className="aspect-[2/3] w-full border-b border-border object-cover motion-reduce:hidden"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload={priority ? "auto" : "metadata"}
+              aria-label={book.title}
+            >
+              Your browser does not support HTML5 video.
+            </video>
+            <div
+              className={`hidden aspect-[2/3] w-full items-end border-b border-border bg-gradient-to-br ${book.coverColor} p-4 motion-reduce:flex`}
+              role="img"
+              aria-label={book.title}
+            >
+              <span className="text-lg font-semibold text-white drop-shadow">{book.title}</span>
+            </div>
+          </>
+        ) : book.hasCover ? (
           // eslint-disable-next-line @next/next/no-img-element -- dynamic asset API
           <img
-            src={`/api/assets/books/${book.id}/cover`}
+            src={coverSrc}
             alt={book.title}
             className="aspect-[2/3] w-full border-b border-border object-cover"
             loading={priority ? "eager" : "lazy"}

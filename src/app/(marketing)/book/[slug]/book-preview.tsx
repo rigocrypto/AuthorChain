@@ -17,6 +17,7 @@ export function BookPreview({
   title,
   authorName,
   hasCover,
+  coverMimeType,
   coverColor,
   proofVerified,
   hasPreview,
@@ -31,6 +32,7 @@ export function BookPreview({
   title: string;
   authorName: string;
   hasCover: boolean;
+  coverMimeType: string | null;
   coverColor: string;
   proofVerified: boolean;
   hasPreview: boolean;
@@ -57,10 +59,35 @@ export function BookPreview({
     };
   }, [open]);
 
-  const cover = hasCover ? (
+  const coverSrc = `/api/assets/books/${bookId}/cover`;
+  const coverIsVideo = coverMimeType?.startsWith("video/") ?? false;
+
+  const cover = hasCover && coverIsVideo ? (
+    <>
+      <video
+        src={coverSrc}
+        className="aspect-[2/3] w-full rounded-xl border border-border object-cover motion-reduce:hidden"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-label={title}
+      >
+        Your browser does not support HTML5 video.
+      </video>
+      <div
+        className={`hidden aspect-[2/3] w-full items-end rounded-xl border border-border bg-gradient-to-br ${coverColor} p-5 motion-reduce:flex`}
+        role="img"
+        aria-label={title}
+      >
+        <span className="text-2xl font-bold text-white drop-shadow">{title}</span>
+      </div>
+    </>
+  ) : hasCover ? (
     // eslint-disable-next-line @next/next/no-img-element -- dynamic asset API
     <img
-      src={`/api/assets/books/${bookId}/cover`}
+      src={coverSrc}
       alt={title}
       className="aspect-[2/3] w-full rounded-xl border border-border object-cover"
       loading="eager"

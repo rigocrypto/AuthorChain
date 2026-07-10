@@ -46,7 +46,8 @@ function Feedback({ state }: { state: PublishingState }) {
   return null;
 }
 
-const coverAccept = ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp";
+const coverAccept = ".jpg,.jpeg,.png,.webp,.mp4,image/jpeg,image/png,image/webp,video/mp4";
+const backCoverAccept = ".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp";
 const coverInputClass = `${field} file:mr-3 file:rounded file:border-0 file:bg-surface file:px-2 file:py-1 file:text-xs file:text-foreground`;
 
 /** Local / server-proxied cover upload (posts through the server action). */
@@ -79,7 +80,7 @@ function CoverDirectUpload({ bookId, hasCover }: { bookId: string; hasCover: boo
     const input = form.elements.namedItem("file") as HTMLInputElement | null;
     const file = input?.files?.[0];
     if (!file) {
-      setState({ error: dict.errors.chooseImage });
+      setState({ error: "Choose a cover file (JPG, PNG, WEBP, or MP4)." });
       return;
     }
 
@@ -145,7 +146,7 @@ function BackCoverProxyUpload({ bookId, hasBackCover }: { bookId: string; hasBac
   return (
     <form action={action} className="mt-4 space-y-2">
       <input type="hidden" name="bookId" value={bookId} />
-      <input name="file" type="file" accept={coverAccept} aria-label={d.backCover} className={coverInputClass} />
+      <input name="file" type="file" accept={backCoverAccept} aria-label={d.backCover} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
         {pending ? d.uploading : hasBackCover ? d.replaceBackCover : d.uploadBackCover}
       </Button>
@@ -199,7 +200,7 @@ function BackCoverDirectUpload({ bookId, hasBackCover }: { bookId: string; hasBa
 
   return (
     <form onSubmit={onSubmit} className="mt-4 space-y-2">
-      <input name="file" type="file" accept={coverAccept} aria-label={d.backCover} className={coverInputClass} />
+      <input name="file" type="file" accept={backCoverAccept} aria-label={d.backCover} className={coverInputClass} />
       <Button type="submit" variant="secondary" className="w-full" disabled={pending}>
         {pending ? d.uploading : hasBackCover ? d.replaceBackCover : d.uploadBackCover}
       </Button>
