@@ -91,7 +91,7 @@ export function HorizontalBookCarousel({
 
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 [scroll-padding-inline:2rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>[data-front='true']]:z-10 [&>[data-front='true']]:-translate-y-1 [&>[data-front='true']]:scale-[1.05] [&>[data-front='true']_a]:shadow-[0_0_0_2px_rgba(125,211,252,0.72),0_0_44px_-10px_rgba(56,189,248,0.95)] sm:[&>[data-front='true']]:translate-y-0 sm:[&>[data-front='true']]:scale-100 sm:[&>[data-front='true']_a]:shadow-none sm:px-8"
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 [scroll-padding-inline:2rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>[data-front='true']]:z-10 [&>[data-front='true']]:-translate-y-1 [&>[data-front='true']]:scale-[1.08] [&>[data-front='true']]:animate-[mobileSpotlight_520ms_ease-out] [&>[data-front='true']_a]:shadow-[0_0_0_2px_rgba(125,211,252,0.8),0_0_58px_-8px_rgba(56,189,248,0.98)] sm:[&>[data-front='true']]:translate-y-0 sm:[&>[data-front='true']]:scale-100 sm:[&>[data-front='true']]:animate-none sm:[&>[data-front='true']_a]:shadow-none sm:px-8 [@keyframes_mobileSpotlight{0%{transform:translateY(0)_scale(1)}55%{transform:translateY(-0.45rem)_scale(1.1)}100%{transform:translateY(-0.25rem)_scale(1.08)}}]"
       >
         <div aria-hidden data-edge-spacer className="w-3 shrink-0 snap-none sm:w-6" />
         {children}
