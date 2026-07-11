@@ -110,7 +110,7 @@ export function PublishedBookCard({
               muted
               loop
               playsInline
-              preload={priority ? "auto" : "metadata"}
+              preload="auto"
               aria-label={book.title}
             >
               Your browser does not support HTML5 video.
@@ -150,6 +150,7 @@ export function PublishedBookCard({
             alt={book.title}
             className="aspect-[2/3] w-full border-b border-border object-cover"
             loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
             decoding="async"
           />
         ) : (

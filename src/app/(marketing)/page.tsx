@@ -221,7 +221,7 @@ export default async function Home() {
                 <div key={b.id} className="w-[min(92vw,22rem)] shrink-0 snap-start transition duration-300 sm:w-[20rem]">
                   <PublishedBookCard
                     book={b}
-                    priority={i < 2}
+                    priority={i < 4}
                     featured
                     byLabel={dict.book.by}
                     verifiedProofLabel={dict.common.verifiedProof}
