@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ProofSeal } from "@/components/proof-seal";
 import { useI18n } from "@/i18n/provider";
@@ -45,6 +45,8 @@ export function BookPreview({
   const { dict } = useI18n();
   const L = dict.book;
   const [open, setOpen] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -62,9 +64,23 @@ export function BookPreview({
   const coverSrc = `/api/assets/books/${bookId}/cover`;
   const coverIsVideo = coverMimeType?.startsWith("video/") ?? false;
 
+  function toggleAudio(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    const nextEnabled = !audioEnabled;
+    setAudioEnabled(nextEnabled);
+    video.muted = !nextEnabled;
+    void video.play().catch(() => undefined);
+  }
+
   const cover = hasCover && coverIsVideo ? (
     <>
       <video
+        ref={videoRef}
         src={coverSrc}
         className="aspect-[2/3] w-full rounded-xl border border-border object-cover motion-reduce:hidden"
         autoPlay
@@ -121,6 +137,28 @@ export function BookPreview({
             </span>
           </span>
         </button>
+        {hasCover && coverIsVideo ? (
+          <button
+            type="button"
+            onClick={toggleAudio}
+            aria-label={audioEnabled ? "Mute cover video" : "Enable cover video sound"}
+            className="cover-sound-toggle absolute right-2 top-2 z-30 inline-flex h-8 w-8 items-center justify-center rounded-full border border-sky-200/60 bg-black/65 text-white transition hover:border-sky-300"
+          >
+            {audioEnabled ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+                <path d="M18.5 6a9 9 0 0 1 0 12" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <line x1="23" y1="9" x2="17" y2="15" />
+                <line x1="17" y1="9" x2="23" y2="15" />
+              </svg>
+            )}
+          </button>
+        ) : null}
         {proofVerified ? (
           <ProofSeal
             variant="full"
