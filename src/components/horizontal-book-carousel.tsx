@@ -224,24 +224,26 @@ export function HorizontalBookCarousel({
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-background to-transparent" />
 
-      <div className="absolute right-0 top-[-3.25rem] z-20 hidden items-center gap-2 sm:flex">
-        <button
-          type="button"
-          aria-label="Scroll books left"
-          onClick={() => slide("left")}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface/90 text-foreground transition hover:border-primary/60"
-        >
-          &lt;
-        </button>
-        <button
-          type="button"
-          aria-label="Scroll books right"
-          onClick={() => slide("right")}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-surface/90 text-foreground transition hover:border-primary/60"
-        >
-          &gt;
-        </button>
-      </div>
+      <button
+        type="button"
+        aria-label="Scroll books left"
+        onClick={() => slide("left")}
+        className="absolute left-2 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-surface/80 text-foreground shadow-[0_10px_28px_-16px_rgba(0,0,0,0.75)] backdrop-blur-md transition hover:border-sky-300/70 hover:bg-surface sm:inline-flex"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        aria-label="Scroll books right"
+        onClick={() => slide("right")}
+        className="absolute right-2 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-surface/80 text-foreground shadow-[0_10px_28px_-16px_rgba(0,0,0,0.75)] backdrop-blur-md transition hover:border-sky-300/70 hover:bg-surface sm:inline-flex"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
 
       <div
         ref={scrollerRef}
