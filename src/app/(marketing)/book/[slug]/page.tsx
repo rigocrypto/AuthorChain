@@ -139,6 +139,14 @@ export default async function PublicBookPage({
   const renderedReviews = publicReviews.length > 0
     ? publicReviews.map((r) => ({ ...r, isMock: false }))
     : mockReviews;
+  const totalReviews = renderedReviews.length;
+  const avgRating = totalReviews
+    ? renderedReviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
+    : 0;
+  const avgRatingText = totalReviews ? avgRating.toFixed(1) : "0.0";
+  const avgRatingStars = totalReviews
+    ? "★".repeat(Math.round(avgRating)).padEnd(5, "☆")
+    : "☆☆☆☆☆";
   const printTrim = print ? resolveTrimDimensions(print) : null;
   const printDetails = print
     ? ([
@@ -364,6 +372,11 @@ export default async function PublicBookPage({
             <p className="mt-1 text-sm text-muted">
               Registered readers can share thoughts after adding this book to their library.
             </p>
+            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+              <span className="font-medium text-foreground">{avgRatingText} / 5</span>
+              <span className="text-amber-300">{avgRatingStars}</span>
+              <span className="text-muted">{totalReviews} total reviews</span>
+            </div>
 
             {reviewMessage ? (
               <p className={`mt-3 text-sm ${reviewMessageTone}`}>{reviewMessage}</p>
