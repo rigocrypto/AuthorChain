@@ -333,20 +333,22 @@ export function BookDetailsForm({
   const { dict } = useI18n();
   const d = dict.dashboard;
   const [state, action, pending] = useActionState(updateBookDetailsAction, initial);
+  const formId = `book-details-${bookId}`;
   return (
     <form action={action} className="mt-4 space-y-3">
       <input type="hidden" name="bookId" value={bookId} />
       <div>
-        <label className="mb-1 block text-xs text-muted">{d.fTitle}</label>
-        <input name="title" required defaultValue={defaults.title} className={field} />
+        <label htmlFor={`${formId}-title`} className="mb-1 block text-xs text-muted">{d.fTitle}</label>
+        <input id={`${formId}-title`} name="title" required defaultValue={defaults.title} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">{d.fSubtitleOptional}</label>
-        <input name="subtitle" defaultValue={defaults.subtitle ?? ""} className={field} />
+        <label htmlFor={`${formId}-subtitle`} className="mb-1 block text-xs text-muted">{d.fSubtitleOptional}</label>
+        <input id={`${formId}-subtitle`} name="subtitle" defaultValue={defaults.subtitle ?? ""} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">{d.fDescription}</label>
+        <label htmlFor={`${formId}-description`} className="mb-1 block text-xs text-muted">{d.fDescription}</label>
         <textarea
+          id={`${formId}-description`}
           name="description"
           required
           rows={4}
@@ -357,12 +359,13 @@ export function BookDetailsForm({
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.fCategory}</label>
-          <input name="category" defaultValue={defaults.category} className={field} />
+          <label htmlFor={`${formId}-category`} className="mb-1 block text-xs text-muted">{d.fCategory}</label>
+          <input id={`${formId}-category`} name="category" defaultValue={defaults.category} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.fPrice}</label>
+          <label htmlFor={`${formId}-price`} className="mb-1 block text-xs text-muted">{d.fPrice}</label>
           <input
+            id={`${formId}-price`}
             name="price"
             type="number"
             min="0"
@@ -398,6 +401,7 @@ export function BookTranslationForm({
   const [description, setDescription] = useState("");
   const existing = translations.find((t) => t.locale === locale) ?? null;
   const [saveState, saveAction, savePending] = useActionState(saveBookTranslationAction, initial);
+  const formId = `book-translation-${bookId}`;
   const [removeState, removeAction, removePending] = useActionState(
     removeBookTranslationAction,
     initial,
@@ -429,8 +433,9 @@ export function BookTranslationForm({
       <form action={saveAction} className="space-y-3">
         <input type="hidden" name="bookId" value={bookId} />
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.translationLocale}</label>
+          <label htmlFor={`${formId}-locale`} className="mb-1 block text-xs text-muted">{d.translationLocale}</label>
           <select
+            id={`${formId}-locale`}
             name="locale"
             value={locale}
             onChange={(e) => handleLocaleChange(e.target.value as Locale)}
@@ -444,8 +449,9 @@ export function BookTranslationForm({
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.translationTitle}</label>
+          <label htmlFor={`${formId}-title`} className="mb-1 block text-xs text-muted">{d.translationTitle}</label>
           <input
+            id={`${formId}-title`}
             name="title"
             required
             value={title}
@@ -454,8 +460,9 @@ export function BookTranslationForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.translationSubtitle}</label>
+          <label htmlFor={`${formId}-subtitle`} className="mb-1 block text-xs text-muted">{d.translationSubtitle}</label>
           <input
+            id={`${formId}-subtitle`}
             name="subtitle"
             value={subtitle}
             onChange={(e) => setSubtitle(e.target.value)}
@@ -463,8 +470,9 @@ export function BookTranslationForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.translationDescription}</label>
+          <label htmlFor={`${formId}-description`} className="mb-1 block text-xs text-muted">{d.translationDescription}</label>
           <textarea
+            id={`${formId}-description`}
             name="description"
             rows={4}
             value={description}
@@ -522,6 +530,7 @@ export function BookExtendedDetailsForm({
     updateBookExtendedDetailsAction,
     initial,
   );
+  const formId = `book-extended-${bookId}`;
   const v = (x: string | number | null) => (x === null ? "" : String(x));
 
   return (
@@ -530,60 +539,60 @@ export function BookExtendedDetailsForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{dict.book.pages}</label>
-          <input name="pageCount" type="number" min="1" defaultValue={v(defaults.pageCount)} className={field} />
+          <label htmlFor={`${formId}-pageCount`} className="mb-1 block text-xs text-muted">{dict.book.pages}</label>
+          <input id={`${formId}-pageCount`} name="pageCount" type="number" min="1" defaultValue={v(defaults.pageCount)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.readingTimeMin}</label>
-          <input name="readingTimeMinutes" type="number" min="1" defaultValue={v(defaults.readingTimeMinutes)} className={field} />
+          <label htmlFor={`${formId}-readingTimeMinutes`} className="mb-1 block text-xs text-muted">{d.readingTimeMin}</label>
+          <input id={`${formId}-readingTimeMinutes`} name="readingTimeMinutes" type="number" min="1" defaultValue={v(defaults.readingTimeMinutes)} className={field} />
         </div>
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">{d.audience}</label>
-        <input name="audience" aria-label={d.audience} defaultValue={v(defaults.audience)} className={field} />
+        <label htmlFor={`${formId}-audience`} className="mb-1 block text-xs text-muted">{d.audience}</label>
+        <input id={`${formId}-audience`} name="audience" aria-label={d.audience} defaultValue={v(defaults.audience)} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">{d.whatLearn}</label>
-        <textarea name="whatYouWillLearn" rows={3} aria-label={d.whatLearn} defaultValue={v(defaults.whatYouWillLearn)} className={field} />
+        <label htmlFor={`${formId}-whatYouWillLearn`} className="mb-1 block text-xs text-muted">{d.whatLearn}</label>
+        <textarea id={`${formId}-whatYouWillLearn`} name="whatYouWillLearn" rows={3} aria-label={d.whatLearn} defaultValue={v(defaults.whatYouWillLearn)} className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">{d.topics}</label>
-        <input name="topics" aria-label={d.topics} defaultValue={v(defaults.topics)} className={field} />
+        <label htmlFor={`${formId}-topics`} className="mb-1 block text-xs text-muted">{d.topics}</label>
+        <input id={`${formId}-topics`} name="topics" aria-label={d.topics} defaultValue={v(defaults.topics)} className={field} />
       </div>
 
       <div className="border-t border-border pt-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted">{d.creditsSection}</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs text-muted">{dict.book.editor}</label>
-            <input name="editorName" defaultValue={v(defaults.editorName)} className={field} />
+            <label htmlFor={`${formId}-editorName`} className="mb-1 block text-xs text-muted">{dict.book.editor}</label>
+            <input id={`${formId}-editorName`} name="editorName" defaultValue={v(defaults.editorName)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">{dict.book.coverDesigner}</label>
-            <input name="coverDesignerName" defaultValue={v(defaults.coverDesignerName)} className={field} />
+            <label htmlFor={`${formId}-coverDesignerName`} className="mb-1 block text-xs text-muted">{dict.book.coverDesigner}</label>
+            <input id={`${formId}-coverDesignerName`} name="coverDesignerName" defaultValue={v(defaults.coverDesignerName)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">{dict.book.illustrator}</label>
-            <input name="illustratorName" defaultValue={v(defaults.illustratorName)} className={field} />
+            <label htmlFor={`${formId}-illustratorName`} className="mb-1 block text-xs text-muted">{dict.book.illustrator}</label>
+            <input id={`${formId}-illustratorName`} name="illustratorName" defaultValue={v(defaults.illustratorName)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">{dict.book.translator}</label>
-            <input name="translatorName" defaultValue={v(defaults.translatorName)} className={field} />
+            <label htmlFor={`${formId}-translatorName`} className="mb-1 block text-xs text-muted">{dict.book.translator}</label>
+            <input id={`${formId}-translatorName`} name="translatorName" defaultValue={v(defaults.translatorName)} className={field} />
           </div>
         </div>
         <div className="mt-3">
-          <label className="mb-1 block text-xs text-muted">{dict.book.collaborators}</label>
-          <input name="collaborators" aria-label={dict.book.collaborators} defaultValue={v(defaults.collaborators)} className={field} />
+          <label htmlFor={`${formId}-collaborators`} className="mb-1 block text-xs text-muted">{dict.book.collaborators}</label>
+          <input id={`${formId}-collaborators`} name="collaborators" aria-label={dict.book.collaborators} defaultValue={v(defaults.collaborators)} className={field} />
         </div>
         <div className="mt-3">
-          <label className="mb-1 block text-xs text-muted">{dict.book.contributors}</label>
-          <input name="contributors" aria-label={dict.book.contributors} defaultValue={v(defaults.contributors)} className={field} />
+          <label htmlFor={`${formId}-contributors`} className="mb-1 block text-xs text-muted">{dict.book.contributors}</label>
+          <input id={`${formId}-contributors`} name="contributors" aria-label={dict.book.contributors} defaultValue={v(defaults.contributors)} className={field} />
         </div>
       </div>
 
       <div className="border-t border-border pt-4">
-        <label className="mb-1 block text-xs text-muted">{d.thanksAck}</label>
-        <textarea name="acknowledgments" rows={3} aria-label={d.thanksAck} defaultValue={v(defaults.acknowledgments)} className={field} />
+        <label htmlFor={`${formId}-acknowledgments`} className="mb-1 block text-xs text-muted">{d.thanksAck}</label>
+        <textarea id={`${formId}-acknowledgments`} name="acknowledgments" rows={3} aria-label={d.thanksAck} defaultValue={v(defaults.acknowledgments)} className={field} />
       </div>
 
       <Button type="submit" variant="secondary" disabled={pending}>
@@ -616,6 +625,7 @@ export function PublishingMetadataForm({
     savePublishingMetadataAction,
     initial,
   );
+  const formId = `publishing-meta-${bookId}`;
   const dateValue = defaults.publicationDate
     ? defaults.publicationDate.slice(0, 10)
     : "";
@@ -623,8 +633,9 @@ export function PublishingMetadataForm({
     <form action={action} className="mt-4 space-y-3">
       <input type="hidden" name="bookId" value={bookId} />
       <div>
-        <label className="mb-1 block text-xs text-muted">{dict.book.isbn13}</label>
+        <label htmlFor={`${formId}-isbn13`} className="mb-1 block text-xs text-muted">{dict.book.isbn13}</label>
         <input
+          id={`${formId}-isbn13`}
           name="isbn13"
           defaultValue={defaults.isbn13 ?? ""}
           placeholder="978-1-56581-231-4"
@@ -633,12 +644,12 @@ export function PublishingMetadataForm({
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.isbn10}</label>
-          <input name="isbn10" aria-label={d.isbn10} defaultValue={defaults.isbn10 ?? ""} className={field} />
+          <label htmlFor={`${formId}-isbn10`} className="mb-1 block text-xs text-muted">{d.isbn10}</label>
+          <input id={`${formId}-isbn10`} name="isbn10" aria-label={d.isbn10} defaultValue={defaults.isbn10 ?? ""} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{dict.book.format}</label>
-          <select name="bookFormat" aria-label={dict.book.format} defaultValue={defaults.bookFormat ?? ""} className={field}>
+          <label htmlFor={`${formId}-bookFormat`} className="mb-1 block text-xs text-muted">{dict.book.format}</label>
+          <select id={`${formId}-bookFormat`} name="bookFormat" aria-label={dict.book.format} defaultValue={defaults.bookFormat ?? ""} className={field}>
             <option value="">—</option>
             <option value="EBOOK">Ebook</option>
             <option value="PAPERBACK">Paperback</option>
@@ -649,8 +660,9 @@ export function PublishingMetadataForm({
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{dict.book.publisher}</label>
+          <label htmlFor={`${formId}-publisherName`} className="mb-1 block text-xs text-muted">{dict.book.publisher}</label>
           <input
+            id={`${formId}-publisherName`}
             name="publisherName"
             aria-label={dict.book.publisher}
             defaultValue={defaults.publisherName ?? ""}
@@ -658,13 +670,14 @@ export function PublishingMetadataForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{d.publicationDate}</label>
-          <input name="publicationDate" type="date" aria-label={d.publicationDate} defaultValue={dateValue} className={field} />
+          <label htmlFor={`${formId}-publicationDate`} className="mb-1 block text-xs text-muted">{d.publicationDate}</label>
+          <input id={`${formId}-publicationDate`} name="publicationDate" type="date" aria-label={d.publicationDate} defaultValue={dateValue} className={field} />
         </div>
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">{dict.book.edition}</label>
+        <label htmlFor={`${formId}-edition`} className="mb-1 block text-xs text-muted">{dict.book.edition}</label>
         <input
+          id={`${formId}-edition`}
           name="edition"
           defaultValue={defaults.edition ?? ""}
           placeholder="1st edition"
@@ -729,6 +742,7 @@ export function PrintEditionForm({
   const v = (x: string | number | null | undefined) =>
     x === null || x === undefined ? "" : String(x);
   const d = defaults;
+  const formId = `print-edition-${bookId}`;
   const [trimSize, setTrimSize] = useState(d?.trimSize ?? "US_TRADE_6X9");
 
   return (
@@ -747,8 +761,9 @@ export function PrintEditionForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{dict.book.trimSize}</label>
+          <label htmlFor={`${formId}-trimSize`} className="mb-1 block text-xs text-muted">{dict.book.trimSize}</label>
           <select
+            id={`${formId}-trimSize`}
             name="trimSize"
             aria-label={dict.book.trimSize}
             defaultValue={d?.trimSize ?? "US_TRADE_6X9"}
@@ -759,8 +774,8 @@ export function PrintEditionForm({
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{L.fInteriorColor}</label>
-          <select name="interiorColor" aria-label={L.fInteriorColor} defaultValue={d?.interiorColor ?? "BLACK_AND_WHITE"} className={field}>
+          <label htmlFor={`${formId}-interiorColor`} className="mb-1 block text-xs text-muted">{L.fInteriorColor}</label>
+          <select id={`${formId}-interiorColor`} name="interiorColor" aria-label={L.fInteriorColor} defaultValue={d?.interiorColor ?? "BLACK_AND_WHITE"} className={field}>
             {enumOptions(INTERIOR_COLOR_LABELS)}
           </select>
         </div>
@@ -769,46 +784,47 @@ export function PrintEditionForm({
       {trimSize === "CUSTOM" ? (
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-xs text-muted">{L.customWidth}</label>
-            <input name="trimWidthIn" type="number" min="0" step="0.01" aria-label={L.customWidth} defaultValue={v(d?.trimWidthIn)} className={field} />
+            <label htmlFor={`${formId}-trimWidthIn`} className="mb-1 block text-xs text-muted">{L.customWidth}</label>
+            <input id={`${formId}-trimWidthIn`} name="trimWidthIn" type="number" min="0" step="0.01" aria-label={L.customWidth} defaultValue={v(d?.trimWidthIn)} className={field} />
           </div>
           <div>
-            <label className="mb-1 block text-xs text-muted">{L.customHeight}</label>
-            <input name="trimHeightIn" type="number" min="0" step="0.01" aria-label={L.customHeight} defaultValue={v(d?.trimHeightIn)} className={field} />
+            <label htmlFor={`${formId}-trimHeightIn`} className="mb-1 block text-xs text-muted">{L.customHeight}</label>
+            <input id={`${formId}-trimHeightIn`} name="trimHeightIn" type="number" min="0" step="0.01" aria-label={L.customHeight} defaultValue={v(d?.trimHeightIn)} className={field} />
           </div>
         </div>
       ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{L.fPaperType}</label>
-          <select name="paperType" aria-label={L.fPaperType} defaultValue={d?.paperType ?? "WHITE"} className={field}>
+          <label htmlFor={`${formId}-paperType`} className="mb-1 block text-xs text-muted">{L.fPaperType}</label>
+          <select id={`${formId}-paperType`} name="paperType" aria-label={L.fPaperType} defaultValue={d?.paperType ?? "WHITE"} className={field}>
             {enumOptions(PAPER_TYPE_LABELS)}
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{dict.book.coverFinish}</label>
-          <select name="coverFinish" aria-label={dict.book.coverFinish} defaultValue={d?.coverFinish ?? "MATTE"} className={field}>
+          <label htmlFor={`${formId}-coverFinish`} className="mb-1 block text-xs text-muted">{dict.book.coverFinish}</label>
+          <select id={`${formId}-coverFinish`} name="coverFinish" aria-label={dict.book.coverFinish} defaultValue={d?.coverFinish ?? "MATTE"} className={field}>
             {enumOptions(COVER_FINISH_LABELS)}
           </select>
         </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs text-muted">{dict.book.binding}</label>
-        <select name="binding" aria-label={dict.book.binding} defaultValue={d?.binding ?? "PERFECT_BOUND"} className={field}>
+        <label htmlFor={`${formId}-binding`} className="mb-1 block text-xs text-muted">{dict.book.binding}</label>
+        <select id={`${formId}-binding`} name="binding" aria-label={dict.book.binding} defaultValue={d?.binding ?? "PERFECT_BOUND"} className={field}>
           {enumOptions(BINDING_LABELS)}
         </select>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{L.printPageCount}</label>
-          <input name="pageCount" type="number" min="1" aria-label={L.printPageCount} defaultValue={v(d?.pageCount)} className={field} />
+          <label htmlFor={`${formId}-pageCount`} className="mb-1 block text-xs text-muted">{L.printPageCount}</label>
+          <input id={`${formId}-pageCount`} name="pageCount" type="number" min="1" aria-label={L.printPageCount} defaultValue={v(d?.pageCount)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{L.spineWidthAuto}</label>
+          <label htmlFor={`${formId}-spineWidth`} className="mb-1 block text-xs text-muted">{L.spineWidthAuto}</label>
           <input
+            id={`${formId}-spineWidth`}
             readOnly
             value={d?.spineWidthIn != null ? `${d.spineWidthIn.toFixed(3)} in` : "—"}
             aria-label={L.spineWidthAuto}
@@ -820,44 +836,44 @@ export function PrintEditionForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{dict.book.printIsbn13}</label>
-          <input name="printIsbn13" defaultValue={v(d?.printIsbn13)} placeholder="978-…" className={field} />
+          <label htmlFor={`${formId}-printIsbn13`} className="mb-1 block text-xs text-muted">{dict.book.printIsbn13}</label>
+          <input id={`${formId}-printIsbn13`} name="printIsbn13" defaultValue={v(d?.printIsbn13)} placeholder="978-…" className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{dict.book.imprint}</label>
-          <input name="imprintName" aria-label={dict.book.imprint} defaultValue={v(d?.imprintName)} className={field} />
+          <label htmlFor={`${formId}-imprintName`} className="mb-1 block text-xs text-muted">{dict.book.imprint}</label>
+          <input id={`${formId}-imprintName`} name="imprintName" aria-label={dict.book.imprint} defaultValue={v(d?.imprintName)} className={field} />
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs text-muted">{L.printPrice}</label>
-          <input name="price" type="number" min="0" step="0.01" aria-label={L.printPrice} defaultValue={v(d?.price)} className={field} />
+          <label htmlFor={`${formId}-price`} className="mb-1 block text-xs text-muted">{L.printPrice}</label>
+          <input id={`${formId}-price`} name="price" type="number" min="0" step="0.01" aria-label={L.printPrice} defaultValue={v(d?.price)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{L.currency}</label>
-          <input name="currency" aria-label={L.currency} defaultValue={d?.currency ?? "USD"} className={field} />
+          <label htmlFor={`${formId}-currency`} className="mb-1 block text-xs text-muted">{L.currency}</label>
+          <input id={`${formId}-currency`} name="currency" aria-label={L.currency} defaultValue={d?.currency ?? "USD"} className={field} />
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs text-muted">{L.fWeightOz}</label>
-          <input name="weightOz" type="number" min="0" step="0.1" aria-label={L.fWeightOz} defaultValue={v(d?.weightOz)} className={field} />
+          <label htmlFor={`${formId}-weightOz`} className="mb-1 block text-xs text-muted">{L.fWeightOz}</label>
+          <input id={`${formId}-weightOz`} name="weightOz" type="number" min="0" step="0.1" aria-label={L.fWeightOz} defaultValue={v(d?.weightOz)} className={field} />
         </div>
         <div>
-          <label className="mb-1 block text-xs text-muted">{L.fDistributor}</label>
-          <input name="distributor" defaultValue={v(d?.distributor)} placeholder="e.g. Global print network" className={field} />
+          <label htmlFor={`${formId}-distributor`} className="mb-1 block text-xs text-muted">{L.fDistributor}</label>
+          <input id={`${formId}-distributor`} name="distributor" defaultValue={v(d?.distributor)} placeholder="e.g. Global print network" className={field} />
         </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs text-muted">{L.availabilityNote}</label>
-        <input name="availabilityNote" defaultValue={v(d?.availabilityNote)} placeholder="Ships in 5–7 business days" className={field} />
+        <label htmlFor={`${formId}-availabilityNote`} className="mb-1 block text-xs text-muted">{L.availabilityNote}</label>
+        <input id={`${formId}-availabilityNote`} name="availabilityNote" defaultValue={v(d?.availabilityNote)} placeholder="Ships in 5–7 business days" className={field} />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-muted">{L.printNotes}</label>
-        <textarea name="printNotes" rows={2} aria-label={L.printNotes} defaultValue={v(d?.printNotes)} className={field} />
+        <label htmlFor={`${formId}-printNotes`} className="mb-1 block text-xs text-muted">{L.printNotes}</label>
+        <textarea id={`${formId}-printNotes`} name="printNotes" rows={2} aria-label={L.printNotes} defaultValue={v(d?.printNotes)} className={field} />
       </div>
 
       <Button type="submit" variant="secondary" disabled={pending}>

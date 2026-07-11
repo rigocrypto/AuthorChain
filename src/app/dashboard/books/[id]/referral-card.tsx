@@ -26,6 +26,7 @@ export function ReferralCard({
   const { dict } = useI18n();
   const d = dict.dashboard;
   const [copied, setCopied] = useState<string | null>(null);
+  const formId = `referral-${bookId}`;
 
   if (!referral) {
     return (
@@ -55,12 +56,13 @@ export function ReferralCard({
   return (
     <div className="mt-3 space-y-4">
       <div>
-        <label className="mb-1 block text-xs text-muted">
+        <label htmlFor={`${formId}-promo`} className="mb-1 block text-xs text-muted">
           {d.promoLink}{" "}
           <span className="text-muted/70">{d.promoLinkNote}</span>
         </label>
         <div className="flex items-center gap-2">
           <input
+            id={`${formId}-promo`}
             readOnly
             value={shareUrl}
             onFocus={(e) => e.currentTarget.select()}
@@ -84,11 +86,12 @@ export function ReferralCard({
       </div>
 
       <div>
-        <label className="mb-1 block text-xs text-muted">
+        <label htmlFor={`${formId}-tracking`} className="mb-1 block text-xs text-muted">
           {d.trackingLink} <span className="text-muted/70">{d.trackingLinkNote}</span>
         </label>
         <div className="flex items-center gap-2">
           <input
+            id={`${formId}-tracking`}
             readOnly
             value={trackUrl}
             onFocus={(e) => e.currentTarget.select()}

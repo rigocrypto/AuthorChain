@@ -49,6 +49,7 @@ export function AgentStudio({
 
   const agent = agents.find((a) => a.id === agentId) ?? agents[0];
   const selectedBook = books.find((b) => b.id === bookId);
+  const formId = `agent-studio-${agent?.id ?? "copy"}-${bookId || "none"}`;
 
   if (books.length === 0) {
     return (
@@ -93,8 +94,9 @@ export function AgentStudio({
             <input type="hidden" name="bookId" value={bookId} />
 
             <div>
-              <label className="mb-1 block text-sm font-medium">2. Select a book</label>
+              <label htmlFor={`${formId}-book`} className="mb-1 block text-sm font-medium">2. Select a book</label>
               <select
+                id={`${formId}-book`}
                 className={field}
                 value={bookId}
                 onChange={(e) => setBookId(e.target.value)}
@@ -110,12 +112,13 @@ export function AgentStudio({
             <div className="text-sm font-medium">3. Inputs</div>
             {agent.fields.map((f) => (
               <div key={f.name}>
-                <label className="mb-1 block text-sm font-medium">
+                <label htmlFor={`${formId}-${f.name}`} className="mb-1 block text-sm font-medium">
                   {f.label}
                   {f.required ? <span className="text-warning"> *</span> : null}
                 </label>
                 {f.type === "textarea" ? (
                   <textarea
+                    id={`${formId}-${f.name}`}
                     name={f.name}
                     rows={3}
                     className={field}
@@ -123,7 +126,7 @@ export function AgentStudio({
                     defaultValue={prefill(f.name, selectedBook)}
                   />
                 ) : f.type === "select" ? (
-                  <select name={f.name} className={field} defaultValue={f.options?.[0]}>
+                  <select id={`${formId}-${f.name}`} name={f.name} className={field} defaultValue={f.options?.[0]}>
                     {f.options?.map((o) => (
                       <option key={o} value={o}>
                         {o}
@@ -132,6 +135,7 @@ export function AgentStudio({
                   </select>
                 ) : (
                   <input
+                    id={`${formId}-${f.name}`}
                     name={f.name}
                     className={field}
                     placeholder={f.placeholder}

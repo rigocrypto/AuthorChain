@@ -15,21 +15,23 @@ export function UploadBookForm() {
   const { dict } = useI18n();
   const d = dict.dashboard;
   const [state, formAction, pending] = useActionState(createBookAction, initial);
+  const formId = "upload-book";
 
   return (
     <Card>
       <form action={formAction} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium">{d.fTitle}</label>
-          <input name="title" required className={field} placeholder="The Last Block" />
+          <label htmlFor={`${formId}-title`} className="mb-1 block text-sm font-medium">{d.fTitle}</label>
+          <input id={`${formId}-title`} name="title" required className={field} placeholder="The Last Block" />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">{d.fSubtitle}</label>
-          <input name="subtitle" className={field} placeholder={dict.dashboard.optional} />
+          <label htmlFor={`${formId}-subtitle`} className="mb-1 block text-sm font-medium">{d.fSubtitle}</label>
+          <input id={`${formId}-subtitle`} name="subtitle" className={field} placeholder={dict.dashboard.optional} />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">{d.fDescription}</label>
+          <label htmlFor={`${formId}-description`} className="mb-1 block text-sm font-medium">{d.fDescription}</label>
           <textarea
+            id={`${formId}-description`}
             name="description"
             required
             aria-label={d.fDescription}
@@ -39,17 +41,18 @@ export function UploadBookForm() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">{d.fCategory}</label>
-            <input name="category" className={field} placeholder="Sci-Fi" />
+            <label htmlFor={`${formId}-category`} className="mb-1 block text-sm font-medium">{d.fCategory}</label>
+            <input id={`${formId}-category`} name="category" className={field} placeholder="Sci-Fi" />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">{dict.book.language}</label>
-            <input name="language" className={field} placeholder="English" defaultValue="English" />
+            <label htmlFor={`${formId}-language`} className="mb-1 block text-sm font-medium">{dict.book.language}</label>
+            <input id={`${formId}-language`} name="language" className={field} placeholder="English" defaultValue="English" />
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">{d.fPrice}</label>
+          <label htmlFor={`${formId}-price`} className="mb-1 block text-sm font-medium">{d.fPrice}</label>
           <input
+            id={`${formId}-price`}
             name="price"
             type="number"
             min="0"
