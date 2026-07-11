@@ -3,6 +3,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
+import { HorizontalBookCarousel } from "@/components/horizontal-book-carousel";
 import { ReaderBackground } from "@/components/reader-background";
 import { listPublishedBooks } from "@/lib/data/books";
 import {
@@ -214,17 +215,21 @@ export default async function Home() {
               {t.exploreAll}
             </ButtonLink>
           </div>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.map((b, i) => (
-              <PublishedBookCard
-                key={b.id}
-                book={b}
-                priority={i < 2}
-                byLabel={dict.book.by}
-                verifiedProofLabel={dict.common.verifiedProof}
-                openBookLabel={dict.common.openBook}
-              />
-            ))}
+          <div className="mt-6">
+            <HorizontalBookCarousel>
+              {featured.map((b, i) => (
+                <div key={b.id} className="w-[min(86vw,20rem)] shrink-0 snap-start sm:w-[20rem]">
+                  <PublishedBookCard
+                    book={b}
+                    priority={i < 2}
+                    featured
+                    byLabel={dict.book.by}
+                    verifiedProofLabel={dict.common.verifiedProof}
+                    openBookLabel={dict.common.openBook}
+                  />
+                </div>
+              ))}
+            </HorizontalBookCarousel>
           </div>
         </section>
       ) : null}

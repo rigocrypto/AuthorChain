@@ -41,7 +41,10 @@ export function HorizontalBookCarousel({
         </button>
       </div>
 
-      <div ref={scrollerRef} className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-2">
+      <div
+        ref={scrollerRef}
+        className="flex snap-x snap-mandatory justify-center gap-5 overflow-x-auto pb-2"
+      >
         {children}
       </div>
     </div>

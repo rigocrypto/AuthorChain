@@ -49,12 +49,24 @@ export function PublishedBookCard({
   return (
     <Link
       href={`/book/${book.slug}`}
-      className={`group flex flex-col overflow-hidden rounded-xl border bg-surface transition-colors hover:border-primary/60 ${
+      className={`group relative flex flex-col overflow-hidden rounded-xl border bg-surface transition-colors hover:border-primary/60 ${
         featured
-          ? "border-amber-400/70 shadow-[0_0_0_1px_rgba(251,191,36,0.35),0_0_28px_-8px_rgba(251,191,36,0.7)]"
+          ? "border-amber-300/90 shadow-[0_0_0_2px_rgba(251,191,36,0.5),0_26px_55px_-28px_rgba(251,191,36,0.95)]"
           : "border-border"
       }`}
     >
+      {featured ? (
+        <>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-[5px] z-10 rounded-[0.7rem] border border-amber-200/70"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-2 z-20 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,0.9)]"
+          />
+        </>
+      ) : null}
       <div className="relative" onMouseEnter={handleCoverEnter} onMouseLeave={handleCoverLeave}>
         {book.hasCover && coverIsVideo ? (
           <>
@@ -100,7 +112,9 @@ export function PublishedBookCard({
         {book.proofVerified ? (
           <ProofSeal
             variant="compact"
-            className="absolute bottom-2 right-2 w-[30%] max-w-[64px] -rotate-6 drop-shadow-md"
+            className={`absolute bottom-2 right-2 -rotate-6 drop-shadow-md ${
+              featured ? "w-[36%] max-w-[84px]" : "w-[30%] max-w-[64px]"
+            }`}
           />
         ) : null}
       </div>
