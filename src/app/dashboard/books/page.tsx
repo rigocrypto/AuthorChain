@@ -74,6 +74,77 @@ export default async function MyBooksPage({
   };
   const shown = filterBooks(books, tab);
 
+  function renderBookItem(book: BookDTO) {
+    const archived = Boolean(book.archivedAt);
+    return (
+      <>
+        <div className="relative">
+          <BookCard book={book} />
+          {archived ? (
+            <span className="absolute right-2 top-2">
+              <StatusBadge tone="muted">{d.archivedBadge}</StatusBadge>
+            </span>
+          ) : null}
+        </div>
+
+        <Link
+          href={`/dashboard/books/${book.id}`}
+          className="block text-center text-sm text-accent hover:underline"
+        >
+          {d.manageRegister}
+        </Link>
+
+        {/* Visibility actions */}
+        <div className="flex flex-wrap gap-2">
+          {archived ? (
+            <BookActionButton
+              action={restoreBookAction}
+              bookId={book.id}
+              label={d.restore}
+              className="flex-1"
+            />
+          ) : (
+            <>
+              {book.status === "DRAFT" ? (
+                <BookActionButton
+                  action={publishBookAction}
+                  bookId={book.id}
+                  label={d.publish}
+                  className="flex-1"
+                />
+              ) : (
+                <BookActionButton
+                  action={unpublishBookAction}
+                  bookId={book.id}
+                  label={d.unpublish}
+                  confirmText={d.confirmUnpublish}
+                  className="flex-1"
+                />
+              )}
+              <BookActionButton
+                action={archiveBookAction}
+                bookId={book.id}
+                label={d.archive}
+                confirmText={d.confirmArchive}
+                variant="ghost"
+                className="flex-1"
+              />
+            </>
+          )}
+        </div>
+
+        {book.status === "PUBLISHED" && !archived ? (
+          <Link
+            href={`/book/${book.slug}`}
+            className="block text-center text-xs text-muted hover:text-foreground"
+          >
+            {d.viewPublicPage}
+          </Link>
+        ) : null}
+      </>
+    );
+  }
+
   return (
     <DashboardPage
       title={d.titleMyBooks}
@@ -119,82 +190,29 @@ export default async function MyBooksPage({
           <p className="text-sm text-muted">{d.noBooksInView}</p>
         </Card>
       ) : (
-        <MyBooksSwipeRow>
-          {shown.map((book) => {
-            const archived = Boolean(book.archivedAt);
-            return (
-              <div
-                key={book.id}
-                data-book-item="true"
-                className="w-[86vw] max-w-[24rem] shrink-0 snap-start space-y-2 sm:w-[22rem]"
-              >
-                <div className="relative">
-                  <BookCard book={book} />
-                  {archived ? (
-                    <span className="absolute right-2 top-2">
-                      <StatusBadge tone="muted">{d.archivedBadge}</StatusBadge>
-                    </span>
-                  ) : null}
-                </div>
-
-                <Link
-                  href={`/dashboard/books/${book.id}`}
-                  className="block text-center text-sm text-accent hover:underline"
+        <>
+          <div className="lg:hidden">
+            <MyBooksSwipeRow>
+              {shown.map((book) => (
+                <div
+                  key={book.id}
+                  data-book-item="true"
+                  className="w-[86vw] max-w-[24rem] shrink-0 snap-start space-y-2 sm:w-[22rem]"
                 >
-                  {d.manageRegister}
-                </Link>
-
-                {/* Visibility actions */}
-                <div className="flex flex-wrap gap-2">
-                  {archived ? (
-                    <BookActionButton
-                      action={restoreBookAction}
-                      bookId={book.id}
-                      label={d.restore}
-                      className="flex-1"
-                    />
-                  ) : (
-                    <>
-                      {book.status === "DRAFT" ? (
-                        <BookActionButton
-                          action={publishBookAction}
-                          bookId={book.id}
-                          label={d.publish}
-                          className="flex-1"
-                        />
-                      ) : (
-                        <BookActionButton
-                          action={unpublishBookAction}
-                          bookId={book.id}
-                          label={d.unpublish}
-                          confirmText={d.confirmUnpublish}
-                          className="flex-1"
-                        />
-                      )}
-                      <BookActionButton
-                        action={archiveBookAction}
-                        bookId={book.id}
-                        label={d.archive}
-                        confirmText={d.confirmArchive}
-                        variant="ghost"
-                        className="flex-1"
-                      />
-                    </>
-                  )}
+                  {renderBookItem(book)}
                 </div>
+              ))}
+            </MyBooksSwipeRow>
+          </div>
 
-                {book.status === "PUBLISHED" && !archived ? (
-                  <Link
-                    href={`/book/${book.slug}`}
-                    className="block text-center text-xs text-muted hover:text-foreground"
-                  >
-                    {d.viewPublicPage}
-                  </Link>
-                ) : null}
+          <div className="hidden gap-4 lg:grid lg:grid-cols-3">
+            {shown.map((book) => (
+              <div key={book.id} className="space-y-2">
+                {renderBookItem(book)}
               </div>
-            );
-          })}
-        </MyBooksSwipeRow>
+            ))}
+          </div>
+        </>
       )}
     </DashboardPage>
   );
