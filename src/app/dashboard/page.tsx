@@ -17,7 +17,6 @@ export const dynamic = "force-dynamic";
 const usd = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 const num = (n: number) => n.toLocaleString("en-US");
-const AUTHOR_GENDER_OPTIONS = ["Female", "Male", "Non-binary", "Prefer not to say"];
 
 async function updateAuthorProfileAction(formData: FormData) {
   "use server";
@@ -26,13 +25,11 @@ async function updateAuthorProfileAction(formData: FormData) {
   if (!author) return;
 
   const nameRaw = String(formData.get("displayName") ?? "").trim();
-  const genderRaw = String(formData.get("gender") ?? "").trim();
   const name = nameRaw.slice(0, 120) || author.name;
-  const gender = AUTHOR_GENDER_OPTIONS.includes(genderRaw) ? genderRaw : null;
 
   await prisma.author.update({
     where: { id: author.id },
-    data: { name, gender },
+    data: { name },
   });
 
   revalidatePath("/dashboard");
@@ -139,21 +136,6 @@ export default async function DashboardPageRoute() {
                   maxLength={120}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 outline-none ring-primary/40 transition focus:ring-2"
                 />
-              </label>
-              <label className="block space-y-1">
-                <span className="text-muted">Gender</span>
-                <select
-                  name="gender"
-                  defaultValue={author.gender ?? ""}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 outline-none ring-primary/40 transition focus:ring-2"
-                >
-                  <option value="">Select gender (optional)</option>
-                  {AUTHOR_GENDER_OPTIONS.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
               </label>
               <button
                 type="submit"
