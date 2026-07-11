@@ -250,7 +250,7 @@ export default async function PublicBookPage({
 
       <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
         {/* Cover + reader preview */}
-        <div>
+        <div className="space-y-6">
           <BookPreview
             bookId={book.id}
             slug={book.slug}
@@ -267,6 +267,36 @@ export default async function PublicBookPage({
             stripeReady={stripeReady}
             refCode={refCode}
           />
+
+          {/* Buy */}
+          <Card className="mx-auto w-full max-w-sm lg:mx-0">
+            <CardTitle>{L.buyTitle}</CardTitle>
+            <div className="mt-1 text-2xl font-semibold">
+              ${book.price.toFixed(2)} {book.currency}
+            </div>
+            <div className="mt-4 space-y-2">
+              {stripeReady ? (
+                <form action={startCheckoutAction}>
+                  <input type="hidden" name="slug" value={book.slug} />
+                  {refCode ? <input type="hidden" name="ref" value={refCode} /> : null}
+                  <Button type="submit" className="w-full">
+                    {L.buyCard}
+                  </Button>
+                </form>
+              ) : (
+                <>
+                  <Button className="w-full" disabled>
+                    {L.buyCard}
+                  </Button>
+                  <p className="text-xs text-warning">{L.buyCardUnavailable}</p>
+                </>
+              )}
+              <Button className="w-full" variant="secondary" disabled>
+                {L.buyUsdc}
+              </Button>
+            </div>
+            <p className="mt-3 text-xs text-muted">{L.buyNote}</p>
+          </Card>
         </div>
 
         {/* Details */}
@@ -329,36 +359,6 @@ export default async function PublicBookPage({
               </div>
             ) : null}
           </section>
-
-          {/* Buy */}
-          <Card className="mx-auto max-w-sm">
-            <CardTitle>{L.buyTitle}</CardTitle>
-            <div className="mt-1 text-2xl font-semibold">
-              ${book.price.toFixed(2)} {book.currency}
-            </div>
-            <div className="mt-4 space-y-2">
-              {stripeReady ? (
-                <form action={startCheckoutAction}>
-                  <input type="hidden" name="slug" value={book.slug} />
-                  {refCode ? <input type="hidden" name="ref" value={refCode} /> : null}
-                  <Button type="submit" className="w-full">
-                    {L.buyCard}
-                  </Button>
-                </form>
-              ) : (
-                <>
-                  <Button className="w-full" disabled>
-                    {L.buyCard}
-                  </Button>
-                  <p className="text-xs text-warning">{L.buyCardUnavailable}</p>
-                </>
-              )}
-              <Button className="w-full" variant="secondary" disabled>
-                {L.buyUsdc}
-              </Button>
-            </div>
-            <p className="mt-3 text-xs text-muted">{L.buyNote}</p>
-          </Card>
 
           {/* Share */}
           <ShareBook title={metadata.title} />
