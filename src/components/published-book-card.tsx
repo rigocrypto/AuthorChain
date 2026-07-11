@@ -148,7 +148,7 @@ export function PublishedBookCard({
             <video
               ref={videoRef}
               src={coverSrc}
-              className="aspect-[2/3] w-full border-b border-border object-cover motion-reduce:hidden"
+              className="aspect-[2/3] w-full border-b border-border object-cover transition-transform duration-300 motion-reduce:hidden motion-reduce:transform-none lg:group-hover:scale-[1.06]"
               autoPlay
               muted
               loop
@@ -191,14 +191,14 @@ export function PublishedBookCard({
           <img
             src={coverSrc}
             alt={book.title}
-            className="aspect-[2/3] w-full border-b border-border object-cover"
+            className="aspect-[2/3] w-full border-b border-border object-cover transition-transform duration-300 motion-reduce:transform-none lg:group-hover:scale-[1.06]"
             loading={priority ? "eager" : "lazy"}
             fetchPriority={priority ? "high" : "auto"}
             decoding="async"
           />
         ) : (
           <div
-            className={`flex aspect-[2/3] w-full items-end bg-gradient-to-br ${book.coverColor} p-4`}
+            className={`flex aspect-[2/3] w-full items-end bg-gradient-to-br ${book.coverColor} p-4 transition-transform duration-300 motion-reduce:transform-none lg:group-hover:scale-[1.06]`}
             role="img"
             aria-label={book.title}
           >
