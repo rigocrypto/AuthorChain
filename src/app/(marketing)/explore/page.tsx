@@ -225,13 +225,13 @@ export default async function ExplorePage({
                   </select>
                 </label>
                 <label className="space-y-1 text-sm">
-                  <span className="text-muted">Genre</span>
+                  <span className="text-muted">Category</span>
                   <select
                     name="genre"
                     defaultValue={genreFilter}
                     className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
                   >
-                    <option value="">All genres</option>
+                    <option value="">All categories</option>
                     {genreOptions.map((genre) => (
                       <option key={genre} value={genre}>
                         {genre}
