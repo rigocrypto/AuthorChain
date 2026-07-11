@@ -13,7 +13,7 @@ export function HorizontalBookCarousel({
   function slide(direction: "left" | "right") {
     const el = scrollerRef.current;
     if (!el) return;
-    const amount = Math.max(el.clientWidth * 0.85, 280);
+    const amount = Math.max(el.clientWidth * 0.78, 260);
     el.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" });
   }
 
@@ -43,7 +43,7 @@ export function HorizontalBookCarousel({
 
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory justify-center gap-5 overflow-x-auto pb-2"
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-10 pb-2 sm:px-12"
       >
         {children}
       </div>
