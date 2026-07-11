@@ -250,7 +250,7 @@ export default async function PublicBookPage({
 
       <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
         {/* Cover + reader preview */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <BookPreview
             bookId={book.id}
             slug={book.slug}
@@ -364,7 +364,10 @@ export default async function PublicBookPage({
           <ShareBook title={metadata.title} />
 
           {/* Reader reviews */}
-          <section id="reader-reviews" className="rounded-2xl border border-border bg-surface p-6">
+          <section
+            id="reader-reviews"
+            className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6"
+          >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="font-semibold">Reader reviews</h2>
               <StatusBadge tone="muted">{renderedReviews.length} listed</StatusBadge>
@@ -509,7 +512,7 @@ export default async function PublicBookPage({
 
           {/* Verified proof */}
           {book.proofVerified ? (
-            <section className="rounded-2xl border border-border bg-surface p-6">
+            <section className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">
               <div className="flex items-start gap-4">
                 <ProofSeal variant="compact" className="w-14 shrink-0" />
                 <div className="min-w-0 flex-1">
@@ -551,7 +554,7 @@ export default async function PublicBookPage({
           ) : null}
 
           {/* Print edition — only expand when configured; keep empty state short + book-specific */}
-          <section className="rounded-2xl border border-border bg-surface p-6">
+          <section className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">
             <div className="flex items-center justify-between gap-2">
               <h2 className="font-semibold">{L.printEdition}</h2>
               {print ? (
