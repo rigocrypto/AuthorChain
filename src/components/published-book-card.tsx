@@ -96,7 +96,7 @@ export function PublishedBookCard({
           {featured ? (
             <div
               aria-hidden
-              className="pointer-events-none absolute left-1/2 top-2 z-20 h-3 w-3 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_18px_rgba(252,211,77,1)]"
+              className="pointer-events-none absolute left-1/2 top-1 z-20 h-2 w-2 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_12px_rgba(252,211,77,0.95)] sm:top-2 sm:h-3 sm:w-3 sm:shadow-[0_0_18px_rgba(252,211,77,1)]"
             />
           ) : null}
         </>

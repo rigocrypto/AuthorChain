@@ -109,9 +109,16 @@ export default async function Home() {
     { n: "4", t: t.step4t, d: t.step4d },
   ];
   const books = await listPublishedBooks();
-  const featured = [...books]
-    .sort((a, b) => Number(b.proofVerified) - Number(a.proofVerified))
-    .slice(0, 4);
+  const FEATURED_BOOK_SLUGS = new Set([
+    "the-quantum-purgatory",
+    "the-ultimate-ai-prompts-playbook",
+  ]);
+
+  function isFeaturedBook(slug: string) {
+    return FEATURED_BOOK_SLUGS.has(slug.toLowerCase());
+  }
+
+  const featured = books.filter((b) => isFeaturedBook(b.slug)).slice(0, 4);
 
   return (
     <div>
@@ -173,7 +180,6 @@ export default async function Home() {
         <div className="grid gap-6 lg:grid-cols-2">
           {/* ReaderChain */}
           <div className="ac-glow flex flex-col rounded-2xl border border-border bg-surface p-8">
-            <StatusBadge tone="accent">{t.readerBadge}</StatusBadge>
             <h2 className="mt-4 text-2xl font-semibold">{t.readerTitle}</h2>
             <p className="mt-2 flex-1 text-muted">{t.readerDesc}</p>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -222,7 +228,7 @@ export default async function Home() {
                   <PublishedBookCard
                     book={b}
                     priority={i < 4}
-                    featured
+                    featured={isFeaturedBook(b.slug)}
                     byLabel={dict.book.by}
                     verifiedProofLabel={dict.common.verifiedProof}
                     openBookLabel={dict.common.openBook}

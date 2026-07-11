@@ -35,7 +35,16 @@ export default async function ExplorePage() {
   const { dict } = await getDictionary();
   const t = dict.explore;
   const books = await listPublishedBooks();
-  const featured = books.filter((b) => b.proofVerified).slice(0, 4);
+  const FEATURED_BOOK_SLUGS = new Set([
+    "the-quantum-purgatory",
+    "the-ultimate-ai-prompts-playbook",
+  ]);
+
+  function isFeaturedBook(slug: string) {
+    return FEATURED_BOOK_SLUGS.has(slug.toLowerCase());
+  }
+
+  const featured = books.filter((b) => isFeaturedBook(b.slug)).slice(0, 4);
 
   const comingSoon = [
     { t: t.soonAudiobooks, d: t.soonAudiobooksDesc },
@@ -130,7 +139,7 @@ export default async function ExplorePage() {
                     <PublishedBookCard
                       book={b}
                       priority={i < 4}
-                      featured
+                      featured={isFeaturedBook(b.slug)}
                       byLabel={dict.book.by}
                       verifiedProofLabel={dict.common.verifiedProof}
                       openBookLabel={dict.common.openBook}
@@ -156,7 +165,7 @@ export default async function ExplorePage() {
                   <PublishedBookCard
                     book={b}
                     priority={i < 6}
-                    featured={b.proofVerified}
+                    featured={isFeaturedBook(b.slug)}
                     byLabel={dict.book.by}
                     verifiedProofLabel={dict.common.verifiedProof}
                     openBookLabel={dict.common.openBook}
