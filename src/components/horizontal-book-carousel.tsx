@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 
 export function HorizontalBookCarousel({
@@ -9,6 +9,54 @@ export function HorizontalBookCarousel({
   children: ReactNode;
 }) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const rafRef = useRef<number | null>(null);
+
+  function updateFrontCard() {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const center = el.scrollLeft + el.clientWidth / 2;
+    const cards = Array.from(el.children).filter(
+      (child) => !(child as HTMLElement).hasAttribute("data-edge-spacer"),
+    ) as HTMLElement[];
+
+    if (cards.length === 0) return;
+
+    let best: HTMLElement | null = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    for (const card of cards) {
+      card.removeAttribute("data-front");
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(cardCenter - center);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = card;
+      }
+    }
+
+    best?.setAttribute("data-front", "true");
+  }
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(updateFrontCard);
+    };
+
+    updateFrontCard();
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   function slide(direction: "left" | "right") {
     const el = scrollerRef.current;
@@ -43,11 +91,11 @@ export function HorizontalBookCarousel({
 
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 [scroll-padding-inline:2rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-8"
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 [scroll-padding-inline:2rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>[data-front='true']]:z-10 [&>[data-front='true']]:-translate-y-1 [&>[data-front='true']]:scale-[1.05] [&>[data-front='true']_a]:shadow-[0_0_0_2px_rgba(125,211,252,0.72),0_0_44px_-10px_rgba(56,189,248,0.95)] sm:[&>[data-front='true']]:translate-y-0 sm:[&>[data-front='true']]:scale-100 sm:[&>[data-front='true']_a]:shadow-none sm:px-8"
       >
-        <div aria-hidden className="w-3 shrink-0 snap-none sm:w-6" />
+        <div aria-hidden data-edge-spacer className="w-3 shrink-0 snap-none sm:w-6" />
         {children}
-        <div aria-hidden className="w-3 shrink-0 snap-none sm:w-6" />
+        <div aria-hidden data-edge-spacer className="w-3 shrink-0 snap-none sm:w-6" />
       </div>
     </div>
   );

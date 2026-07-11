@@ -218,7 +218,7 @@ export default async function Home() {
           <div className="mt-6">
             <HorizontalBookCarousel>
               {featured.map((b, i) => (
-                <div key={b.id} className="w-[min(86vw,20rem)] shrink-0 snap-start sm:w-[20rem]">
+                <div key={b.id} className="w-[min(92vw,22rem)] shrink-0 snap-start transition duration-300 sm:w-[20rem]">
                   <PublishedBookCard
                     book={b}
                     priority={i < 2}
