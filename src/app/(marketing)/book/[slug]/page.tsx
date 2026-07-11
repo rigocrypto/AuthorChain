@@ -5,7 +5,7 @@ import { PageShell } from "@/components/page-header";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { getPublicBookBySlug } from "@/lib/data/books";
+import { getPublicBookBySlug, listPublishedBooks } from "@/lib/data/books";
 import { resolveLocalizedBookMetadata } from "@/lib/data/book-translations";
 import { getPublicPrintSettings } from "@/lib/data/print-settings";
 import {
@@ -24,6 +24,7 @@ import { getDictionary, getLocale } from "@/i18n/get-dictionary";
 import { startCheckoutAction } from "./actions";
 import { BookPreview } from "./book-preview";
 import { ShareBook } from "./share-book";
+import { BookSwipeNav } from "./book-swipe-nav";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +74,14 @@ export default async function PublicBookPage({
   const locale = await getLocale();
   const book = await getPublicBookBySlug(slug, locale);
   if (!book) notFound();
+  const allBooks = await listPublishedBooks();
+  const bookIndex = allBooks.findIndex((b) => b.slug === book.slug);
+  const previousBook = bookIndex >= 0 && bookIndex < allBooks.length - 1
+    ? allBooks[bookIndex + 1]
+    : null;
+  const nextBook = bookIndex > 0 ? allBooks[bookIndex - 1] : null;
+  const previousHref = previousBook ? `/book/${previousBook.slug}` : null;
+  const nextHref = nextBook ? `/book/${nextBook.slug}` : null;
 
   const { dict } = await getDictionary();
   const L = dict.book;
@@ -130,38 +139,59 @@ export default async function PublicBookPage({
 
   return (
     <PageShell>
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: jsonLdScript(
-            bookJsonLd({
-              ...book,
-              title: metadata.title,
-              subtitle: metadata.subtitle,
-              description: metadata.description ?? "",
-            }),
-          ),
-        }}
-      />
-      <ReaderBackground />
-      <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-        <Link
-          href="/explore"
-          className="inline-flex items-center gap-1 text-muted transition-colors hover:text-foreground"
-        >
-          {L.backToReaderchain}
-        </Link>
-        <Link
-          href="/explore"
-          className="text-muted transition-colors hover:text-foreground"
-        >
-          {L.browseAllBooks}
-        </Link>
-        <Link href="/reader/library" className="text-muted transition-colors hover:text-foreground">
-          {L.myLibrary}
-        </Link>
-      </div>
+      <BookSwipeNav prevHref={previousHref} nextHref={nextHref}>
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: jsonLdScript(
+              bookJsonLd({
+                ...book,
+                title: metadata.title,
+                subtitle: metadata.subtitle,
+                description: metadata.description ?? "",
+              }),
+            ),
+          }}
+        />
+        <ReaderBackground />
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-1 text-muted transition-colors hover:text-foreground"
+            >
+              {L.backToReaderchain}
+            </Link>
+            <Link
+              href="/explore"
+              className="text-muted transition-colors hover:text-foreground"
+            >
+              {L.browseAllBooks}
+            </Link>
+            <Link href="/reader/library" className="text-muted transition-colors hover:text-foreground">
+              {L.myLibrary}
+            </Link>
+          </div>
+          <div className="flex items-center gap-2">
+            {previousHref ? (
+              <Link
+                href={previousHref}
+                className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-muted transition hover:text-foreground"
+              >
+                ← Previous
+              </Link>
+            ) : null}
+            {nextHref ? (
+              <Link
+                href={nextHref}
+                className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-muted transition hover:text-foreground"
+              >
+                Next →
+              </Link>
+            ) : null}
+          </div>
+        </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_2fr]">
         {/* Cover + reader preview */}
@@ -419,6 +449,28 @@ export default async function PublicBookPage({
           </section>
         </div>
       </div>
+      <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-4 text-sm">
+        <div className="text-muted">Swipe left/right on mobile to move between books.</div>
+        <div className="flex items-center gap-2">
+          {previousHref ? (
+            <Link
+              href={previousHref}
+              className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-muted transition hover:text-foreground"
+            >
+              ← Previous
+            </Link>
+          ) : null}
+          {nextHref ? (
+            <Link
+              href={nextHref}
+              className="inline-flex items-center rounded-lg border border-border bg-surface px-3 py-1.5 text-xs text-muted transition hover:text-foreground"
+            >
+              Next →
+            </Link>
+          ) : null}
+        </div>
+      </div>
+      </BookSwipeNav>
     </PageShell>
   );
 }
