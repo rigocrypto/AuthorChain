@@ -213,6 +213,7 @@ model Book {
   assets                  BookAsset[]
   sales                   Sale[]
   library                 ReaderLibrary[]
+  reviews                 BookReview[]
   agentOutputs            AgentOutput[]
   blockchainRegistrations BlockchainRegistration[]
   referralLinks           BookReferralLink[]
@@ -393,6 +394,24 @@ model Reader {
   updatedAt     DateTime @updatedAt
 
   entitlements ReaderLibrary[]
+  reviews      BookReview[]
+}
+
+model BookReview {
+  id        String   @id @default(cuid())
+  bookId    String
+  readerId  String
+  rating    Int
+  thoughts  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  reader Reader @relation(fields: [readerId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, readerId])
+  @@index([bookId, createdAt])
+  @@index([readerId])
 }
 
 model ReaderLibrary {

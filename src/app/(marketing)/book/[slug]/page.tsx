@@ -6,8 +6,10 @@ import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { getPublicBookBySlug, listPublishedBooks } from "@/lib/data/books";
+import { listPublicBookReviews } from "@/lib/data/book-reviews";
 import { resolveLocalizedBookMetadata } from "@/lib/data/book-translations";
 import { getPublicPrintSettings } from "@/lib/data/print-settings";
+import { getCurrentReader } from "@/lib/auth/reader-session";
 import {
   resolveTrimDimensions,
   INTERIOR_COLOR_LABELS,
@@ -21,7 +23,7 @@ import { getChainConfig, getExplorerTxUrl } from "@/lib/blockchain/registry";
 import { isStripeConfigured } from "@/lib/payments/stripe";
 import { absoluteUrl, metaDescription, bookJsonLd, jsonLdScript } from "@/lib/seo";
 import { getDictionary, getLocale } from "@/i18n/get-dictionary";
-import { startCheckoutAction } from "./actions";
+import { startCheckoutAction, submitBookReviewAction } from "./actions";
 import { BookPreview } from "./book-preview";
 import { ShareBook } from "./share-book";
 import { BookSwipeNav } from "./book-swipe-nav";
@@ -66,10 +68,10 @@ export default async function PublicBookPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ ref?: string }>;
+  searchParams: Promise<{ ref?: string; review?: string }>;
 }) {
   const { slug } = await params;
-  const { ref } = await searchParams;
+  const { ref, review } = await searchParams;
   const refCode = typeof ref === "string" ? ref : "";
   const locale = await getLocale();
   const book = await getPublicBookBySlug(slug, locale);
@@ -92,6 +94,51 @@ export default async function PublicBookPage({
   const stripeReady = isStripeConfigured();
   const chain = getChainConfig();
   const print = await getPublicPrintSettings(book.id);
+  const [reader, publicReviews] = await Promise.all([
+    getCurrentReader(),
+    listPublicBookReviews(book.id),
+  ]);
+  const reviewStatus = typeof review === "string" ? review : "";
+  const reviewMessage =
+    reviewStatus === "success"
+      ? "Thanks for sharing your thoughts. Your review is now visible."
+      : reviewStatus === "signin"
+        ? "Please sign in as a reader account to leave a review."
+        : reviewStatus === "owned"
+          ? "Only registered readers with this book in their library can review it."
+          : reviewStatus === "invalid_rating"
+            ? "Please choose a rating from 1 to 5 stars."
+            : reviewStatus === "invalid_text"
+              ? "Your review should be between 20 and 1200 characters."
+              : reviewStatus === "error"
+                ? "Could not save your review right now. Please try again."
+                : reviewStatus === "unavailable"
+                  ? "This book is currently unavailable for reviews."
+                  : "";
+  const reviewMessageTone = reviewStatus === "success" ? "text-emerald-400" : "text-warning";
+  const mockReviews = [
+    {
+      id: "mock-review-1",
+      rating: 5,
+      thoughts:
+        "Mockup example: Clear chapters, practical advice, and a polished flow. I finished this in two sittings and took notes all the way.",
+      readerName: "Reader sample",
+      createdAt: "",
+      isMock: true,
+    },
+    {
+      id: "mock-review-2",
+      rating: 4,
+      thoughts:
+        "Mockup example: Great pacing and useful references. I'd love a short workbook companion in a future edition.",
+      readerName: "Book club tester",
+      createdAt: "",
+      isMock: true,
+    },
+  ] as const;
+  const renderedReviews = publicReviews.length > 0
+    ? publicReviews.map((r) => ({ ...r, isMock: false }))
+    : mockReviews;
   const printTrim = print ? resolveTrimDimensions(print) : null;
   const printDetails = print
     ? ([
@@ -307,6 +354,99 @@ export default async function PublicBookPage({
 
           {/* Share */}
           <ShareBook title={metadata.title} />
+
+          {/* Reader reviews */}
+          <section id="reader-reviews" className="rounded-2xl border border-border bg-surface p-6">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="font-semibold">Reader reviews</h2>
+              <StatusBadge tone="muted">{renderedReviews.length} listed</StatusBadge>
+            </div>
+            <p className="mt-1 text-sm text-muted">
+              Registered readers can share thoughts after adding this book to their library.
+            </p>
+
+            {reviewMessage ? (
+              <p className={`mt-3 text-sm ${reviewMessageTone}`}>{reviewMessage}</p>
+            ) : null}
+
+            <div className="mt-4 space-y-3">
+              {renderedReviews.map((r) => {
+                const created = r.createdAt
+                  ? new Date(r.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : "Preview";
+                return (
+                  <article key={r.id} className="rounded-xl border border-border bg-background/60 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-sm font-medium text-foreground">{r.readerName}</p>
+                      <div className="flex items-center gap-2 text-xs text-muted">
+                        <span>{"★".repeat(r.rating)}{"☆".repeat(Math.max(0, 5 - r.rating))}</span>
+                        <span>{created}</span>
+                      </div>
+                    </div>
+                    <p className="mt-2 text-sm text-muted">{r.thoughts}</p>
+                    {r.isMock ? (
+                      <p className="mt-2 text-[11px] uppercase tracking-wide text-accent">
+                        Mockup preview
+                      </p>
+                    ) : null}
+                  </article>
+                );
+              })}
+            </div>
+
+            {reader ? (
+              <form action={submitBookReviewAction} className="mt-5 space-y-3 rounded-xl border border-border bg-background/40 p-4">
+                <input type="hidden" name="slug" value={book.slug} />
+                <div className="grid gap-3 sm:grid-cols-[10rem_1fr] sm:items-start">
+                  <label htmlFor="rating" className="text-sm text-muted">
+                    Rating
+                  </label>
+                  <select
+                    id="rating"
+                    name="rating"
+                    defaultValue="5"
+                    className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/40 transition focus:ring-2"
+                    required
+                  >
+                    <option value="5">5 - Excellent</option>
+                    <option value="4">4 - Very good</option>
+                    <option value="3">3 - Good</option>
+                    <option value="2">2 - Fair</option>
+                    <option value="1">1 - Needs work</option>
+                  </select>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-[10rem_1fr] sm:items-start">
+                  <label htmlFor="thoughts" className="text-sm text-muted">
+                    Your thoughts
+                  </label>
+                  <textarea
+                    id="thoughts"
+                    name="thoughts"
+                    rows={4}
+                    minLength={20}
+                    maxLength={1200}
+                    placeholder="Share what you liked, what stood out, or what could improve."
+                    className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/40 transition focus:ring-2"
+                    required
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <Button type="submit">Submit review</Button>
+                </div>
+              </form>
+            ) : (
+              <div className="mt-5 rounded-xl border border-border bg-background/40 p-4 text-sm text-muted">
+                <p>Sign in with your reader account to submit a review.</p>
+                <Link href="/login" className="mt-2 inline-block text-accent hover:underline">
+                  Sign in
+                </Link>
+              </div>
+            )}
+          </section>
 
           {/* Book details */}
           {details.length ? (

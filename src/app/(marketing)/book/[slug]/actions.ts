@@ -1,8 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import { prisma } from "@/lib/db";
 import { getPublicBookBySlug } from "@/lib/data/books";
+import { upsertReaderBookReview } from "@/lib/data/book-reviews";
+import { getCurrentReader } from "@/lib/auth/reader-session";
 import { getLocale } from "@/i18n/get-dictionary";
 import { resolveLocalizedBookMetadata } from "@/lib/data/book-translations";
 import {
@@ -73,4 +77,59 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
   });
 
   redirect(url);
+}
+
+/**
+ * Submit (or update) a reader review for a purchased book.
+ * Only authenticated reader accounts with active entitlement can review.
+ */
+export async function submitBookReviewAction(formData: FormData): Promise<void> {
+  const slug = String(formData.get("slug") ?? "").trim();
+  const locale = await getLocale();
+  const book = await getPublicBookBySlug(slug, locale);
+  if (!book) {
+    redirect(`/book/${slug}?review=unavailable`);
+  }
+
+  const reader = await getCurrentReader();
+  if (!reader) {
+    redirect(`/book/${slug}?review=signin`);
+  }
+
+  const entitlement = await prisma.readerLibrary.findFirst({
+    where: {
+      readerId: reader.id,
+      bookId: book.id,
+      accessStatus: "ACTIVE",
+    },
+    select: { id: true },
+  });
+  if (!entitlement) {
+    redirect(`/book/${slug}?review=owned`);
+  }
+
+  const ratingRaw = String(formData.get("rating") ?? "");
+  const rating = Number.parseInt(ratingRaw, 10);
+  const thoughts = String(formData.get("thoughts") ?? "").trim();
+
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    redirect(`/book/${slug}?review=invalid_rating#reader-reviews`);
+  }
+  if (thoughts.length < 20 || thoughts.length > 1200) {
+    redirect(`/book/${slug}?review=invalid_text#reader-reviews`);
+  }
+
+  try {
+    await upsertReaderBookReview({
+      bookId: book.id,
+      readerId: reader.id,
+      rating,
+      thoughts,
+    });
+  } catch {
+    redirect(`/book/${slug}?review=error#reader-reviews`);
+  }
+
+  revalidatePath(`/book/${slug}`);
+  redirect(`/book/${slug}?review=success#reader-reviews`);
 }
