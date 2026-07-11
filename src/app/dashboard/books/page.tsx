@@ -45,7 +45,13 @@ function filterBooks(books: BookDTO[], tab: TabKey): BookDTO[] {
 export default async function MyBooksPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{
+    tab?: string;
+    q?: string;
+    category?: string;
+    language?: string;
+    proof?: string;
+  }>;
 }) {
   // Layout guard owns the unauthenticated redirect; bail quietly to avoid a
   // redundant "Unauthorized" throw during parallel render.
@@ -61,9 +67,19 @@ export default async function MyBooksPage({
     archived: d.tabArchived,
   };
 
-  const { tab: tabParam } = await searchParams;
+  const {
+    tab: tabParam,
+    q: qParam,
+    category: categoryParam,
+    language: languageParam,
+    proof: proofParam,
+  } = await searchParams;
   const tab: TabKey =
     TABS.find((t) => t.key === tabParam)?.key ?? "active";
+  const q = typeof qParam === "string" ? qParam.trim().toLowerCase() : "";
+  const categoryFilter = typeof categoryParam === "string" ? categoryParam.trim() : "";
+  const languageFilter = typeof languageParam === "string" ? languageParam.trim() : "";
+  const proofFilter = typeof proofParam === "string" ? proofParam.trim() : "";
 
   const books = await listAuthorBooks(author.id);
   const counts: Record<TabKey, number> = {
@@ -73,6 +89,25 @@ export default async function MyBooksPage({
     archived: filterBooks(books, "archived").length,
   };
   const shown = filterBooks(books, tab);
+  const categoryOptions = Array.from(new Set(shown.map((b) => b.category))).sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const languageOptions = Array.from(new Set(shown.map((b) => b.language))).sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const filtered = shown.filter((book) => {
+    const matchesQuery =
+      !q ||
+      book.title.toLowerCase().includes(q) ||
+      (book.subtitle ?? "").toLowerCase().includes(q);
+    const matchesCategory = !categoryFilter || book.category === categoryFilter;
+    const matchesLanguage = !languageFilter || book.language === languageFilter;
+    const matchesProof =
+      !proofFilter ||
+      (proofFilter === "verified" && book.proofVerified) ||
+      (proofFilter === "unverified" && !book.proofVerified);
+    return matchesQuery && matchesCategory && matchesLanguage && matchesProof;
+  });
 
   function renderBookItem(book: BookDTO) {
     const archived = Boolean(book.archivedAt);
@@ -175,6 +210,78 @@ export default async function MyBooksPage({
         })}
       </div>
 
+      <form className="mb-6 rounded-xl border border-border bg-surface/60 p-4">
+        {tab !== "active" ? <input type="hidden" name="tab" value={tab} /> : null}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="space-y-1 text-sm">
+            <span className="text-muted">Search</span>
+            <input
+              type="search"
+              name="q"
+              defaultValue={qParam ?? ""}
+              placeholder="Title or subtitle"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+            />
+          </label>
+          <label className="space-y-1 text-sm">
+            <span className="text-muted">Category</span>
+            <select
+              name="category"
+              defaultValue={categoryFilter}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+            >
+              <option value="">All categories</option>
+              {categoryOptions.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="space-y-1 text-sm">
+            <span className="text-muted">Language</span>
+            <select
+              name="language"
+              defaultValue={languageFilter}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+            >
+              <option value="">All languages</option>
+              {languageOptions.map((language) => (
+                <option key={language} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="space-y-1 text-sm">
+            <span className="text-muted">Proof</span>
+            <select
+              name="proof"
+              defaultValue={proofFilter}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+            >
+              <option value="">All</option>
+              <option value="verified">Verified only</option>
+              <option value="unverified">Unverified only</option>
+            </select>
+          </label>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            type="submit"
+            className="inline-flex items-center rounded-lg border border-primary/60 bg-primary/15 px-3 py-1.5 text-sm text-foreground transition hover:bg-primary/25"
+          >
+            Apply filters
+          </button>
+          <Link
+            href={tab === "active" ? "/dashboard/books" : `/dashboard/books?tab=${tab}`}
+            className="inline-flex items-center rounded-lg border border-border px-3 py-1.5 text-sm text-muted transition hover:text-foreground"
+          >
+            Clear
+          </Link>
+        </div>
+      </form>
+
       {books.length === 0 ? (
         <Card className="text-center">
           <p className="text-foreground">{d.noBooksYet}</p>
@@ -185,7 +292,7 @@ export default async function MyBooksPage({
             </ButtonLink>
           </div>
         </Card>
-      ) : shown.length === 0 ? (
+      ) : filtered.length === 0 ? (
         <Card className="text-center">
           <p className="text-sm text-muted">{d.noBooksInView}</p>
         </Card>
@@ -193,7 +300,7 @@ export default async function MyBooksPage({
         <>
           <div className="lg:hidden">
             <MyBooksSwipeRow>
-              {shown.map((book) => (
+              {filtered.map((book) => (
                 <div
                   key={book.id}
                   data-book-item="true"
@@ -206,7 +313,7 @@ export default async function MyBooksPage({
           </div>
 
           <div className="hidden gap-4 lg:grid lg:grid-cols-3">
-            {shown.map((book) => (
+            {filtered.map((book) => (
               <div key={book.id} className="space-y-2">
                 {renderBookItem(book)}
               </div>
