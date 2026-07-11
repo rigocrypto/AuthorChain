@@ -213,13 +213,6 @@ export function PublishedBookCard({
             }`}
           />
         ) : null}
-        {featured ? (
-          <div className="pointer-events-none absolute inset-x-3 top-[42%] z-20 hidden -translate-y-1/2 text-center sm:block">
-            <span className="inline-block rounded-md border border-amber-200/60 bg-black/45 px-3 py-1 text-xl font-extrabold tracking-wide text-amber-100 shadow-[0_0_18px_rgba(250,204,21,0.4)] lg:text-2xl">
-              {book.title}
-            </span>
-          </div>
-        ) : null}
       </div>
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center justify-between gap-2">
@@ -228,15 +221,7 @@ export function PublishedBookCard({
             <StatusBadge tone="accent">{verifiedProofLabel}</StatusBadge>
           ) : null}
         </div>
-        <h3
-          className={`mt-2 line-clamp-2 text-foreground ${
-            featured
-              ? "font-semibold sm:text-base lg:text-lg"
-              : "font-semibold"
-          }`}
-        >
-          {book.title}
-        </h3>
+        <h3 className="mt-2 line-clamp-2 font-semibold text-foreground">{book.title}</h3>
         <p className="text-sm text-muted">
           {byLabel} {book.authorName}
         </p>
