@@ -31,9 +31,24 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 export const dynamic = "force-dynamic";
 
-export default async function ExplorePage() {
+export default async function ExplorePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    q?: string;
+    author?: string;
+    genre?: string;
+    verified?: string;
+  }>;
+}) {
   const { dict } = await getDictionary();
   const t = dict.explore;
+  const params = await searchParams;
+  const q = typeof params.q === "string" ? params.q.trim() : "";
+  const authorFilter = typeof params.author === "string" ? params.author.trim() : "";
+  const genreFilter = typeof params.genre === "string" ? params.genre.trim() : "";
+  const verifiedOnly = params.verified === "1";
+
   const books = await listPublishedBooks();
   const FEATURED_BOOK_SLUGS = new Set([
     "the-quantum-purgatory",
@@ -45,6 +60,23 @@ export default async function ExplorePage() {
   }
 
   const featured = books.filter((b) => isFeaturedBook(b.slug)).slice(0, 4);
+  const authorOptions = Array.from(new Set(books.map((b) => b.authorName))).sort((a, b) =>
+    a.localeCompare(b),
+  );
+  const genreOptions = Array.from(new Set(books.map((b) => b.category))).sort((a, b) =>
+    a.localeCompare(b),
+  );
+
+  const filteredBooks = books.filter((b) => {
+    const matchesQuery =
+      !q ||
+      b.title.toLowerCase().includes(q.toLowerCase()) ||
+      b.authorName.toLowerCase().includes(q.toLowerCase());
+    const matchesAuthor = !authorFilter || b.authorName === authorFilter;
+    const matchesGenre = !genreFilter || b.category === genreFilter;
+    const matchesProof = !verifiedOnly || b.proofVerified;
+    return matchesQuery && matchesAuthor && matchesGenre && matchesProof;
+  });
 
   const comingSoon = [
     { t: t.soonAudiobooks, d: t.soonAudiobooksDesc },
@@ -154,13 +186,93 @@ export default async function ExplorePage() {
           <section className="mx-auto max-w-6xl px-4 pb-14">
             <h2 className="text-2xl font-semibold">{t.allBooks}</h2>
             <p className="mt-1 text-muted">
-              {books.length === 1
+              {filteredBooks.length === 1
                 ? t.booksAvailableOne
-                : t.booksAvailable.replace("{count}", String(books.length))}
+                : t.booksAvailable.replace("{count}", String(filteredBooks.length))}
             </p>
+
+            <form className="mt-5 rounded-xl border border-border bg-surface/60 p-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+                <label className="space-y-1 text-sm">
+                  <span className="text-muted">Search</span>
+                  <input
+                    type="search"
+                    name="q"
+                    defaultValue={q}
+                    placeholder="Title or author"
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+                  />
+                </label>
+                <label className="space-y-1 text-sm">
+                  <span className="text-muted">Author</span>
+                  <select
+                    name="author"
+                    defaultValue={authorFilter}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+                  >
+                    <option value="">All authors</option>
+                    {authorOptions.map((author) => (
+                      <option key={author} value={author}>
+                        {author}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="space-y-1 text-sm">
+                  <span className="text-muted">Genre</span>
+                  <select
+                    name="genre"
+                    defaultValue={genreFilter}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
+                  >
+                    <option value="">All genres</option>
+                    {genreOptions.map((genre) => (
+                      <option key={genre} value={genre}>
+                        {genre}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="space-y-1 text-sm">
+                  <span className="text-muted">Gender</span>
+                  <select
+                    disabled
+                    className="w-full cursor-not-allowed rounded-lg border border-border bg-background/50 px-3 py-2 text-sm text-muted"
+                    aria-label="Gender filter coming soon"
+                  >
+                    <option>Coming soon</option>
+                  </select>
+                </label>
+                <label className="flex items-end gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    name="verified"
+                    value="1"
+                    defaultChecked={verifiedOnly}
+                    className="h-4 w-4 rounded border-border"
+                  />
+                  <span className="text-muted">Verified proof only</span>
+                </label>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <button
+                  type="submit"
+                  className="inline-flex items-center rounded-lg border border-primary/60 bg-primary/15 px-3 py-1.5 text-sm text-foreground transition hover:bg-primary/25"
+                >
+                  Apply filters
+                </button>
+                <Link
+                  href="/explore"
+                  className="inline-flex items-center rounded-lg border border-border px-3 py-1.5 text-sm text-muted transition hover:text-foreground"
+                >
+                  Clear
+                </Link>
+              </div>
+            </form>
+
             <div className="mt-6">
               <HorizontalBookCarousel>
-              {books.map((b, i) => (
+              {filteredBooks.map((b, i) => (
                 <div key={b.id} className="w-[min(88vw,21.5rem)] shrink-0 snap-start transition duration-300 sm:w-[19.5rem]">
                   <PublishedBookCard
                     book={b}
