@@ -43,11 +43,15 @@ export function PublishedBookCard({
     const video = videoRef.current;
     if (!video) return;
 
-    const shouldPlayAudio = hovered && isFrontCard(video);
+    const shouldPlayAudio = audioEnabled || (hovered && isFrontCard(video));
     video.muted = !shouldPlayAudio;
 
-    if (!video.paused) return;
-    void video.play().catch(() => undefined);
+    if (!shouldPlayAudio) return;
+    void video.play().catch(() => {
+      // Browser autoplay policy may block sound; keep visual playback alive.
+      video.muted = true;
+      return video.play().catch(() => undefined);
+    });
   }
 
   useEffect(() => {
@@ -75,6 +79,17 @@ export function PublishedBookCard({
 
   function handleCoverEnter() {
     setHovered(true);
+
+    const video = videoRef.current;
+    if (!video) return;
+    if (!isFrontCard(video)) return;
+
+    // Try immediately on hover while user interaction context is fresh.
+    video.muted = false;
+    void video.play().catch(() => {
+      video.muted = true;
+      return video.play().catch(() => undefined);
+    });
   }
 
   function handleCoverLeave() {

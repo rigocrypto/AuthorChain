@@ -83,7 +83,7 @@ export function HorizontalBookCarousel({
     if (typeof window === "undefined") return 3600;
     if (window.matchMedia("(max-width: 639px)").matches) return 2800;
     if (window.matchMedia("(max-width: 1023px)").matches) return 3600;
-    return 5000;
+    return 3200;
   }
 
   function updateFrontCard() {
@@ -157,11 +157,23 @@ export function HorizontalBookCarousel({
       autoTimerRef.current = setInterval(() => {
         if (pausedRef.current || document.visibilityState !== "visible") return;
 
+        const el = scrollerRef.current;
+        if (!el) return;
+
         const cards = getCards();
         if (cards.length < 2) return;
 
         const current = getNearestCardIndex();
         const lastIndex = cards.length - 1;
+        const edgeTolerance = 4;
+        const atStart = el.scrollLeft <= edgeTolerance;
+        const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - edgeTolerance;
+
+        if (atEnd) {
+          autoDirectionRef.current = -1;
+        } else if (atStart) {
+          autoDirectionRef.current = 1;
+        }
 
         if (current >= lastIndex) {
           autoDirectionRef.current = -1;

@@ -26,6 +26,8 @@ export type BookDTO = {
   coverUrl: string | null;
   /** Whether a primary cover asset exists (served via /api/assets/books/[id]/cover). */
   hasCover: boolean;
+  /** MIME type of the primary cover asset, if one exists. */
+  coverMimeType: string | null;
   /** Whether the book has a successful (REGISTERED) on-chain proof of authorship. */
   proofVerified: boolean;
   /** sha-256 of the uploaded manuscript, if any (drives the real proof hash). */
@@ -64,6 +66,7 @@ function toDTO(
   unitsSold = 0,
   earningsUsdc = 0,
   hasCover = false,
+  coverMimeType: string | null = null,
   proofVerified = false,
 ): BookDTO {
   return {
@@ -81,6 +84,7 @@ function toDTO(
     coverColor: coverGradient(book.id),
     coverUrl: book.coverUrl,
     hasCover,
+    coverMimeType,
     proofVerified,
     fileHash: book.fileHash,
     isbn13: book.isbn13,
@@ -155,6 +159,7 @@ export async function listAuthorBooks(authorId: string): Promise<BookDTO[]> {
       s?.units ?? 0,
       s?.revenue ?? 0,
       b.assets.length > 0,
+      b.assets[0]?.mimeType ?? null,
       b.blockchainRegistrations.length > 0,
     );
   });

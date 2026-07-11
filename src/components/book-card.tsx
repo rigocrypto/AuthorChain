@@ -10,13 +10,28 @@ import { ProofSeal } from "@/components/proof-seal";
  * Public discovery uses `PublishedBookCard` instead.
  */
 export function BookCard({ book }: { book: BookDTO }) {
+  const coverIsVideo = book.coverMimeType?.startsWith("video/") ?? false;
+
   return (
     <Link
       href={`/dashboard/books/${book.id}`}
       className="group block overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-primary/60"
     >
       <div className="relative">
-        {book.hasCover ? (
+        {book.hasCover && coverIsVideo ? (
+          <video
+            src={`/api/assets/books/${book.id}/cover`}
+            aria-label={`${book.title} cover`}
+            className="aspect-[2/3] w-full border-b border-border object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            Your browser does not support HTML5 video.
+          </video>
+        ) : book.hasCover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={`/api/assets/books/${book.id}/cover`}
