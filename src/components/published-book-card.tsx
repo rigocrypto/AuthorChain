@@ -36,8 +36,20 @@ export function PublishedBookCard({
   function handleCoverEnter() {
     const video = videoRef.current;
     if (!video) return;
-    video.muted = false;
-    void video.play();
+
+    // Keep playback alive; then attempt to unmute on hover.
+    const ensurePlaying = video.paused
+      ? video.play().catch(() => undefined)
+      : Promise.resolve();
+
+    void ensurePlaying.then(() => {
+      video.muted = false;
+      return video.play().catch(() => {
+        // Browsers may block hover-initiated audio; keep video playing muted.
+        video.muted = true;
+        return video.play().catch(() => undefined);
+      });
+    });
   }
 
   function handleCoverLeave() {
@@ -52,7 +64,7 @@ export function PublishedBookCard({
       className={`group relative flex flex-col overflow-hidden rounded-xl border bg-surface transition-colors hover:border-primary/60 ${
         featured
           ? "border-amber-300/90 shadow-[0_0_0_2px_rgba(251,191,36,0.5),0_26px_55px_-28px_rgba(251,191,36,0.95)]"
-          : "border-amber-300/45 shadow-[0_0_0_1px_rgba(251,191,36,0.2)]"
+          : "border-sky-300/70 shadow-[0_0_0_1px_rgba(56,189,248,0.35)]"
       }`}
     >
       {
@@ -60,7 +72,7 @@ export function PublishedBookCard({
           <div
             aria-hidden
             className={`pointer-events-none absolute inset-[5px] z-10 rounded-[0.7rem] border ${
-              featured ? "border-amber-200/70" : "border-amber-200/40"
+              featured ? "border-amber-200/70" : "border-sky-200/55"
             }`}
           />
           {featured ? (

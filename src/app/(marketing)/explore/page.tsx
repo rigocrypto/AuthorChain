@@ -155,7 +155,7 @@ export default async function ExplorePage() {
                 <div key={b.id} className="w-[min(86vw,19.5rem)] shrink-0 snap-start sm:w-[19.5rem]">
                   <PublishedBookCard
                     book={b}
-                    featured
+                    featured={b.proofVerified}
                     byLabel={dict.book.by}
                     verifiedProofLabel={dict.common.verifiedProof}
                     openBookLabel={dict.common.openBook}
