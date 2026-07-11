@@ -99,7 +99,7 @@ export function PublishedBookCard({
           ) : null}
         </>
       }
-      <div className="relative" onMouseEnter={handleCoverEnter} onMouseLeave={handleCoverLeave}>
+      <div className="cover-media relative" onMouseEnter={handleCoverEnter} onMouseLeave={handleCoverLeave}>
         {book.hasCover && coverIsVideo ? (
           <>
             <video
@@ -119,7 +119,7 @@ export function PublishedBookCard({
               type="button"
               onClick={toggleAudio}
               aria-label={audioEnabled ? "Mute cover video" : "Enable cover video sound"}
-              className="absolute right-2 top-2 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full border border-sky-200/60 bg-black/65 text-white transition hover:border-sky-300"
+              className="cover-sound-toggle absolute right-2 top-2 z-30 inline-flex h-8 w-8 items-center justify-center rounded-full border border-sky-200/60 bg-black/65 text-white transition hover:border-sky-300"
             >
               {audioEnabled ? (
                 <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
