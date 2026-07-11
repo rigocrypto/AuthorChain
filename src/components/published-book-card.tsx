@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { PublishedBookDTO } from "@/lib/data/books";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ProofSeal } from "@/components/proof-seal";
@@ -33,32 +33,52 @@ export function PublishedBookCard({
   const coverIsVideo = book.coverMimeType?.startsWith("video/") ?? false;
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
-  function handleCoverEnter() {
+  function isFrontCard(video: HTMLVideoElement) {
+    return Boolean(video.closest("[data-front='true']"));
+  }
+
+  function syncAudioState() {
     const video = videoRef.current;
     if (!video) return;
 
-    // Keep playback alive; then attempt to unmute on hover.
-    const ensurePlaying = video.paused
-      ? video.play().catch(() => undefined)
-      : Promise.resolve();
+    const shouldPlayAudio = hovered && isFrontCard(video);
+    video.muted = !shouldPlayAudio;
 
-    void ensurePlaying.then(() => {
-      video.muted = false;
-      return video.play().catch(() => {
-        // Browsers may block hover-initiated audio; keep video playing muted.
-        video.muted = true;
-        return video.play().catch(() => undefined);
-      });
+    if (!video.paused) return;
+    void video.play().catch(() => undefined);
+  }
+
+  useEffect(() => {
+    syncAudioState();
+  }, [hovered]);
+
+  useEffect(() => {
+    if (!coverIsVideo) return;
+
+    const observer = new MutationObserver((mutations) => {
+      if (!mutations.some((m) => m.attributeName === "data-front")) return;
+      syncAudioState();
     });
+
+    observer.observe(document.body, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["data-front"],
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [coverIsVideo, hovered]);
+
+  function handleCoverEnter() {
+    setHovered(true);
   }
 
   function handleCoverLeave() {
-    const video = videoRef.current;
-    if (!video) return;
-    if (!audioEnabled) {
-      video.muted = true;
-    }
+    setHovered(false);
   }
 
   function toggleAudio(event: React.MouseEvent<HTMLButtonElement>) {
@@ -70,8 +90,14 @@ export function PublishedBookCard({
 
     const nextEnabled = !audioEnabled;
     setAudioEnabled(nextEnabled);
-    video.muted = !nextEnabled;
-    void video.play().catch(() => undefined);
+
+    // Manual toggle still works for tap devices; hover/front auto-mode remains primary.
+    if (nextEnabled) {
+      video.muted = false;
+      void video.play().catch(() => undefined);
+    } else {
+      syncAudioState();
+    }
   }
 
   return (
