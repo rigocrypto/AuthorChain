@@ -38,6 +38,7 @@ export default async function ExplorePage({
     q?: string;
     author?: string;
     genre?: string;
+    gender?: string;
     verified?: string;
   }>;
 }) {
@@ -47,6 +48,7 @@ export default async function ExplorePage({
   const q = typeof params.q === "string" ? params.q.trim() : "";
   const authorFilter = typeof params.author === "string" ? params.author.trim() : "";
   const genreFilter = typeof params.genre === "string" ? params.genre.trim() : "";
+  const genderFilter = typeof params.gender === "string" ? params.gender.trim() : "";
   const verifiedOnly = params.verified === "1";
 
   const books = await listPublishedBooks();
@@ -66,6 +68,9 @@ export default async function ExplorePage({
   const genreOptions = Array.from(new Set(books.map((b) => b.category))).sort((a, b) =>
     a.localeCompare(b),
   );
+  const genderOptions = Array.from(
+    new Set(books.map((b) => b.authorGender).filter((g): g is string => Boolean(g))),
+  ).sort((a, b) => a.localeCompare(b));
 
   const filteredBooks = books.filter((b) => {
     const matchesQuery =
@@ -74,8 +79,9 @@ export default async function ExplorePage({
       b.authorName.toLowerCase().includes(q.toLowerCase());
     const matchesAuthor = !authorFilter || b.authorName === authorFilter;
     const matchesGenre = !genreFilter || b.category === genreFilter;
+    const matchesGender = !genderFilter || b.authorGender === genderFilter;
     const matchesProof = !verifiedOnly || b.proofVerified;
-    return matchesQuery && matchesAuthor && matchesGenre && matchesProof;
+    return matchesQuery && matchesAuthor && matchesGenre && matchesGender && matchesProof;
   });
 
   const comingSoon = [
@@ -236,11 +242,16 @@ export default async function ExplorePage({
                 <label className="space-y-1 text-sm">
                   <span className="text-muted">Gender</span>
                   <select
-                    disabled
-                    className="w-full cursor-not-allowed rounded-lg border border-border bg-background/50 px-3 py-2 text-sm text-muted"
-                    aria-label="Gender filter coming soon"
+                    name="gender"
+                    defaultValue={genderFilter}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none ring-primary/40 transition focus:ring-2"
                   >
-                    <option>Coming soon</option>
+                    <option value="">All genders</option>
+                    {genderOptions.map((gender) => (
+                      <option key={gender} value={gender}>
+                        {gender}
+                      </option>
+                    ))}
                   </select>
                 </label>
                 <label className="flex items-end gap-2 text-sm">

@@ -146,6 +146,7 @@ enum PrintCoverFinish {
 model Author {
   id            String   @id @default(cuid())
   name          String
+  gender        String?
   email         String   @unique
   walletAddress String?
   avatarUrl     String?

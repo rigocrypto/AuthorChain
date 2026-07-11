@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ButtonLink } from "@/components/ui/button";
 import { getOptionalAuthor } from "@/lib/auth/session";
+import { prisma } from "@/lib/db";
 import { getDashboardStats, getRecentSales } from "@/lib/data/stats";
 import { getTopBook } from "@/lib/data/books";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -15,6 +17,27 @@ export const dynamic = "force-dynamic";
 const usd = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD" });
 const num = (n: number) => n.toLocaleString("en-US");
+const AUTHOR_GENDER_OPTIONS = ["Female", "Male", "Non-binary", "Prefer not to say"];
+
+async function updateAuthorProfileAction(formData: FormData) {
+  "use server";
+
+  const author = await getOptionalAuthor();
+  if (!author) return;
+
+  const nameRaw = String(formData.get("displayName") ?? "").trim();
+  const genderRaw = String(formData.get("gender") ?? "").trim();
+  const name = nameRaw.slice(0, 120) || author.name;
+  const gender = AUTHOR_GENDER_OPTIONS.includes(genderRaw) ? genderRaw : null;
+
+  await prisma.author.update({
+    where: { id: author.id },
+    data: { name, gender },
+  });
+
+  revalidatePath("/dashboard");
+  revalidatePath("/explore");
+}
 
 export default async function DashboardPageRoute() {
   // The dashboard layout guard owns the unauthenticated redirect. This page and
@@ -104,6 +127,43 @@ export default async function DashboardPageRoute() {
         </Link>
 
         <div className="space-y-4">
+          <Card>
+            <h2 className="mb-3 font-semibold">Author profile</h2>
+            <form action={updateAuthorProfileAction} className="space-y-3 text-sm">
+              <label className="block space-y-1">
+                <span className="text-muted">Display name</span>
+                <input
+                  type="text"
+                  name="displayName"
+                  defaultValue={author.name}
+                  maxLength={120}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 outline-none ring-primary/40 transition focus:ring-2"
+                />
+              </label>
+              <label className="block space-y-1">
+                <span className="text-muted">Gender</span>
+                <select
+                  name="gender"
+                  defaultValue={author.gender ?? ""}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 outline-none ring-primary/40 transition focus:ring-2"
+                >
+                  <option value="">Select gender (optional)</option>
+                  {AUTHOR_GENDER_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                type="submit"
+                className="inline-flex items-center rounded-lg border border-primary/60 bg-primary/15 px-3 py-1.5 text-foreground transition hover:bg-primary/25"
+              >
+                Save profile
+              </button>
+            </form>
+          </Card>
+
           {topBook ? (
             <Link
               href={`/book/${topBook.slug}`}

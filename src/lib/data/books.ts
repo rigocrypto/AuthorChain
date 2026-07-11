@@ -255,6 +255,7 @@ export type PublishedBookDTO = {
   subtitle: string | null;
   description: string;
   authorName: string;
+  authorGender: string | null;
   category: string;
   price: number;
   currency: string;
@@ -276,7 +277,7 @@ export async function listPublishedBooks(): Promise<PublishedBookDTO[]> {
     where: { status: "PUBLISHED", archivedAt: null },
     orderBy: { createdAt: "desc" },
     include: {
-      author: { select: { name: true } },
+      author: { select: { name: true, gender: true } },
       assets: {
         where: { assetType: "COVER", isPrimary: true },
         select: { id: true, mimeType: true },
@@ -296,6 +297,7 @@ export async function listPublishedBooks(): Promise<PublishedBookDTO[]> {
     subtitle: b.subtitle,
     description: b.description,
     authorName: b.author.name,
+    authorGender: b.author.gender,
     category: b.category,
     price: Number(b.price),
     currency: b.currency,
