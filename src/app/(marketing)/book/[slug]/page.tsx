@@ -270,7 +270,7 @@ export default async function PublicBookPage({
         </div>
 
         {/* Details */}
-        <div className="space-y-8">
+        <div className="mx-auto w-full max-w-3xl space-y-8">
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-xs uppercase tracking-wide text-accent">{book.category}</p>
@@ -290,7 +290,7 @@ export default async function PublicBookPage({
             <p className="mt-1 text-sm text-muted">
               {L.by} {book.authorName}
             </p>
-            <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted">
+            <p className="mx-auto mt-4 max-w-prose text-sm leading-relaxed text-muted">
               {L.seoIntro
                 .replace("{title}", metadata.title)
                 .replace("{author}", book.authorName)}
@@ -303,18 +303,18 @@ export default async function PublicBookPage({
               <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
                 {L.about}
               </h2>
-              <p className="mt-2 max-w-prose text-muted">{metadata.description}</p>
+              <p className="mx-auto mt-2 max-w-prose text-muted">{metadata.description}</p>
             </div>
             {book.audience ? (
               <div>
                 <h3 className="text-sm font-semibold">{L.whoFor}</h3>
-                <p className="mt-1 max-w-prose text-sm text-muted">{book.audience}</p>
+                <p className="mx-auto mt-1 max-w-prose text-sm text-muted">{book.audience}</p>
               </div>
             ) : null}
             {book.whatYouWillLearn ? (
               <div>
                 <h3 className="text-sm font-semibold">{L.whatLearn}</h3>
-                <p className="mt-1 max-w-prose whitespace-pre-line text-sm text-muted">
+                <p className="mx-auto mt-1 max-w-prose whitespace-pre-line text-sm text-muted">
                   {book.whatYouWillLearn}
                 </p>
               </div>
@@ -331,7 +331,7 @@ export default async function PublicBookPage({
           </section>
 
           {/* Buy */}
-          <Card className="max-w-sm">
+          <Card className="mx-auto max-w-sm">
             <CardTitle>{L.buyTitle}</CardTitle>
             <div className="mt-1 text-2xl font-semibold">
               ${book.price.toFixed(2)} {book.currency}
@@ -467,7 +467,7 @@ export default async function PublicBookPage({
               <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
                 {L.details}
               </h2>
-              <dl className="mt-3 space-y-2 text-sm sm:max-w-md">
+              <dl className="mx-auto mt-3 space-y-2 text-sm sm:max-w-md">
                 {details.map(([k, val]) => (
                   <div key={k} className="flex justify-between gap-4">
                     <dt className="text-muted">{k}</dt>
@@ -485,7 +485,7 @@ export default async function PublicBookPage({
             <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
               {L.credits}
             </h2>
-            <dl className="mt-3 space-y-2 text-sm sm:max-w-md">
+            <dl className="mx-auto mt-3 space-y-2 text-sm sm:max-w-md">
               {credits.map(([k, val]) => (
                 <div key={k} className="flex justify-between gap-4">
                   <dt className="text-muted">{k}</dt>
@@ -501,7 +501,7 @@ export default async function PublicBookPage({
               <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
                 {L.acknowledgments}
               </h2>
-              <p className="mt-2 max-w-prose whitespace-pre-line text-sm text-muted">
+              <p className="mx-auto mt-2 max-w-prose whitespace-pre-line text-sm text-muted">
                 {book.acknowledgments}
               </p>
             </section>
