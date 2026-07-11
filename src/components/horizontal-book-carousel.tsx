@@ -43,9 +43,11 @@ export function HorizontalBookCarousel({
 
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-10 pb-2 sm:px-12"
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 [scroll-padding-inline:2rem] sm:px-8"
       >
+        <div aria-hidden className="w-3 shrink-0 snap-none sm:w-6" />
         {children}
+        <div aria-hidden className="w-3 shrink-0 snap-none sm:w-6" />
       </div>
     </div>
   );
