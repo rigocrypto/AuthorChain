@@ -359,251 +359,253 @@ export default async function PublicBookPage({
               </div>
             ) : null}
           </section>
+        </div>
+      </div>
 
-          {/* Share */}
-          <ShareBook title={metadata.title} />
+      <div className="mx-auto mt-8 w-full max-w-3xl space-y-8">
+        {/* Share */}
+        <ShareBook title={metadata.title} />
 
-          {/* Reader reviews */}
-          <section
-            id="reader-reviews"
-            className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="font-semibold">Reader reviews</h2>
-              <StatusBadge tone="muted">{renderedReviews.length} listed</StatusBadge>
-            </div>
-            <p className="mt-1 text-sm text-muted">
-              Registered readers can share thoughts after adding this book to their library.
-            </p>
-            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-              <span className="font-medium text-foreground">{avgRatingText} / 5</span>
-              <span className="text-amber-300">{avgRatingStars}</span>
-              <span className="text-muted">{totalReviews} total reviews</span>
-            </div>
+        {/* Reader reviews */}
+        <section
+          id="reader-reviews"
+          className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-semibold">Reader reviews</h2>
+            <StatusBadge tone="muted">{renderedReviews.length} listed</StatusBadge>
+          </div>
+          <p className="mt-1 text-sm text-muted">
+            Registered readers can share thoughts after adding this book to their library.
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+            <span className="font-medium text-foreground">{avgRatingText} / 5</span>
+            <span className="text-amber-300">{avgRatingStars}</span>
+            <span className="text-muted">{totalReviews} total reviews</span>
+          </div>
 
-            {reviewMessage ? (
-              <p className={`mt-3 text-sm ${reviewMessageTone}`}>{reviewMessage}</p>
-            ) : null}
-
-            <div className="mt-4 space-y-3">
-              {renderedReviews.map((r) => {
-                const created = r.createdAt
-                  ? new Date(r.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  : "Preview";
-                return (
-                  <article key={r.id} className="rounded-xl border border-border bg-background/60 p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-foreground">{r.readerName}</p>
-                      <div className="flex items-center gap-2 text-xs text-muted">
-                        <span>{"★".repeat(r.rating)}{"☆".repeat(Math.max(0, 5 - r.rating))}</span>
-                        <span>{created}</span>
-                      </div>
-                    </div>
-                    <p className="mt-2 text-sm text-muted">{r.thoughts}</p>
-                    {r.isMock ? (
-                      <p className="mt-2 text-[11px] uppercase tracking-wide text-accent">
-                        Mockup preview
-                      </p>
-                    ) : null}
-                  </article>
-                );
-              })}
-            </div>
-
-            {reader ? (
-              <form action={submitBookReviewAction} className="mt-5 space-y-3 rounded-xl border border-border bg-background/40 p-4">
-                <input type="hidden" name="slug" value={book.slug} />
-                <div className="grid gap-3 sm:grid-cols-[10rem_1fr] sm:items-start">
-                  <label htmlFor="rating" className="text-sm text-muted">
-                    Rating
-                  </label>
-                  <select
-                    id="rating"
-                    name="rating"
-                    defaultValue="5"
-                    className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/40 transition focus:ring-2"
-                    required
-                  >
-                    <option value="5">5 - Excellent</option>
-                    <option value="4">4 - Very good</option>
-                    <option value="3">3 - Good</option>
-                    <option value="2">2 - Fair</option>
-                    <option value="1">1 - Needs work</option>
-                  </select>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-[10rem_1fr] sm:items-start">
-                  <label htmlFor="thoughts" className="text-sm text-muted">
-                    Your thoughts
-                  </label>
-                  <textarea
-                    id="thoughts"
-                    name="thoughts"
-                    rows={4}
-                    minLength={20}
-                    maxLength={1200}
-                    placeholder="Share what you liked, what stood out, or what could improve."
-                    className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/40 transition focus:ring-2"
-                    required
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <Button type="submit">Submit review</Button>
-                </div>
-              </form>
-            ) : (
-              <div className="mt-5 rounded-xl border border-border bg-background/40 p-4 text-sm text-muted">
-                <p>Sign in with your reader account to submit a review.</p>
-                <Link href="/login" className="mt-2 inline-block text-accent hover:underline">
-                  Sign in
-                </Link>
-              </div>
-            )}
-          </section>
-
-          {/* Book details */}
-          {details.length ? (
-            <section>
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
-                {L.details}
-              </h2>
-              <dl className="mx-auto mt-3 space-y-2 text-sm sm:max-w-md">
-                {details.map(([k, val]) => (
-                  <div key={k} className="flex justify-between gap-4">
-                    <dt className="text-muted">{k}</dt>
-                    <dd className={`text-right ${k === "ISBN-13" ? "font-mono text-xs" : ""}`}>
-                      {val}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
+          {reviewMessage ? (
+            <p className={`mt-3 text-sm ${reviewMessageTone}`}>{reviewMessage}</p>
           ) : null}
 
-          {/* Credits */}
+          <div className="mt-4 space-y-3">
+            {renderedReviews.map((r) => {
+              const created = r.createdAt
+                ? new Date(r.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                : "Preview";
+              return (
+                <article key={r.id} className="rounded-xl border border-border bg-background/60 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-foreground">{r.readerName}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted">
+                      <span>{"★".repeat(r.rating)}{"☆".repeat(Math.max(0, 5 - r.rating))}</span>
+                      <span>{created}</span>
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm text-muted">{r.thoughts}</p>
+                  {r.isMock ? (
+                    <p className="mt-2 text-[11px] uppercase tracking-wide text-accent">
+                      Mockup preview
+                    </p>
+                  ) : null}
+                </article>
+              );
+            })}
+          </div>
+
+          {reader ? (
+            <form action={submitBookReviewAction} className="mt-5 space-y-3 rounded-xl border border-border bg-background/40 p-4">
+              <input type="hidden" name="slug" value={book.slug} />
+              <div className="grid gap-3 sm:grid-cols-[10rem_1fr] sm:items-start">
+                <label htmlFor="rating" className="text-sm text-muted">
+                  Rating
+                </label>
+                <select
+                  id="rating"
+                  name="rating"
+                  defaultValue="5"
+                  className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/40 transition focus:ring-2"
+                  required
+                >
+                  <option value="5">5 - Excellent</option>
+                  <option value="4">4 - Very good</option>
+                  <option value="3">3 - Good</option>
+                  <option value="2">2 - Fair</option>
+                  <option value="1">1 - Needs work</option>
+                </select>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-[10rem_1fr] sm:items-start">
+                <label htmlFor="thoughts" className="text-sm text-muted">
+                  Your thoughts
+                </label>
+                <textarea
+                  id="thoughts"
+                  name="thoughts"
+                  rows={4}
+                  minLength={20}
+                  maxLength={1200}
+                  placeholder="Share what you liked, what stood out, or what could improve."
+                  className="rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-primary/40 transition focus:ring-2"
+                  required
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button type="submit">Submit review</Button>
+              </div>
+            </form>
+          ) : (
+            <div className="mt-5 rounded-xl border border-border bg-background/40 p-4 text-sm text-muted">
+              <p>Sign in with your reader account to submit a review.</p>
+              <Link href="/login" className="mt-2 inline-block text-accent hover:underline">
+                Sign in
+              </Link>
+            </div>
+          )}
+        </section>
+
+        {/* Book details */}
+        {details.length ? (
           <section>
             <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
-              {L.credits}
+              {L.details}
             </h2>
             <dl className="mx-auto mt-3 space-y-2 text-sm sm:max-w-md">
-              {credits.map(([k, val]) => (
+              {details.map(([k, val]) => (
                 <div key={k} className="flex justify-between gap-4">
                   <dt className="text-muted">{k}</dt>
-                  <dd className="text-right">{val}</dd>
+                  <dd className={`text-right ${k === "ISBN-13" ? "font-mono text-xs" : ""}`}>
+                    {val}
+                  </dd>
                 </div>
               ))}
             </dl>
           </section>
+        ) : null}
 
-          {/* Acknowledgments */}
-          {book.acknowledgments ? (
-            <section>
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
-                {L.acknowledgments}
-              </h2>
-              <p className="mx-auto mt-2 max-w-prose whitespace-pre-line text-sm text-muted">
-                {book.acknowledgments}
-              </p>
-            </section>
-          ) : null}
-
-          {/* Verified proof */}
-          {book.proofVerified ? (
-            <section className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">
-              <div className="flex items-start gap-4">
-                <ProofSeal variant="compact" className="w-14 shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <h2 className="font-semibold">{L.verifiedProofTitle}</h2>
-                  <p className="mt-1 text-sm text-muted">
-                    {L.verifiedProofBody
-                      .replace("{title}", metadata.title)
-                      .replace("{network}", chain.network)}
-                  </p>
-                  <dl className="mt-3 space-y-2 text-sm">
-                    {book.fileHash ? (
-                      <div>
-                        <dt className="text-muted">{L.manuscriptHash}</dt>
-                        <dd className="mt-0.5 break-all font-mono text-xs text-foreground">
-                          {book.fileHash}
-                        </dd>
-                      </div>
-                    ) : null}
-                    {book.proofTxHash ? (
-                      <div>
-                        <dt className="text-muted">{L.transaction}</dt>
-                        <dd className="mt-0.5 space-y-1 break-all font-mono text-xs">
-                          <span className="block text-foreground">{book.proofTxHash}</span>
-                          <a
-                            href={getExplorerTxUrl(book.proofTxHash)}
-                            target="_blank"
-                            rel="nofollow noopener noreferrer"
-                            className="inline-block text-accent hover:underline"
-                          >
-                            {L.viewOnExplorer} ↗
-                          </a>
-                        </dd>
-                      </div>
-                    ) : null}
-                  </dl>
-                </div>
+        {/* Credits */}
+        <section>
+          <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
+            {L.credits}
+          </h2>
+          <dl className="mx-auto mt-3 space-y-2 text-sm sm:max-w-md">
+            {credits.map(([k, val]) => (
+              <div key={k} className="flex justify-between gap-4">
+                <dt className="text-muted">{k}</dt>
+                <dd className="text-right">{val}</dd>
               </div>
-            </section>
-          ) : null}
+            ))}
+          </dl>
+        </section>
 
-          {/* Print edition — only expand when configured; keep empty state short + book-specific */}
-          <section className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">
-            <div className="flex items-center justify-between gap-2">
-              <h2 className="font-semibold">{L.printEdition}</h2>
-              {print ? (
-                <StatusBadge tone="accent">{L.printAvailable}</StatusBadge>
-              ) : (
-                <StatusBadge tone="muted">{L.printSoon}</StatusBadge>
-              )}
-            </div>
-
-            {print ? (
-              <>
-                <p className="mt-1 max-w-prose text-sm text-muted">
-                  {L.printAvailableDesc}
-                  {print.availabilityNote ? ` ${print.availabilityNote}` : ""}
-                </p>
-                {print.price != null ? (
-                  <div className="mt-3 text-xl font-semibold">
-                    ${print.price.toFixed(2)} {print.currency}
-                  </div>
-                ) : null}
-                {printDetails.length ? (
-                  <dl className="mt-3 space-y-2 text-sm sm:max-w-md">
-                    {printDetails.map(([k, val]) => (
-                      <div key={k} className="flex justify-between gap-4">
-                        <dt className="text-muted">{k}</dt>
-                        <dd className={`text-right ${k === L.printIsbn13 ? "font-mono text-xs" : ""}`}>
-                          {val}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                ) : null}
-                {print.printNotes ? (
-                  <p className="mt-3 max-w-prose whitespace-pre-line text-sm text-muted">
-                    {print.printNotes}
-                  </p>
-                ) : null}
-                <Button className="mt-4" variant="secondary" disabled>
-                  {L.orderPrint}
-                </Button>
-                <p className="mt-2 text-xs text-muted">{L.printRefNote}</p>
-              </>
-            ) : (
-              <p className="mt-1 max-w-prose text-sm text-muted">
-                {L.printComingDesc.replace("{title}", metadata.title)}
-              </p>
-            )}
+        {/* Acknowledgments */}
+        {book.acknowledgments ? (
+          <section>
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
+              {L.acknowledgments}
+            </h2>
+            <p className="mx-auto mt-2 max-w-prose whitespace-pre-line text-sm text-muted">
+              {book.acknowledgments}
+            </p>
           </section>
-        </div>
+        ) : null}
+
+        {/* Verified proof */}
+        {book.proofVerified ? (
+          <section className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">
+            <div className="flex items-start gap-4">
+              <ProofSeal variant="compact" className="w-14 shrink-0" />
+              <div className="min-w-0 flex-1">
+                <h2 className="font-semibold">{L.verifiedProofTitle}</h2>
+                <p className="mt-1 text-sm text-muted">
+                  {L.verifiedProofBody
+                    .replace("{title}", metadata.title)
+                    .replace("{network}", chain.network)}
+                </p>
+                <dl className="mt-3 space-y-2 text-sm">
+                  {book.fileHash ? (
+                    <div>
+                      <dt className="text-muted">{L.manuscriptHash}</dt>
+                      <dd className="mt-0.5 break-all font-mono text-xs text-foreground">
+                        {book.fileHash}
+                      </dd>
+                    </div>
+                  ) : null}
+                  {book.proofTxHash ? (
+                    <div>
+                      <dt className="text-muted">{L.transaction}</dt>
+                      <dd className="mt-0.5 space-y-1 break-all font-mono text-xs">
+                        <span className="block text-foreground">{book.proofTxHash}</span>
+                        <a
+                          href={getExplorerTxUrl(book.proofTxHash)}
+                          target="_blank"
+                          rel="nofollow noopener noreferrer"
+                          className="inline-block text-accent hover:underline"
+                        >
+                          {L.viewOnExplorer} ↗
+                        </a>
+                      </dd>
+                    </div>
+                  ) : null}
+                </dl>
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {/* Print edition — only expand when configured; keep empty state short + book-specific */}
+        <section className="mx-auto w-full max-w-3xl rounded-2xl border border-border bg-surface p-6">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="font-semibold">{L.printEdition}</h2>
+            {print ? (
+              <StatusBadge tone="accent">{L.printAvailable}</StatusBadge>
+            ) : (
+              <StatusBadge tone="muted">{L.printSoon}</StatusBadge>
+            )}
+          </div>
+
+          {print ? (
+            <>
+              <p className="mt-1 max-w-prose text-sm text-muted">
+                {L.printAvailableDesc}
+                {print.availabilityNote ? ` ${print.availabilityNote}` : ""}
+              </p>
+              {print.price != null ? (
+                <div className="mt-3 text-xl font-semibold">
+                  ${print.price.toFixed(2)} {print.currency}
+                </div>
+              ) : null}
+              {printDetails.length ? (
+                <dl className="mt-3 space-y-2 text-sm sm:max-w-md">
+                  {printDetails.map(([k, val]) => (
+                    <div key={k} className="flex justify-between gap-4">
+                      <dt className="text-muted">{k}</dt>
+                      <dd className={`text-right ${k === L.printIsbn13 ? "font-mono text-xs" : ""}`}>
+                        {val}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
+              {print.printNotes ? (
+                <p className="mt-3 max-w-prose whitespace-pre-line text-sm text-muted">
+                  {print.printNotes}
+                </p>
+              ) : null}
+              <Button className="mt-4" variant="secondary" disabled>
+                {L.orderPrint}
+              </Button>
+              <p className="mt-2 text-xs text-muted">{L.printRefNote}</p>
+            </>
+          ) : (
+            <p className="mt-1 max-w-prose text-sm text-muted">
+              {L.printComingDesc.replace("{title}", metadata.title)}
+            </p>
+          )}
+        </section>
       </div>
       <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-4 text-sm">
         <div className="text-muted">Swipe left/right on mobile to move between books.</div>
