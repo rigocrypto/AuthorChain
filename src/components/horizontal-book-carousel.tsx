@@ -78,6 +78,13 @@ export function HorizontalBookCarousel({
     }, delay);
   }
 
+  function getAutoScrollIntervalMs() {
+    if (typeof window === "undefined") return 3600;
+    if (window.matchMedia("(max-width: 639px)").matches) return 2800;
+    if (window.matchMedia("(max-width: 1023px)").matches) return 3600;
+    return 5000;
+  }
+
   function updateFrontCard() {
     const el = scrollerRef.current;
     if (!el) return;
@@ -144,11 +151,21 @@ export function HorizontalBookCarousel({
     el.addEventListener("touchstart", handleUserInteraction, { passive: true });
     el.addEventListener("wheel", handleUserInteraction, { passive: true });
 
-    autoTimerRef.current = setInterval(() => {
-      if (pausedRef.current || document.visibilityState !== "visible") return;
-      const next = getNearestCardIndex() + 1;
-      centerCard(next, "smooth");
-    }, 3600);
+    const startAutoScroll = () => {
+      if (autoTimerRef.current) clearInterval(autoTimerRef.current);
+      autoTimerRef.current = setInterval(() => {
+        if (pausedRef.current || document.visibilityState !== "visible") return;
+        const next = getNearestCardIndex() + 1;
+        centerCard(next, "smooth");
+      }, getAutoScrollIntervalMs());
+    };
+
+    const handleAutoSpeedRefresh = () => {
+      startAutoScroll();
+    };
+
+    startAutoScroll();
+    window.addEventListener("resize", handleAutoSpeedRefresh);
 
     return () => {
       el.removeEventListener("scroll", handleScroll);
@@ -158,6 +175,7 @@ export function HorizontalBookCarousel({
       el.removeEventListener("pointerdown", handleUserInteraction);
       el.removeEventListener("touchstart", handleUserInteraction);
       el.removeEventListener("wheel", handleUserInteraction);
+      window.removeEventListener("resize", handleAutoSpeedRefresh);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (autoTimerRef.current) clearInterval(autoTimerRef.current);
       if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
