@@ -63,6 +63,10 @@ export function BookPreview({
 
   const coverSrc = `/api/assets/books/${bookId}/cover`;
   const coverIsVideo = coverMimeType?.startsWith("video/") ?? false;
+  const isFeaturedBook = [
+    "the-quantum-purgatory",
+    "the-ultimate-ai-prompts-playbook",
+  ].includes(slug.toLowerCase());
 
   function toggleAudio(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
@@ -121,7 +125,25 @@ export function BookPreview({
 
   return (
     <>
-      <div className="relative">
+      <div
+        className={`relative overflow-hidden rounded-xl border bg-surface ${
+          isFeaturedBook
+            ? "border-amber-300/95 shadow-[0_0_0_2px_rgba(251,191,36,0.62),0_0_28px_-6px_rgba(250,204,21,0.85),0_30px_62px_-30px_rgba(234,179,8,0.95)]"
+            : "border-sky-300/55 shadow-[0_0_0_1px_rgba(56,189,248,0.2)]"
+        }`}
+      >
+        <div
+          aria-hidden
+          className={`pointer-events-none absolute inset-[5px] z-10 rounded-[0.7rem] border ${
+            isFeaturedBook ? "border-amber-200/90" : "border-sky-200/45"
+          }`}
+        />
+        {isFeaturedBook ? (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1 z-20 h-2 w-2 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_12px_rgba(252,211,77,0.95)] sm:top-2 sm:h-3 sm:w-3 sm:shadow-[0_0_18px_rgba(252,211,77,1)]"
+          />
+        ) : null}
         <button
           type="button"
           onClick={() => setOpen(true)}
