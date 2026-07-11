@@ -14,6 +14,7 @@ export function HorizontalBookCarousel({
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pausedRef = useRef(false);
+  const autoDirectionRef = useRef<1 | -1>(1);
 
   function getCards() {
     const el = scrollerRef.current;
@@ -155,7 +156,23 @@ export function HorizontalBookCarousel({
       if (autoTimerRef.current) clearInterval(autoTimerRef.current);
       autoTimerRef.current = setInterval(() => {
         if (pausedRef.current || document.visibilityState !== "visible") return;
-        const next = getNearestCardIndex() + 1;
+
+        const cards = getCards();
+        if (cards.length < 2) return;
+
+        const current = getNearestCardIndex();
+        const lastIndex = cards.length - 1;
+
+        if (current >= lastIndex) {
+          autoDirectionRef.current = -1;
+        } else if (current <= 0) {
+          autoDirectionRef.current = 1;
+        }
+
+        const next = Math.min(
+          Math.max(current + autoDirectionRef.current, 0),
+          lastIndex,
+        );
         centerCard(next, "smooth");
       }, getAutoScrollIntervalMs());
     };
