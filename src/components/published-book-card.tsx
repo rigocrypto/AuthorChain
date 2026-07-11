@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { PublishedBookDTO } from "@/lib/data/books";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ProofSeal } from "@/components/proof-seal";
@@ -32,6 +32,7 @@ export function PublishedBookCard({
   const coverSrc = `/api/assets/books/${book.id}/cover`;
   const coverIsVideo = book.coverMimeType?.startsWith("video/") ?? false;
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [audioEnabled, setAudioEnabled] = useState(false);
 
   function handleCoverEnter() {
     const video = videoRef.current;
@@ -55,7 +56,22 @@ export function PublishedBookCard({
   function handleCoverLeave() {
     const video = videoRef.current;
     if (!video) return;
-    video.muted = true;
+    if (!audioEnabled) {
+      video.muted = true;
+    }
+  }
+
+  function toggleAudio(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    const nextEnabled = !audioEnabled;
+    setAudioEnabled(nextEnabled);
+    video.muted = !nextEnabled;
+    void video.play().catch(() => undefined);
   }
 
   return (
@@ -99,6 +115,14 @@ export function PublishedBookCard({
             >
               Your browser does not support HTML5 video.
             </video>
+            <button
+              type="button"
+              onClick={toggleAudio}
+              aria-label={audioEnabled ? "Mute cover video" : "Enable cover video sound"}
+              className="absolute right-2 top-2 z-20 rounded-full border border-sky-200/60 bg-black/65 px-2 py-1 text-xs text-white transition hover:border-sky-300"
+            >
+              {audioEnabled ? "Sound: on" : "Sound: off"}
+            </button>
             <div
               className={`hidden aspect-[2/3] w-full items-end border-b border-border bg-gradient-to-br ${book.coverColor} p-4 motion-reduce:flex`}
               role="img"
