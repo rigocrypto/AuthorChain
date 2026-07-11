@@ -10,6 +10,73 @@ export function HorizontalBookCarousel({
 }) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
+  const autoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pausedRef = useRef(false);
+
+  function getCards() {
+    const el = scrollerRef.current;
+    if (!el) return [] as HTMLElement[];
+    return Array.from(el.children).filter(
+      (child) => !(child as HTMLElement).hasAttribute("data-edge-spacer"),
+    ) as HTMLElement[];
+  }
+
+  function getNearestCardIndex() {
+    const el = scrollerRef.current;
+    if (!el) return 0;
+
+    const cards = getCards();
+    if (cards.length === 0) return 0;
+
+    const center = el.scrollLeft + el.clientWidth / 2;
+    let bestIndex = 0;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    for (let i = 0; i < cards.length; i += 1) {
+      const card = cards[i];
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(cardCenter - center);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestIndex = i;
+      }
+    }
+
+    return bestIndex;
+  }
+
+  function centerCard(index: number, behavior: ScrollBehavior = "smooth") {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    const cards = getCards();
+    if (cards.length === 0) return;
+
+    const safeIndex = ((index % cards.length) + cards.length) % cards.length;
+    const card = cards[safeIndex];
+    const rawLeft = card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2;
+    const maxLeft = Math.max(0, el.scrollWidth - el.clientWidth);
+    const left = Math.min(Math.max(rawLeft, 0), maxLeft);
+
+    el.scrollTo({ left, behavior });
+  }
+
+  function pauseAuto() {
+    pausedRef.current = true;
+    if (resumeTimerRef.current) {
+      clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
+  }
+
+  function scheduleAutoResume(delay = 1400) {
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => {
+      pausedRef.current = false;
+    }, delay);
+  }
 
   function updateFrontCard() {
     const el = scrollerRef.current;
@@ -45,24 +112,64 @@ export function HorizontalBookCarousel({
     const handleScroll = () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(updateFrontCard);
+
+      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+      settleTimerRef.current = setTimeout(() => {
+        centerCard(getNearestCardIndex(), "smooth");
+        scheduleAutoResume();
+      }, 110);
     };
 
+    const handlePointerEnter = () => {
+      pauseAuto();
+    };
+
+    const handlePointerLeave = () => {
+      scheduleAutoResume(300);
+    };
+
+    const handleUserInteraction = () => {
+      pauseAuto();
+      scheduleAutoResume();
+    };
+
+    centerCard(getNearestCardIndex(), "auto");
     updateFrontCard();
+
     el.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleScroll);
+    el.addEventListener("mouseenter", handlePointerEnter);
+    el.addEventListener("mouseleave", handlePointerLeave);
+    el.addEventListener("pointerdown", handleUserInteraction, { passive: true });
+    el.addEventListener("touchstart", handleUserInteraction, { passive: true });
+    el.addEventListener("wheel", handleUserInteraction, { passive: true });
+
+    autoTimerRef.current = setInterval(() => {
+      if (pausedRef.current || document.visibilityState !== "visible") return;
+      const next = getNearestCardIndex() + 1;
+      centerCard(next, "smooth");
+    }, 3600);
 
     return () => {
       el.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
+      el.removeEventListener("mouseenter", handlePointerEnter);
+      el.removeEventListener("mouseleave", handlePointerLeave);
+      el.removeEventListener("pointerdown", handleUserInteraction);
+      el.removeEventListener("touchstart", handleUserInteraction);
+      el.removeEventListener("wheel", handleUserInteraction);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (autoTimerRef.current) clearInterval(autoTimerRef.current);
+      if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
     };
   }, []);
 
   function slide(direction: "left" | "right") {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const amount = Math.max(el.clientWidth * 0.78, 260);
-    el.scrollBy({ left: direction === "left" ? -amount : amount, behavior: "smooth" });
+    const current = getNearestCardIndex();
+    centerCard(current + (direction === "left" ? -1 : 1), "smooth");
+    pauseAuto();
+    scheduleAutoResume();
   }
 
   return (
@@ -91,7 +198,7 @@ export function HorizontalBookCarousel({
 
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-visible px-6 pb-3 pt-3 [scroll-padding-inline:2rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:opacity-75 [&>*]:saturate-[0.72] [&>*]:brightness-[0.92] [&>*]:transition [&>*]:duration-300 [&>[data-front='true']]:z-10 [&>[data-front='true']]:opacity-100 [&>[data-front='true']]:saturate-100 [&>[data-front='true']]:brightness-100 [&>[data-front='true']]:-translate-y-1 [&>[data-front='true']]:scale-[1.1] [&>[data-front='true']]:animate-[mobileSpotlight_650ms_ease-out] [&>[data-front='true']_a]:shadow-[0_0_0_2px_rgba(125,211,252,0.85),0_0_64px_-6px_rgba(56,189,248,1)] [&>[data-front='true']_a_.cover-media]:shadow-[inset_0_0_28px_rgba(56,189,248,0.35),0_0_34px_-14px_rgba(56,189,248,0.95)] [&>[data-front='true']_a_.cover-sound-toggle]:z-30 sm:[&>*]:opacity-100 sm:[&>*]:saturate-100 sm:[&>*]:brightness-100 sm:[&>[data-front='true']]:translate-y-0 sm:[&>[data-front='true']]:scale-100 sm:[&>[data-front='true']]:animate-none sm:[&>[data-front='true']_a]:shadow-none sm:[&>[data-front='true']_a_.cover-media]:shadow-none sm:px-8 [@keyframes_mobileSpotlight{0%{transform:translateY(0)_scale(1)}55%{transform:translateY(-0.5rem)_scale(1.12)}100%{transform:translateY(-0.25rem)_scale(1.1)}}]"
+        className="flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-visible px-6 pb-6 pt-4 [scroll-padding-inline:2rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:opacity-75 [&>*]:saturate-[0.72] [&>*]:brightness-[0.92] [&>*]:transition [&>*]:duration-300 [&>[data-front='true']]:z-10 [&>[data-front='true']]:opacity-100 [&>[data-front='true']]:saturate-100 [&>[data-front='true']]:brightness-100 [&>[data-front='true']]:-translate-y-0.5 [&>[data-front='true']]:scale-[1.06] [&>[data-front='true']]:animate-[mobileSpotlight_600ms_ease-out] [&>[data-front='true']_a]:shadow-[0_0_0_2px_rgba(125,211,252,0.85),0_0_56px_-8px_rgba(56,189,248,0.95)] [&>[data-front='true']_a_.cover-media]:shadow-[inset_0_0_24px_rgba(56,189,248,0.28),0_0_30px_-14px_rgba(56,189,248,0.85)] [&>[data-front='true']_a_.cover-sound-toggle]:z-30 sm:[&>*]:opacity-100 sm:[&>*]:saturate-100 sm:[&>*]:brightness-100 sm:[&>[data-front='true']]:translate-y-0 sm:[&>[data-front='true']]:scale-100 sm:[&>[data-front='true']]:animate-none sm:[&>[data-front='true']_a]:shadow-none sm:[&>[data-front='true']_a_.cover-media]:shadow-none sm:px-8 [@keyframes_mobileSpotlight{0%{transform:translateY(0)_scale(1)}55%{transform:translateY(-0.35rem)_scale(1.08)}100%{transform:translateY(-0.125rem)_scale(1.06)}}]"
       >
         <div aria-hidden data-edge-spacer className="w-3 shrink-0 snap-none sm:w-6" />
         {children}
