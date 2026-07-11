@@ -78,9 +78,11 @@ export function PublishedBookCard({
     <Link
       href={`/book/${book.slug}`}
       className={`group relative flex flex-col overflow-hidden rounded-xl border bg-surface transition-colors hover:border-primary/60 ${
+        featured ? "book-card-featured" : "book-card-regular"
+      } ${
         featured
-          ? "border-amber-300/90 shadow-[0_0_0_2px_rgba(251,191,36,0.5),0_26px_55px_-28px_rgba(251,191,36,0.95)]"
-          : "border-sky-300/70 shadow-[0_0_0_1px_rgba(56,189,248,0.35)]"
+          ? "border-amber-300/95 shadow-[0_0_0_2px_rgba(251,191,36,0.62),0_0_28px_-6px_rgba(250,204,21,0.85),0_30px_62px_-30px_rgba(234,179,8,0.95)]"
+          : "border-sky-300/55 shadow-[0_0_0_1px_rgba(56,189,248,0.2)]"
       }`}
     >
       {
@@ -88,13 +90,13 @@ export function PublishedBookCard({
           <div
             aria-hidden
             className={`pointer-events-none absolute inset-[5px] z-10 rounded-[0.7rem] border ${
-              featured ? "border-amber-200/70" : "border-sky-200/55"
+              featured ? "border-amber-200/90" : "border-sky-200/45"
             }`}
           />
           {featured ? (
             <div
               aria-hidden
-              className="pointer-events-none absolute left-1/2 top-2 z-20 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_14px_rgba(252,211,77,0.9)]"
+              className="pointer-events-none absolute left-1/2 top-2 z-20 h-3 w-3 -translate-x-1/2 rounded-full bg-amber-300 shadow-[0_0_18px_rgba(252,211,77,1)]"
             />
           ) : null}
         </>
