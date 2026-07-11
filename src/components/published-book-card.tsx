@@ -119,9 +119,21 @@ export function PublishedBookCard({
               type="button"
               onClick={toggleAudio}
               aria-label={audioEnabled ? "Mute cover video" : "Enable cover video sound"}
-              className="absolute right-2 top-2 z-20 rounded-full border border-sky-200/60 bg-black/65 px-2 py-1 text-xs text-white transition hover:border-sky-300"
+              className="absolute right-2 top-2 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full border border-sky-200/60 bg-black/65 text-white transition hover:border-sky-300"
             >
-              {audioEnabled ? "Sound: on" : "Sound: off"}
+              {audioEnabled ? (
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+                  <path d="M18.5 6a9 9 0 0 1 0 12" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  <line x1="23" y1="9" x2="17" y2="15" />
+                  <line x1="17" y1="9" x2="23" y2="15" />
+                </svg>
+              )}
             </button>
             <div
               className={`hidden aspect-[2/3] w-full items-end border-b border-border bg-gradient-to-br ${book.coverColor} p-4 motion-reduce:flex`}
