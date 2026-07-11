@@ -214,23 +214,15 @@ export function PublishedBookCard({
           />
         ) : null}
       </div>
-      <div className={`flex flex-1 flex-col p-4 ${featured ? "sm:pt-2" : ""}`}>
-        <div className={`flex items-center gap-2 ${featured ? "justify-center" : "justify-between"}`}>
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-center justify-between gap-2">
           <span className="truncate text-xs text-muted">{book.category}</span>
           {book.proofVerified ? (
             <StatusBadge tone="accent">{verifiedProofLabel}</StatusBadge>
           ) : null}
         </div>
-        <h3
-          className={`line-clamp-2 text-foreground ${
-            featured
-              ? "mt-1 text-center text-[1.85rem] font-extrabold leading-tight tracking-tight sm:text-[2rem]"
-              : "mt-2 font-semibold"
-          }`}
-        >
-          {book.title}
-        </h3>
-        <p className={`text-sm text-muted ${featured ? "text-center" : ""}`}>
+        <h3 className="mt-2 line-clamp-2 font-semibold text-foreground">{book.title}</h3>
+        <p className="text-sm text-muted">
           {byLabel} {book.authorName}
         </p>
         <div className="mt-3 flex items-center justify-between pt-1">

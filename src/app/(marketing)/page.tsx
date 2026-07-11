@@ -212,10 +212,10 @@ export default async function Home() {
       {/* Featured books (real ReaderChain data) */}
       {featured.length > 0 ? (
         <section id="readers" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-14">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <h2 className="text-2xl font-semibold">{t.featuredTitle}</h2>
-              <p className="mt-1 text-muted">{t.featuredSubtitle}</p>
+          <div className="-mt-1 flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:items-start sm:text-left">
+            <div className="sm:-mt-1">
+              <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">{t.featuredTitle}</h2>
+              <p className="mt-2 text-base text-muted sm:text-lg">{t.featuredSubtitle}</p>
             </div>
             <ButtonLink href="/explore" variant="ghost">
               {t.exploreAll}
