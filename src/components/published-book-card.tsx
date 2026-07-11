@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useRef } from "react";
 import type { PublishedBookDTO } from "@/lib/data/books";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ProofSeal } from "@/components/proof-seal";
@@ -12,6 +15,7 @@ import { ProofSeal } from "@/components/proof-seal";
 export function PublishedBookCard({
   book,
   priority = false,
+  featured = false,
   byLabel = "by",
   verifiedProofLabel = "✓ Verified proof",
   openBookLabel = "Open book →",
@@ -19,22 +23,43 @@ export function PublishedBookCard({
   book: PublishedBookDTO;
   /** Eager-load the cover when the card is above the fold (e.g. first row). */
   priority?: boolean;
+  /** Highlight featured books with a premium frame. */
+  featured?: boolean;
   byLabel?: string;
   verifiedProofLabel?: string;
   openBookLabel?: string;
 }) {
   const coverSrc = `/api/assets/books/${book.id}/cover`;
   const coverIsVideo = book.coverMimeType?.startsWith("video/") ?? false;
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  function handleCoverEnter() {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = false;
+    void video.play();
+  }
+
+  function handleCoverLeave() {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+  }
 
   return (
     <Link
       href={`/book/${book.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-primary/60"
+      className={`group flex flex-col overflow-hidden rounded-xl border bg-surface transition-colors hover:border-primary/60 ${
+        featured
+          ? "border-amber-400/70 shadow-[0_0_0_1px_rgba(251,191,36,0.35),0_0_28px_-8px_rgba(251,191,36,0.7)]"
+          : "border-border"
+      }`}
     >
-      <div className="relative">
+      <div className="relative" onMouseEnter={handleCoverEnter} onMouseLeave={handleCoverLeave}>
         {book.hasCover && coverIsVideo ? (
           <>
             <video
+              ref={videoRef}
               src={coverSrc}
               className="aspect-[2/3] w-full border-b border-border object-cover motion-reduce:hidden"
               autoPlay

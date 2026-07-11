@@ -5,6 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PublishedBookCard } from "@/components/published-book-card";
 import { ReaderBackground } from "@/components/reader-background";
+import { HorizontalBookCarousel } from "@/components/horizontal-book-carousel";
 import { listPublishedBooks } from "@/lib/data/books";
 import { absoluteUrl, jsonLdScript, siteConfig } from "@/lib/seo";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -122,17 +123,21 @@ export default async function ExplorePage() {
                 <StatusBadge tone="accent">{t.featuredBadge}</StatusBadge>
               </div>
               <p className="mt-1 text-muted">{t.featuredSubtitle}</p>
-              <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mt-6">
+                <HorizontalBookCarousel>
                 {featured.map((b, i) => (
-                  <PublishedBookCard
-                    key={b.id}
-                    book={b}
-                    priority={i < 2}
-                    byLabel={dict.book.by}
-                    verifiedProofLabel={dict.common.verifiedProof}
-                    openBookLabel={dict.common.openBook}
-                  />
+                  <div key={b.id} className="w-[min(80vw,18rem)] shrink-0 snap-start sm:w-[18rem]">
+                    <PublishedBookCard
+                      book={b}
+                      priority={i < 2}
+                      featured
+                      byLabel={dict.book.by}
+                      verifiedProofLabel={dict.common.verifiedProof}
+                      openBookLabel={dict.common.openBook}
+                    />
+                  </div>
                 ))}
+                </HorizontalBookCarousel>
               </div>
             </section>
           ) : null}
@@ -144,16 +149,19 @@ export default async function ExplorePage() {
                 ? t.booksAvailableOne
                 : t.booksAvailable.replace("{count}", String(books.length))}
             </p>
-            <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-6">
+              <HorizontalBookCarousel>
               {books.map((b) => (
-                <PublishedBookCard
-                  key={b.id}
-                  book={b}
-                  byLabel={dict.book.by}
-                  verifiedProofLabel={dict.common.verifiedProof}
-                  openBookLabel={dict.common.openBook}
-                />
+                <div key={b.id} className="w-[min(80vw,18rem)] shrink-0 snap-start sm:w-[18rem]">
+                  <PublishedBookCard
+                    book={b}
+                    byLabel={dict.book.by}
+                    verifiedProofLabel={dict.common.verifiedProof}
+                    openBookLabel={dict.common.openBook}
+                  />
+                </div>
               ))}
+              </HorizontalBookCarousel>
             </div>
           </section>
         </>
