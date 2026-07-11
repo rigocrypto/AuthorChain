@@ -140,7 +140,7 @@ export async function listAuthorBooks(authorId: string): Promise<BookDTO[]> {
       include: {
         assets: {
           where: { assetType: "COVER", isPrimary: true },
-          select: { id: true },
+          select: { id: true, mimeType: true },
           take: 1,
         },
         blockchainRegistrations: {
