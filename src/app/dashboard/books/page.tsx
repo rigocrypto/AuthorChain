@@ -3,6 +3,7 @@ import Link from "next/link";
 import { DashboardPage } from "@/components/dashboard/dashboard-page";
 import { BookCard } from "@/components/book-card";
 import { BookActionButton } from "@/components/dashboard/book-actions";
+import { MyBooksSwipeRow } from "@/components/dashboard/my-books-swipe-row";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -118,11 +119,15 @@ export default async function MyBooksPage({
           <p className="text-sm text-muted">{d.noBooksInView}</p>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <MyBooksSwipeRow>
           {shown.map((book) => {
             const archived = Boolean(book.archivedAt);
             return (
-              <div key={book.id} className="space-y-2">
+              <div
+                key={book.id}
+                data-book-item="true"
+                className="w-[86vw] max-w-[24rem] shrink-0 snap-start space-y-2 sm:w-[22rem]"
+              >
                 <div className="relative">
                   <BookCard book={book} />
                   {archived ? (
@@ -189,7 +194,7 @@ export default async function MyBooksPage({
               </div>
             );
           })}
-        </div>
+        </MyBooksSwipeRow>
       )}
     </DashboardPage>
   );
